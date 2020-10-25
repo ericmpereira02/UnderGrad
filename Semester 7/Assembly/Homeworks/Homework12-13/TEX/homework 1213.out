@@ -1,0 +1,17 @@
+\BOOKMARK [1][-]{section*.2}{12.6.1}{}% 1
+\BOOKMARK [2][-]{section*.3}{1. Given the binary floating-point value 1101.01101, how can it be expressed as a sum of decimal fractions?}{section*.2}% 2
+\BOOKMARK [2][-]{section*.4}{3. Given the binary value 11011.01011, what is its normalized value?}{section*.2}% 3
+\BOOKMARK [2][-]{section*.5}{5. What are the two types of NaNs?}{section*.2}% 4
+\BOOKMARK [2][-]{section*.6}{6. What is the largest data type permitted by the FLD instruction, and how many bits does it contain?}{section*.2}% 5
+\BOOKMARK [2][-]{section*.7}{7. How is the FSTP instruction different from FST?}{section*.2}% 6
+\BOOKMARK [2][-]{section*.8}{10. How is the FISUB instruction different from FSUB?}{section*.2}% 7
+\BOOKMARK [2][-]{section*.9}{13. Which field in the FPU control word lets you change the processor\220s rounding mode?}{section*.2}% 8
+\BOOKMARK [1][-]{section*.10}{12.6.2}{}% 9
+\BOOKMARK [2][-]{section*.11}{10. Write instructions that implement the following C++ code:}{section*.10}% 10
+\BOOKMARK [1][-]{section*.12}{13.6}{}% 11
+\BOOKMARK [2][-]{section*.13}{1. When a procedure written in assembly language is called by a high-level language program, must the calling program and the procedure use the same memory model?}{section*.12}% 12
+\BOOKMARK [2][-]{section*.14}{3. Does a language\220s calling convention include the preserving of certain registers by procedures?}{section*.12}% 13
+\BOOKMARK [2][-]{section*.15}{6. \(Yes/No\): Can variables be defined with both the DW and the DUP operator in inline assembly code?}{section*.12}% 14
+\BOOKMARK [2][-]{section*.16}{8. Rather than using the OFFSET operator, is there another way to move a variable\220s offset into an index register?}{section*.12}% 15
+\BOOKMARK [2][-]{section*.17}{11. What is a valid assembly language PROTO declaration for the standard C printf\( \) function?}{section*.12}% 16
+\BOOKMARK [2][-]{section*.18}{13. What is the purpose of the \215C\216 specifier in the extern declaration in procedures called from C++?}{section*.12}% 17

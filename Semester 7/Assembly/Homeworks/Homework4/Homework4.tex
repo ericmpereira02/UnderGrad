@@ -1,0 +1,101 @@
+\documentclass[12pt]{article}
+\newcommand\tab[1][1cm]{\hspace{#1}}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{textcomp}
+\usepackage{sectsty}
+\usepackage{graphicx}
+\pagenumbering{gobble}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+
+\lstset{style=mystyle}
+
+
+\begin{document}
+\author{Eric Pereira\\
+	CSE3120: Section 01}
+\date{September 15\textsuperscript{th}, 2018}
+\title{Homework 4}
+\maketitle
+
+\section*{4.1.10}
+
+\subsection*{2. \normalsize (True/False): The destination operand of a MOV instruction cannot be a segment register}
+\paragraph{Answer: }False
+
+\section*{4.9.1}
+
+\subsection*{5. \normalsize What will be the value of the Parity flag after the following lines execute?\\
+\texttt{mov al,1} \\
+\texttt{add al,3}}
+\paragraph{Answer: }0
+
+\subsection*{6. \normalsize What will be the value of EAX and the Sign flag after the following lines execute? \\
+\texttt{mov eax,5} \\
+\texttt{sub eax,6}}
+\paragraph{Answer: }1
+
+\subsection*{12. \normalsize (Yes/No): Is it possible to set the Overflow flag if you add a positive integer to a negative integer?}
+\paragraph{Answer: } No
+
+\subsection*{14. \normalsize (Yes/No): Is it possible for the NEG instruction to set the Overflow flag?}
+\paragraph{Answer: }Yes
+
+\section*{4.9.2}
+
+\subsection*{1. \normalsize Write a sequence of MOV instructions that will exchange the upper and lower words in a doubleword variable named three.}
+\paragraph{Answer: } 
+	mov eax, word ptr three \\
+	mov ebx, word ptr three+2 \\
+	mov three, ebx \\
+	mov word ptr three+2, eax \\
+
+\subsection*{10. \normalsize Write a sequence of two instructions that set both the Carry and Overflow flags at the same time}
+\paragraph{Answer: } 
+	mov al,70h \\
+	add al,90h \\
+
+\section*{4.10}
+
+\subsection*{1. Converting from Big Endian to Little Endian \\ 
+	\normalsize Write a program that uses the variables below and MOV instructions to copy the value from bigEndian to littleEndian, reversing the order of the bytes. The number’s 32-bit value is understood
+	to be 12345678 hexadecimal. \\
+\texttt{.data \\
+	bigEndian BYTE 12h,34h,56h,78h \\
+	littleEndian DWORD?}}
+\paragraph{Answer: } 
+	.code \\ 
+	main PROC \\
+	mov al,[bigEndian+3] \\
+	mov BYTE PTR [littleEndian],al \\
+	mov al,[bigEndian+2] \\
+	mov BYTE PTR [littleEndian+1],al \\
+	mov al,[bigEndian+1] \\
+	mov BYTE PTR [littleEndian+2],al \\
+	mov al,[bigEndian] \\
+	mov BYTE PTR [littleEndian+3],al \\
+
+\end{document}

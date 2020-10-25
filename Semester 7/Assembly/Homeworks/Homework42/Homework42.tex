@@ -1,0 +1,110 @@
+\documentclass[12pt]{article}
+\newcommand\tab[1][1cm]{\hspace{#1}}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{textcomp}
+\usepackage{sectsty}
+\usepackage{graphicx}
+\pagenumbering{gobble}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+
+\lstset{style=mystyle}
+
+
+\begin{document}
+\author{Eric Pereira\\
+	CSE3120: Section 01}
+\date{September 22\textsuperscript{nd}, 2018}
+\title{Chapter 4 Part 2}
+\maketitle
+\section*{1.} 
+\subsection*{\texttt{message db "smartest"} \\Submit a program that computes the sum of all the byte values in the original message, and stores the result as a number on 4 bytes stored in the last four bytes of the message.}
+\texttt{.386 \\
+	.model flat,stdcall \\
+	.stack 4096 \\
+	ExitProcess PROTO, dwExitCode:DWORD \\
+	.data \\
+	message db "smartest" \\
+	target BYTE SIZEOF message DUP(0) \\
+	count EQU LENGTHOF message \\
+	.code \\
+	main PROC \\
+	mov esi,0 \\
+	mov ecx,SIZEOF message \\
+	mov eax, 0 \\
+	mov ebx, 0 \\
+	lea edx, message \\
+	add edx, 4 \\
+	L1: \\
+	mov al,message[esi] \\
+	add ebx, eax \\
+	inc esi \\
+	loop L1 \\
+	mov [edx], ebx \\
+	invoke ExitProcess,0 \\
+	main ENDP \\
+	END main} 
+\section*{4.4.5}
+\subsection*{1. (True/False): Any 32-bit general-purpose register can be used as an indirect operand.}
+True
+\section*{5.8}
+\subsection*{1. Which instruction pushes all of the 32-bit general-purpose registers on the stack?}
+PUSHAD
+\subsection*{12. (True/False): The USES operator only generates PUSH instructions, so you must code POP instructions yourself}
+False
+\section*{5.82}
+\subsection*{1. Write a sequence of statements that use only PUSH and POP instructions to exchange the values in the EAX and EBX registers (or RAX and RBX in 64-bit mode). }
+\texttt{.386 \\
+	.model flat,stdcall \\
+	.stack 4096 \\
+	ExitProcess PROTO, dwExitCode:DWORD \\
+	.code \\
+	main PROC \\
+\tab	MOV EAX, 2 \\
+\tab	MOV EBX, 4 \\
+\tab	PUSH EAX \\
+\tab	PUSH EBX \\
+\tab	POP EAX \\
+\tab	POP EBX \\
+\tab	INVOKE ExitProcess,0 \\
+\tab	main ENDP \\
+	END main}
+\subsection*{2. Suppose you wanted a subroutine to return to an address that was 3 bytes higher in memory than the return address currently on the stack. Write a sequence of instructions that would be inserted just before the subroutine’s RET instruction that accomplish this task.}
+\texttt{.386 \\
+	.model flat,stdcall \\
+	.stack 4096 \\
+	ExitProcess PROTO, dwExitCode:DWORD \\
+	.code \\
+	main PROC \\
+	CALL subRoutine \\
+	INVOKE ExitProcess,0 \\
+	main ENDP \\
+	subRoutine PROC \\
+	ADD EBP, 7 \\
+	RET \\
+	subRoutine ENDP \\
+	END main}
+\end{document}

@@ -1,0 +1,28 @@
+\contentsline {section}{\numberline {}Overview}{1}{section*.2}
+\contentsline {section}{\numberline {}Scope}{1}{section*.3}
+\contentsline {section}{\numberline {}Definition}{2}{section*.4}
+\contentsline {paragraph}{CERN CentOS 7 -}{2}{section*.5}
+\contentsline {paragraph}{ROOT -}{2}{section*.6}
+\contentsline {paragraph}{DATE -}{2}{section*.7}
+\contentsline {paragraph}{AMORE -}{2}{section*.8}
+\contentsline {paragraph}{SCRIBE -}{2}{section*.9}
+\contentsline {paragraph}{ROCKS -}{2}{section*.10}
+\contentsline {paragraph}{HTCondor -}{2}{section*.11}
+\contentsline {paragraph}{OSG -}{3}{section*.12}
+\contentsline {paragraph}{GEM -}{3}{section*.13}
+\contentsline {paragraph}{HEP -}{3}{section*.14}
+\contentsline {section}{\numberline {}MTS}{3}{section*.15}
+\contentsline {subsection}{\numberline {}Current MTS}{3}{section*.16}
+\contentsline {subsubsection}{\numberline {}Diagnose}{3}{section*.17}
+\contentsline {subsubsection}{\numberline {}Repair}{4}{section*.18}
+\contentsline {subsection}{\numberline {}Update MTS}{4}{section*.19}
+\contentsline {subsubsection}{\numberline {}Software Updates}{4}{section*.20}
+\contentsline {subsubsection}{\numberline {}Script Updates}{4}{section*.21}
+\contentsline {section}{\numberline {}Cluster}{5}{section*.22}
+\contentsline {subsection}{\numberline {}Repair}{5}{section*.23}
+\contentsline {subsubsection}{\numberline {}Hardware}{5}{section*.24}
+\contentsline {subsubsection}{\numberline {}Software}{5}{section*.25}
+\contentsline {section}{\numberline {}GEM Team}{6}{section*.26}
+\contentsline {subsection}{\numberline {}Allocation of Resources}{6}{section*.27}
+\contentsline {subsection}{\numberline {}Data Transfer}{6}{section*.28}
+\contentsline {subsection}{\numberline {}X-Ray Machine}{7}{section*.29}

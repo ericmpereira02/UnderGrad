@@ -1,0 +1,45 @@
+Eric Pereira
+
+2. In the verbose output, search for the commands used to compile (ml.exe) and to link (link.exe), submit them in the textbox of the assignment.
+ml:
+ ml.exe /c /nologo /Sg /Zi /Fo"Debug\AddTwo.obj" /Fl"Project.lst" /I "c:\Irvine" /W3 /errorReport:prompt  /TaAddTwo.asm
+link:
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.15.26726\bin\HostX86\x86\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Eric Pereira\Downloads\Project32_VS2017\Project32_VS2017\Debug\Project.exe" /NOLOGO /LIBPATH:c:\Irvine user32.lib irvine32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Eric Pereira\Downloads\Project32_VS2017\Project32_VS2017\Debug\Project.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"C:\Users\Eric Pereira\Downloads\Project32_VS2017\Project32_VS2017\Debug\Project.lib" /MACHINE:X86 /SAFESEH:NO Debug\AddTwo.obj
+
+3. Search online the meaning of the options passed as parameters to ml.exe, and give the description in the submission textbox.
+Answer:
+/c means it Assembles only, does not link
+/nologo means it Suppresses messages for successful assembly.
+/Sg means it Turns on listing of all available information.
+/Zi means it Generates CodeView information in object file.
+/Fo means it Names an object file.
+/Fl means it Generates an assembled code listing.
+/I means it Sets path for include file.
+/W means it Sets the warning level, where level = 0, 1, 2, or 3.
+/errorReport means If ml.exe or ml64.exe fails at runtime, you can use /ERRORREPORT to send information to Microsoft about these internal errors.
+the last parameter, TaAddTwo.asm is the file to run itself. 
+
+5.Solve problem 1 in section 3.10 and upload a) the code and b) a snapshot of the debugging when stepping up to the computation of the sum.
+Answer:
+a)
+.386
+.model flat,stdcall
+.stack 4096
+ExitProcess proto,dwExitCode:dword
+
+.code
+main proc
+	mov	eax,5
+     mov  ebx,6
+     mov  ecx,1
+     mov  edx,2
+
+     add  eax, ebx
+     add  ecx, edx
+
+     sub  eax, ecx   
+
+	invoke ExitProcess,0
+main endp
+end main
+b) attached in a separate photo

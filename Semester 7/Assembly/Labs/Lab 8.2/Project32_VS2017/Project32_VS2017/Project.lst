@@ -1,0 +1,94 @@
+Microsoft (R) Macro Assembler Version 14.15.26730.0	    10/22/18 12:36:12
+main_.asm						     Page 1 - 1
+
+
+				; Demonstrate the AddTwo Procedure     (AddTwo.asm)
+
+				; Demonstrates different procedure call protocols.
+
+				INCLUDE AddTwo.inc
+			      C 
+			      C .386
+			      C .model flat,stdcall
+			      C .stack 4096
+			      C ExitProcess PROTO, dwExitCode:DWORD
+			      C 
+			      C OPTION PROC:PRIVATE
+			      C 
+			      C AddTwo PROTO
+			      C 
+			      C EXTERNDEF sum:DWORD
+			      C 
+
+
+ 00000000			.data
+ 00000000 1234			word1 WORD 1234h
+ 00000002 4111			word2 WORD 4111h
+ 00000004 00000000		sum DWORD ?
+
+ 00000000			.code
+ 00000000			main PROC PUBLIC 
+
+					;call	Example1
+					;call	Example2
+
+ 00000000  0F B7 05			movzx	eax,word1
+	   00000000 R
+ 00000007  50				push	eax
+ 00000008  0F B7 05			movzx	eax,word2
+	   00000002 R
+ 0000000F  50				push	eax
+ 00000010  E8 00000000 E		call	AddTwo
+					;call	DumpRegs
+
+					invoke ExitProcess, 0
+ 00000015  6A 00	   *	    push   +000000000h
+ 00000017  E8 00000000 E   *	    call   ExitProcess
+
+ 0000001C			main ENDP
+
+				END main
+Microsoft (R) Macro Assembler Version 14.15.26730.0	    10/22/18 12:36:12
+main_.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000008 DWord	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000001C DWord	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+AddTwo . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000001C Public STDCALL
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000003h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+sum  . . . . . . . . . . . . . .	DWord	 00000004 _DATA	Public STDCALL
+word1  . . . . . . . . . . . . .	Word	 00000000 _DATA	
+word2  . . . . . . . . . . . . .	Word	 00000002 _DATA	
+
+	   0 Warnings
+	   0 Errors

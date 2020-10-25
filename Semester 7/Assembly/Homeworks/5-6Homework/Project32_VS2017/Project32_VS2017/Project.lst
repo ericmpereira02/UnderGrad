@@ -1,0 +1,73 @@
+Microsoft (R) Macro Assembler Version 14.16.27024.1	    11/26/18 11:56:13
+AddTwo.asm						     Page 1 - 1
+
+
+				.386
+				.model flat,stdcall
+				.stack 4096
+				ExitProcess PROTO, dwExitCode:DWORD
+
+ 00000000			.data
+ 00000000 00000010		_one DWORD 16
+
+
+ 00000000			.code
+ 00000000			main PROC
+
+ 00000000  9B DB E3		FINIT
+ 00000003  DB 05 00000000 R	FILD _one ; _one should be defined as dword 1
+				; .... also load dword _two
+ 00000009  D8 D1		FCOM  ; compares _two, _one...... cf FCOMI
+ 0000000B  DF E0		FNSTSW AX ; no wait for exceptions
+ 0000000D  9E			SAHF
+ 0000000E  77 02		JNBE label_success
+ 00000010  EB 00		JMP label_failure
+ 00000012			label_success:
+				; print a happy message
+ 00000012			label_failure:
+				; exit
+ 00000012			main ENDP
+				END main
+Microsoft (R) Macro Assembler Version 14.16.27024.1	    11/26/18 11:56:13
+AddTwo.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000004 DWord	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000012 DWord	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000012 Public STDCALL
+  label_success  . . . . . . . .	L Near	 00000012 _TEXT	
+  label_failure  . . . . . . . .	L Near	 00000012 _TEXT	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000003h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+_one . . . . . . . . . . . . . .	DWord	 00000000 _DATA	
+
+	   0 Warnings
+	   0 Errors

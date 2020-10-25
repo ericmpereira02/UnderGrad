@@ -1,0 +1,86 @@
+Microsoft (R) Macro Assembler Version 14.16.27026.1	    01/22/19 22:46:16
+AddTwo.asm						     Page 1 - 1
+
+
+				.386
+				.model flat,stdcall
+				.stack 4096
+				ExitProcess PROTO, dwExitCode:DWORD
+ 00000000			.data
+ 00000000 73 6D 61 72 74	message db "smartest"
+	   65 73 74
+ 00000008  00000008 [		target BYTE SIZEOF message DUP(0)
+	    00
+	   ]
+ = 00000008			count EQU LENGTHOF message
+
+ 00000000			.code
+ 00000000			main PROC
+ 00000000  B0 28			mov al, 40d
+ 00000002  34 14			xor al, 20d
+ 00000004  BE 00000000		  mov esi,0
+ 00000009  B9 00000008		  mov ecx,SIZEOF message
+ 0000000E  B8 00000000		  mov eax, 0
+ 00000013  BB 00000000		  mov ebx, 0
+ 00000018  8D 15 00000000 R	  lea edx, message
+ 0000001E  83 C2 04		  add edx, 4
+
+ 00000021			L1:
+ 00000021  8A 86 00000000 R	  mov al,message[esi]
+ 00000027  03 D8		  add ebx, eax
+ 00000029  46			  inc esi
+ 0000002A  E2 F5		  loop L1
+
+ 0000002C  89 1A		  mov [edx], ebx
+
+
+				  invoke ExitProcess,0
+ 0000002E  6A 00	   *	    push   +000000000h
+ 00000030  E8 00000000 E   *	    call   ExitProcess
+ 00000035			main ENDP
+
+				END main
+Microsoft (R) Macro Assembler Version 14.16.27026.1	    01/22/19 22:46:16
+AddTwo.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000010 DWord	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000035 DWord	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000035 Public STDCALL
+  L1 . . . . . . . . . . . . . .	L Near	 00000021 _TEXT	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000003h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+count  . . . . . . . . . . . . .	Number	 00000008h   
+message  . . . . . . . . . . . .	Byte	 00000000 _DATA	
+target . . . . . . . . . . . . .	Byte	 00000008 _DATA	
+
+	   0 Warnings
+	   0 Errors

@@ -1,0 +1,28 @@
+V "GNAT Lib v6"
+A -mtune=generic
+A -march=i586
+P ZX
+
+RN
+RV SPARK_05
+
+U stack%b		stack.adb		ff931d63 NE OO PK GE IL
+
+U stack%s		stack.ads		31441a25 BN EE NE OO PK GE IL
+
+D stack.ads		20181030010728 31441a25 stack%s
+D stack.adb		20181030010746 ced70746 stack%b
+D system.ads		20180829141750 2da59038 system%s
+X 1 stack.ads
+7i5 max{integer} 2|7r21 8r28
+8+10 item 10r25 11r26 2|7r29 10r28 16r27
+9k9*stack 7z5 8z10 13e4 2|6b14 34l5 34t10
+10U14*push 10>19 2|10b15 14l9 14t13
+10*19 X{8+10} 2|10b21 13r19
+11U14*Pop 11<18 2|16b15 20l9 20t12
+11*18 x{8+10} 2|16b19 18m9
+12V13*empty{integer} 2|22b14 29l9 29t14
+X 2 stack.adb
+7a5 s(1|8+10) 13m9 18r13
+8i5 top{integer} 12m9 12r16 13r11 18r15 19m9 19r15 24r12 33m5
+

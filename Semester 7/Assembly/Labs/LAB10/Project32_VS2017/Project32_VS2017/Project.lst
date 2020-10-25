@@ -1,0 +1,1952 @@
+Microsoft (R) Macro Assembler Version 14.15.26732.1	    11/14/18 20:57:41
+somestuff.asm						     Page 1 - 1
+
+
+				; Windows Application                   (WinApp.asm)
+
+				; This program displays a resizable application window and
+				; several popup message boxes.
+				; Thanks to Tom Joyce for creating a prototype
+				; from which this program was derived.
+
+				INCLUDE Irvine32.inc
+			      C ; Include file for Irvine32.lib             (Irvine32.inc)
+			      C 
+			      C ;OPTION CASEMAP:NONE		; optional: make identifiers case-sensitive
+			      C 
+			      C INCLUDE SmallWin.inc		; MS-Windows prototypes, structures, and constants
+			      C .NOLIST
+			      C ; Include file for Calling Windows API Functions      (SmallWin.inc)
+			      C 
+			      C ; Recent updates:
+			      C ;  7/16/05  (printf, scanf)
+			      C 
+			      C ; To enable columns to line up properly, set your text editor's Tab
+			      C ; settings to 5, 35, and 40.
+			      C 
+			      C .686P		; Pentium Pro or later
+			      C .MODEL flat, stdcall
+			      C .STACK 4096
+			      C 
+			      C ;--------- my own constants --------------
+ = 00000000		      C DO_NOT_SHARE = 0
+ = 00000000		      C NULL = 0
+ = 00000001		      C TRUE = 1
+ = 00000000		      C FALSE = 0
+ = 00000009		      C TAB = 9		; ASCII code for Horiz Tab
+			      C ;-----------------------------------------
+			      C 
+ = DWORD		      C HANDLE TEXTEQU <DWORD>		; used in Win32 API documentation
+			      C 
+			      C ; Win32 Console handles
+ =-0000000A		      C STD_INPUT_HANDLE EQU -10
+ =-0000000B		      C STD_OUTPUT_HANDLE EQU -11		; predefined Win API constant
+ =-0000000C		      C STD_ERROR_HANDLE EQU -12
+			      C 
+			      C ;  Input Mode flags (used by GetConsoleMode & SetConsoleMode):
+ = 00000001		      C ENABLE_PROCESSED_INPUT = 1
+ = 00000002		      C ENABLE_LINE_INPUT      = 2
+ = 00000004		      C ENABLE_ECHO_INPUT      = 4
+ = 00000008		      C ENABLE_WINDOW_INPUT    = 8
+ = 00000010		      C ENABLE_MOUSE_INPUT     = 16
+			      C 
+			      C ; Event constants
+ = 00000001		      C KEY_EVENT       =  1
+ = 00000002		      C MOUSE_EVENT     =  2
+ = 00000004		      C WINDOW_BUFFER_SIZE_EVENT = 4          ; window change event record
+ = 00000008		      C MENU_EVENT      = 8                   ; menu event record
+ = 00000010		      C FOCUS_EVENT     = 16                  ; focus change
+			      C 
+			      C ; ControlKeyState constants (used by ReadKey)
+ = 0000001F		      C KEY_MASKS  = 00011111b		; Mask if any Shift/Ctrl/Alt flag is set
+ = 00000003		      C ALT_MASK   = 00000011b		; Left and right Alt key flags
+ = 0000000C		      C CTRL_MASK  = 00001100b		; Left and right Alt key flags
+ = 00000010		      C SHIFT_MASK = 00010000b		; Left or right Shift key flag
+			      C 
+ = 00000001		      C KBDOWN_FLAG = 00000001h		; Bit set for press, clear for release
+			      C 
+			      C ;  Output mode flags  (used by GetConsoleMode & SetConsoleMode):
+ = 00000001		      C ENABLE_PROCESSED_OUTPUT    = 1
+ = 00000002		      C ENABLE_WRAP_AT_EOL_OUTPUT  = 2
+			      C 
+			      C ; Constants found in WINNT.H
+ = 00000001		      C FILE_SHARE_READ                 = 1
+ = 00000002		      C FILE_SHARE_WRITE                = 2
+ = 00000004		      C FILE_SHARE_DELETE               = 4
+			      C 
+ = 00000001		      C FILE_ATTRIBUTE_READONLY         = 1
+ = 00000002		      C FILE_ATTRIBUTE_HIDDEN           = 2
+ = 00000004		      C FILE_ATTRIBUTE_SYSTEM           = 4
+ = 00000010		      C FILE_ATTRIBUTE_DIRECTORY        = 10h
+ = 00000020		      C FILE_ATTRIBUTE_ARCHIVE          = 20h
+ = 00000040		      C FILE_ATTRIBUTE_DEVICE           = 40h
+ = 00000080		      C FILE_ATTRIBUTE_NORMAL           = 80h
+ = 00000100		      C FILE_ATTRIBUTE_TEMPORARY        = 100h
+ = 00000200		      C FILE_ATTRIBUTE_SPARSE_FILE      = 200h
+ = 00000400		      C FILE_ATTRIBUTE_REPARSE_POINT    = 400h
+ = 00000800		      C FILE_ATTRIBUTE_COMPRESSED       = 800h
+ = 00001000		      C FILE_ATTRIBUTE_OFFLINE          =    1000h
+ = 00002000		      C FILE_ATTRIBUTE_NOT_CONTENT_INDEXED = 2000h
+ = 00004000		      C FILE_ATTRIBUTE_ENCRYPTED           = 4000h
+			      C 
+ = 00000001		      C FILE_READ_DATA = 1
+ = 00000002		      C FILE_WRITE_DATA = 2
+ = 00000004		      C FILE_APPEND_DATA = 4
+ = 00000040		      C FILE_DELETE_CHILD = 40h
+			      C 
+ = 80000000		      C GENERIC_READ     = 80000000h
+ = 40000000		      C GENERIC_WRITE    = 40000000h
+ = 20000000		      C GENERIC_EXECUTE  = 20000000h
+ = 10000000		      C GENERIC_ALL      = 10000000h
+			      C 
+			      C ; Memory allocation constants
+ = 00000001		      C HEAP_NO_SERIALIZE              = 00000001h
+ = 00000002		      C HEAP_GROWABLE                  = 00000002h
+ = 00000004		      C HEAP_GENERATE_EXCEPTIONS       = 00000004h
+ = 00000008		      C HEAP_ZERO_MEMORY               = 00000008h
+ = 00000010		      C HEAP_REALLOC_IN_PLACE_ONLY     = 00000010h
+			      C 
+			      C ; Error Handler Variables
+ = 00000100		      C FORMAT_MESSAGE_ALLOCATE_BUFFER     = 100h
+ = 00001000		      C FORMAT_MESSAGE_FROM_SYSTEM         = 1000h
+			      C 
+			      C ;------------- Message Box Constants ---------------
+			      C 
+			      C ; Icons:
+ = 00000010		      C MB_ICONHAND            = 10h
+ = 00000020		      C MB_ICONQUESTION        = 20h
+ = 00000030		      C MB_ICONEXCLAMATION     = 30h
+ = 00000040		      C MB_ICONASTERISK        = 40h
+ = 00000080		      C MB_USERICON            = 80h
+ = 00000030		      C MB_ICONWARNING         = MB_ICONEXCLAMATION
+ = 00000010		      C MB_ICONERROR           = MB_ICONHAND
+ = 00000040		      C MB_ICONINFORMATION     = MB_ICONASTERISK
+ = 00000010		      C MB_ICONSTOP            = MB_ICONHAND
+			      C 
+			      C ; Buttons:
+ = 00000000		      C MB_OK         = 0
+ = 00000001		      C MB_OKCANCEL   = 1
+ = 00000002		      C MB_ABORTRETRYIGNORE = 2
+ = 00000003		      C MB_YESNOCANCEL = 3
+ = 00000004		      C MB_YESNO       = 4
+ = 00000005		      C MB_RETRYCANCEL = 5
+ = 00000006		      C MB_CANCELTRYCONTINUE = 6
+ = 00004000		      C MB_HELP        =  4000h          ; does not close the window
+			      C 
+			      C ; Select the default button:
+ = 00000000		      C MB_DEFBUTTON1 = 0
+ = 00000100		      C MB_DEFBUTTON2 = 100h
+ = 00000200		      C MB_DEFBUTTON3 = 200h
+ = 00000300		      C MB_DEFBUTTON4 = 300h
+			      C 
+			      C ; Modal control buttons:
+ = 00000000		      C MB_APPLMODAL     =  0
+ = 00001000		      C MB_SYSTEMMODAL   =  1000h	; dialog floats above all windows
+ = 00002000		      C MB_TASKMODAL     =  2000h
+			      C 
+			      C ; Return values:
+ = 00000001		      C IDOK               = 1
+ = 00000002		      C IDCANCEL           = 2
+ = 00000003		      C IDABORT            = 3
+ = 00000004		      C IDRETRY            = 4
+ = 00000005		      C IDIGNORE           = 5
+ = 00000006		      C IDYES              = 6
+ = 00000007		      C IDNO               = 7
+ = 00000008		      C IDCLOSE            = 8
+ = 00000009		      C IDHELP             = 9
+ = 0000000A		      C IDTRYAGAIN         = 10
+ = 0000000B		      C IDCONTINUE         = 11
+ = 00007D00		      C IDTIMEOUT          = 32000
+			      C 
+			      C ;------------------ From winbase.h ----------------------------
+ = 00000001		      C CREATE_NEW         = 1
+ = 00000002		      C CREATE_ALWAYS      = 2
+ = 00000003		      C OPEN_EXISTING      = 3
+ = 00000004		      C OPEN_ALWAYS        = 4
+ = 00000005		      C TRUNCATE_EXISTING  = 5
+			      C 
+ = 00000000		      C FILE_BEGIN         =  0
+ = 00000001		      C FILE_CURRENT       =  1
+ = 00000002		      C FILE_END           =  2
+			      C 
+ =-00000001		      C INVALID_HANDLE_VALUE = -1
+			      C 
+			      C ;--------------------From wincon.h ---------------------------
+			      C 
+			      C ; ControlKeyState flags
+			      C 
+ = 00000001		      C RIGHT_ALT_PRESSED    = 0001h      ; the right alt key is pressed.
+ = 00000002		      C LEFT_ALT_PRESSED     = 0002h      ; the left alt key is pressed.
+ = 00000004		      C RIGHT_CTRL_PRESSED   = 0004h      ; the right ctrl key is pressed.
+ = 00000008		      C LEFT_CTRL_PRESSED    = 0008h      ; the left ctrl key is pressed.
+ = 00000010		      C SHIFT_PRESSED        = 0010h      ; the shift key is pressed.
+ = 00000020		      C NUMLOCK_ON           = 0020h      ; the numlock light is on.
+ = 00000040		      C SCROLLLOCK_ON        = 0040h      ; the scrolllock light is on.
+ = 00000080		      C CAPSLOCK_ON          = 0080h      ; the capslock light is on.
+ = 00000100		      C ENHANCED_KEY         = 0100h      ; the key is enhanced.
+			      C 
+			      C ;---------------------- from WinUser.h -------------------------
+			      C 
+ = 00000090		      C VK_NUMLOCK  =   90h
+ = 00000091		      C VK_SCROLL   =   91h
+ = 000000A0		      C VK_LSHIFT   =   0A0h
+ = 000000A1		      C VK_RSHIFT   =   0A1h
+ = 000000A2		      C VK_LCONTROL =   0A2h
+ = 000000A3		      C VK_RCONTROL =   0A3h
+ = 000000A4		      C VK_LMENU    =   0A4h
+ = 000000A5		      C VK_RMENU    =   0A5h
+			      C 
+			      C ;----------------------------------------------------------------
+			      C 
+ = INVOKE ExitProcess,0	      C exit EQU <INVOKE ExitProcess,0>		; exit program
+			      C 
+			      C ;======================================================
+			      C ;                     ALIASES
+			      C ;======================================================
+			      C ; The following Win32 API functions have an
+			      C ; extra "A" at the end of their name, so they are
+			      C ; redefined here with text macros:
+			      C 
+ = CreateFileA		      C CreateFile 	EQU <CreateFileA>
+ = FormatMessageA	      C FormatMessage   	EQU <FormatMessageA>
+ = GetCommandLineA	      C GetCommandLine	EQU <GetCommandLineA>
+ = MessageBoxA		      C MessageBox      	EQU <MessageBoxA>
+ = PeekConsoleInputA	      C PeekConsoleInput	EQU <PeekConsoleInputA>
+ = ReadConsoleA		      C ReadConsole 	EQU <ReadConsoleA>
+ = ReadConsoleInputA	      C ReadConsoleInput	EQU <ReadConsoleInputA>
+ = SetConsoleTitleA	      C SetConsoleTitle	EQU <SetConsoleTitleA>
+ = WriteConsoleA	      C WriteConsole 	EQU <WriteConsoleA>
+ = WriteConsoleOutputCharac   C WriteConsoleOutputCharacter 	EQU <WriteConsoleOutputCharacterA>
+   terA
+ = wsprintfA		      C wsprintf 		EQU <wsprintfA>
+			      C 
+			      C ;=======================================================
+			      C ; Standard Windows Structure defintions:
+			      C ;=======================================================
+			      C 
+ 00000004		      C COORD STRUCT
+ 00000000  0000		      C 	X WORD ?
+ 00000002  0000		      C 	Y WORD ?
+			      C COORD ENDS
+			      C 
+ 00000010		      C SYSTEMTIME STRUCT
+ 00000000  0000		      C 	wYear WORD ?
+ 00000002  0000		      C 	wMonth WORD ?
+ 00000004  0000		      C 	wDayOfWeek WORD ?
+ 00000006  0000		      C 	wDay WORD ?
+ 00000008  0000		      C 	wHour WORD ?
+ 0000000A  0000		      C 	wMinute WORD ?
+ 0000000C  0000		      C 	wSecond WORD ?
+ 0000000E  0000		      C 	wMilliseconds WORD ?
+			      C SYSTEMTIME ENDS
+			      C 
+			      C ; Date and time, measured in 100ns intervals
+			      C ; since January 1, 1601.
+ 00000008		      C FILETIME STRUCT
+ 00000000  00000000	      C     loDateTime DWORD ?
+ 00000004  00000000	      C     hiDateTime DWORD ?
+			      C FILETIME ENDS
+			      C 
+ 00000008		      C SMALL_RECT STRUCT
+ 00000000  0000		      C   Left     WORD ?
+ 00000002  0000		      C   Top      WORD ?
+ 00000004  0000		      C   Right    WORD ?
+ 00000006  0000		      C   Bottom   WORD ?
+			      C SMALL_RECT ENDS
+			      C 
+ 00000008		      C CONSOLE_CURSOR_INFO STRUCT
+ 00000000  00000000	      C   dwSize   DWORD ?
+ 00000004  00000000	      C   bVisible DWORD ?
+			      C CONSOLE_CURSOR_INFO ENDS
+			      C 
+ 00000016		      C CONSOLE_SCREEN_BUFFER_INFO STRUCT
+ 00000000  0000 0000	      C   dwSize                COORD <>
+ 00000004  0000 0000	      C   dwCursorPosition      COORD <>
+ 00000008  0000		      C   wAttributes           WORD ?
+ 0000000A  0000 0000 0000     C   srWindow              SMALL_RECT <>
+	   0000
+ 00000012  0000 0000	      C   dwMaximumWindowSize   COORD <>
+			      C CONSOLE_SCREEN_BUFFER_INFO ENDS
+			      C 
+ 00000010		      C KEY_EVENT_RECORD STRUCT
+ 00000000  00000000	      C 	bKeyDown          DWORD ?
+ 00000004  0000		      C 	wRepeatCount      WORD  ?
+ 00000006  0000		      C 	wVirtualKeyCode   WORD  ?
+ 00000008  0000		      C 	wVirtualScanCode  WORD  ?
+			      C 	UNION uChar
+ 0000000A  0000		      C 	  UnicodeChar     WORD  ?
+			      C 	  AsciiChar       BYTE  ?
+			      C 	ENDS
+ 0000000C  00000000	      C 	dwControlKeyState DWORD ?
+			      C KEY_EVENT_RECORD ENDS
+			      C 
+ 00000010		      C MOUSE_EVENT_RECORD STRUCT
+ 00000000  0000 0000	      C 	dwMousePosition         COORD <>
+ 00000004  00000000	      C 	dwButtonState           DWORD ?
+ 00000008  00000000	      C 	dwMouseControlKeyState  DWORD ?  
+ 0000000C  00000000	      C 	dwEventFlags            DWORD ?
+			      C MOUSE_EVENT_RECORD ENDS
+			      C 
+ 00000004		      C WINDOW_BUFFER_SIZE_RECORD STRUCT
+ 00000000  0000 0000	      C 	dwSize COORD <>
+			      C WINDOW_BUFFER_SIZE_RECORD ENDS
+			      C 
+ 00000004		      C MENU_EVENT_RECORD STRUCT
+ 00000000  00000000	      C 	dwCommandId DWORD ?		; reserved
+			      C MENU_EVENT_RECORD ENDS
+			      C 
+ 00000004		      C FOCUS_EVENT_RECORD STRUCT
+ 00000000  00000000	      C   bSetFocus DWORD ?
+			      C FOCUS_EVENT_RECORD ENDS
+			      C 
+ 00000014		      C INPUT_RECORD STRUCT
+ 00000000  0000		      C 	EventType WORD ?
+			      C 	ALIGN DWORD	; align next field on doubleword boundary
+			      C 	UNION Event
+ 00000004  00000000 0000      C 		KEY_EVENT_RECORD <>
+	   0000 0000 0000
+	   00000000
+			      C 		MOUSE_EVENT_RECORD <>
+			      C 		WINDOW_BUFFER_SIZE_RECORD <>
+			      C 		MENU_EVENT_RECORD <>
+			      C 		FOCUS_EVENT_RECORD <>
+			      C 	ENDS
+			      C INPUT_RECORD ENDS
+			      C 
+			      C ;==========================================================
+			      C ;                   FUNCTION PROTOTYPES
+			      C ;==========================================================
+			      C 
+			      C CloseHandle PROTO,		; close file handle
+			      C 	hObject:DWORD
+			      C 
+			      C CreateFile PROTO,		; create new file
+			      C 	lpFilename:PTR BYTE,		; ptr to filename
+			      C 	dwDesiredAccess:DWORD,		; access mode
+			      C 	dwShareMode:DWORD,		; share mode
+			      C 	lpSecurityAttributes:DWORD,  		; pointer to security attributes
+			      C 	dwCreationDisposition:DWORD,		; file creation options
+			      C 	dwFlagsAndAttributes:DWORD,		; file attributes
+			      C 	hTemplateFile:DWORD		; handle to template file
+			      C 
+			      C ExitProcess PROTO,                  	; exit program
+			      C 	dwExitCode:DWORD		; return code
+			      C 
+			      C FileTimeToSystemTime PROTO,		; convert FILETIME to SYSTEMTIME
+			      C 	lpFileTime:PTR FILETIME,
+			      C 	lpSystemTime:PTR SYSTEMTIME
+			      C 	
+			      C FileTimeToDosDateTime PROTO,		; converts a Win32 file time to MS-DOS date/time
+			      C 	lpFileTime:PTR FILETIME,
+			      C 	lpFatDate:PTR WORD,
+			      C 	lpFatTime:PTR WORD
+			      C 
+			      C FormatMessage PROTO,		; format a message
+			      C 	dwFlags:DWORD,		; formatting options
+			      C 	lpSource:DWORD,		; location of message definition
+			      C 	dwMsgID:DWORD,		; message identifier
+			      C 	dwLanguageID:DWORD,		; language identifier
+			      C 	lpBuffer:PTR BYTE,		; pointer to buffer receiving string
+			      C 	nSize:DWORD,		; buffer size
+			      C 	va_list:DWORD		; pointer to list of arguments
+			      C 	
+			      C FlushConsoleInputBuffer PROTO,		; flush the input buffer
+			      C 	hConsoleInput:HANDLE		; standard input handle
+			      C 
+			      C GetCommandLine PROTO		; returns pointer to command-line string
+			      C 
+			      C GetConsoleCP PROTO		; returns code page ID in eax
+			      C 
+			      C GetConsoleCursorInfo PROTO,
+			      C 	hConsoleOutput:HANDLE,			; console output handle
+			      C 	lpConsoleCursorInfo:PTR CONSOLE_CURSOR_INFO	; cursor information
+			      C 
+			      C GetConsoleMode PROTO,
+			      C 	hConsoleHandle:HANDLE,		; input or output handle
+			      C 	lpMode:PTR DWORD		; pointer to dword containing flags
+			      C 
+			      C GetConsoleScreenBufferInfo PROTO,
+			      C 	hConsoleOutput:HANDLE,		; handle to screen buffer
+			      C 	lpConsoleScreenBufferInfo:PTR CONSOLE_SCREEN_BUFFER_INFO
+			      C 
+			      C GetFileTime PROTO,		; get date/time stamp of a file
+			      C 	hFile:HANDLE,
+			      C 	pCreationTime:PTR FILETIME,
+			      C 	pLastAccessTime:PTR FILETIME,
+			      C 	pLastWriteTime:PTR FILETIME
+			      C 	
+			      C GetKeyState PROTO,		; get state of keyboard keys (see Ch11\keybd.asm) 
+			      C 	nVirtKey:DWORD
+			      C 
+			      C GetLastError PROTO		; get most recent error return value
+			      C 
+			      C GetLocalTime PROTO,		; system time, adjusted for local time zone
+			      C 	lpSystemTime:PTR SYSTEMTIME		; ptr to SYSTEMTIME object
+			      C 
+			      C GetNumberOfConsoleInputEvents PROTO,	; get number of unread records
+			      C 	hConsoleInput:HANDLE,		; input handle
+			      C 	lpCount:PTR DWORD		; pointer to counter
+			      C 
+			      C GetStdHandle PROTO,               	; get standard handle
+			      C 	nStdHandle:HANDLE  		; type of console handle
+			      C 
+			      C GetSystemTime PROTO,		; returns the system time
+			      C 	lpSystemTime:PTR SYSTEMTIME		; ptr to SYSTEMTIME object
+			      C 
+			      C GetTickCount PROTO		; get elapsed milliseconds
+			      C 				; since computer was turned on
+			      C 
+			      C GetProcessHeap PROTO   		; Get the current process heap handle
+			      C 
+			      C HeapAlloc PROTO,
+			      C 	hHeap:HANDLE,		; handle to private heap block
+			      C 	dwFlags:DWORD,		; heap allocation control flags
+			      C 	dwBytes:DWORD		; number of bytes to allocate
+			      C 
+			      C HeapCreate PROTO,
+			      C 	flOptions:DWORD,		; heap allocation options
+			      C 	dwInitialSize:DWORD,		; initial heap size, in bytes
+			      C 	dwMaximumSize:DWORD		; maximum heap size, in bytes
+			      C 
+			      C HeapDestroy PROTO,
+			      C 	hHeap:HANDLE		; heap handle
+			      C 
+			      C HeapFree PROTO,
+			      C 	hHeap:HANDLE,		; handle to heap with memory block
+			      C 	dwFlags:DWORD,		; heap free options
+			      C 	lpMem:DWORD		; pointer to block to be freed
+			      C 
+			      C HeapSize PROTO,
+			      C 	hHeap:HANDLE,		; handle to heap
+			      C 	dwFlags:DWORD,		; heap size options
+			      C 	pMem:DWORD		; pointer to memory block
+			      C 
+			      C LocalFree PROTO,		; free up local memory, using its handle
+			      C 	hMem:HANDLE
+			      C 	
+			      C MessageBoxA PROTO,		; displays a pop-up message box
+			      C 	hWnd:DWORD,		; handle to window (can be null)
+			      C 	lpText:PTR BYTE,		; string for inside of dialog box
+			      C 	lpCaption:PTR BYTE,		; string for dialog box title
+			      C 	uType:DWORD		; contents and behavior of the dialog
+			      C 
+			      C PeekConsoleInput PROTO,
+			      C 	hConsoleInput:HANDLE,		; input handle
+			      C 	lpBuffer:PTR BYTE,		; pointer to buffer
+			      C 	nLength:DWORD,    		; number of chars to read
+			      C 	lpNumberOfEventsRead:PTR DWORD  	; ptr to number of events read
+			      C 	
+			      C printf PROTO C,		; Std C library function
+			      C 	format:PTR BYTE, args:VARARG		; (in libc.lib)
+			      C 
+			      C ReadConsole PROTO,
+			      C 	hConsoleInput:HANDLE,              ; input handle
+			      C 	lpBuffer:PTR BYTE,                	; pointer to buffer
+			      C 	nNumberOfBytesToRead:DWORD,    	; number of chars to read
+			      C 	lpNumberOfCharsRead:PTR DWORD,  	; ptr to number of bytes read
+			      C 	lpReserved:DWORD               	; (not used)
+			      C 
+			      C ReadConsoleInput PROTO,
+			      C 	hConsoleInput:HANDLE,		; input handle
+			      C 	lpBuffer:PTR INPUT_RECORD,		; ptr to input record
+			      C 	nLength:DWORD,		; request number of recs
+			      C 	lpNumberOfEventsRead:PTR DWORD	; ptr to number of bytes read
+			      C 
+			      C ReadFile PROTO,		; read buffer from input file
+			      C 	hFile:HANDLE,		; input handle
+			      C 	lpBuffer:PTR BYTE,		; ptr to buffer
+			      C 	nNumberOfBytesToRead:DWORD,		; num bytes to read
+			      C 	lpNumberOfBytesRead:PTR DWORD,	; bytes actually read
+			      C 	lpOverlapped:PTR DWORD		; ptr to asynchronous info
+			      C 
+			      C scanf PROTO C,		; Std C library function
+			      C 	format:PTR BYTE, args:VARARG		; (in libc.lib)
+			      C 
+			      C SetConsoleCursorInfo PROTO,
+			      C 	hConsoleOutput:HANDLE,		 ; output handle
+			      C 	lpConsoleCursorInfo:PTR CONSOLE_CURSOR_INFO	; cursor information
+			      C 
+			      C SetConsoleCursorPosition PROTO,
+			      C 	hConsoleOutput:HANDLE,		; output handle
+			      C 	dwCursorPosition:COORD		; screen X,Y coordinates
+			      C 
+			      C SetConsoleMode PROTO,
+			      C 	hConsoleHandle:HANDLE,		; output handle
+			      C 	dwMode:DWORD		; console mode flags
+			      C 
+			      C SetConsoleScreenBufferSize PROTO,
+			      C 	hConsoleOutput:HANDLE,		; handle to screen buffer
+			      C 	dwSize:COORD		; new screen buffer size
+			      C 
+			      C SetConsoleTextAttribute PROTO,
+			      C 	hConsoleOutput:HANDLE,		; output handle
+			      C 	wAttributes:WORD		; color attribute (fixed 6/20/05)
+			      C 
+			      C SetConsoleTitle PROTO,		; set console window title
+			      C 	lpConsoleTitle:PTR BYTE		; points to string
+			      C 
+			      C SetConsoleWindowInfo PROTO,		; set position of console window
+			      C 	hConsoleOutput:HANDLE,		; screen buffer handle
+			      C 	bAbsolute:DWORD,		; coordinate type
+			      C 	lpConsoleWindow:PTR SMALL_RECT	; ptr to window rectangle
+			      C 
+			      C SetFilePointer PROTO,		; set the file pointer position
+			      C 	hFile:HANDLE,		; file handle
+			      C 	lDistanceToMove:SDWORD,		; bytes to move pointer
+			      C 	lpDistanceToMoveHigh:PTR SDWORD,	; ptr to bytes to move, high
+			      C 	dwMoveMethod:DWORD		; starting point
+			      C 
+			      C SetLocalTime PROTO,		; set the system's local date and time
+			      C 	lpSystemTime:PTR SYSTEMTIME		; ptr to SYSTEMTIME structure
+			      C 
+			      C Sleep PROTO,	   	; sleeep for n milliseconds
+			      C 	dwMilliseconds:DWORD
+			      C 
+			      C SystemTimeToFileTime PROTO,		; Convert a SYSTEMTIME structure
+			      C 	lpSystemTime:PTR SYSTEMTIME,		; to a FILETIME structure
+			      C 	lpFileTime:PTR FILETIME
+			      C 
+			      C WriteConsole PROTO,		; write a buffer to the console
+			      C 	hConsoleOutput:HANDLE,		; output handle
+			      C 	lpBuffer:PTR BYTE,		; pointer to buffer
+			      C 	nNumberOfCharsToWrite:DWORD,		; size of buffer
+			      C 	lpNumberOfCharsWritten:PTR DWORD,		; ptr to number of bytes written
+			      C 	lpReserved:DWORD		; (not used)
+			      C 
+			      C WriteConsoleOutputCharacter PROTO,
+			      C 	hConsoleOutput:HANDLE,		; console output handle
+			      C 	lpCharacter:PTR BYTE,		; pointer to buffer
+			      C 	nLength:DWORD,		; size of buffer
+			      C 	dwWriteCoord:COORD,		; first cell coordinates
+			      C 	lpNumberOfCharsWritten:PTR DWORD	; output count
+			      C 
+			      C WriteConsoleOutputAttribute PROTO,
+			      C 	hConsoleOutput:HANDLE,		; output handle
+			      C 	lpAttribute:PTR WORD,		; write attributes
+			      C 	nLength:DWORD,		; number of cells
+			      C 	dwWriteCoord:COORD,		; first cell coordinates
+			      C 	lpNumberOfAttrsWritten:PTR DWORD	; number of cells written
+			      C 
+			      C WriteFile PROTO,		; write buffer to output file
+			      C 	hFile:HANDLE,		; output handle
+			      C 	lpBuffer:PTR BYTE,		; pointer to buffer
+			      C 	nNumberOfBytesToWrite:DWORD,		; size of buffer
+			      C 	lpNumberOfBytesWritten:PTR DWORD,	; num bytes written
+			      C 	lpOverlapped:PTR DWORD		; ptr to asynchronous info
+			      C 
+			      C wsprintf PROTO NEAR C,
+			      C 	lpOut:PTR BYTE,		; output buffer
+			      C 	lpFmt:PTR BYTE,		; format-control string
+			      C 	vars :VARARG		; optional arguments
+			      C 
+			      C .LIST
+			      C 
+			      C INCLUDE VirtualKeys.inc
+			      C ; VirtualKeys.inc
+			      C .NOLIST
+			      C ; updated 4/5/03
+			      C 
+			      C ;  Standard MS-Windows Virtual Key definitions
+			      C 
+ = 00000001		      C VK_LBUTTON      = 01H
+ = 00000002		      C VK_RBUTTON      = 02H
+ = 00000003		      C VK_CANCEL       = 03H
+ = 00000008		      C VK_BACK         = 08H
+ = 00000009		      C VK_TAB          = 09H
+ = 0000000C		      C VK_CLEAR        = 0cH
+ = 0000000D		      C VK_RETURN       = 0dH
+ = 00000010		      C VK_SHIFT        = 10H
+ = 00000011		      C VK_CONTROL      = 11H
+ = 00000012		      C VK_MENU         = 12H
+ = 00000013		      C VK_PAUSE        = 13H
+ = 00000014		      C VK_CAPITAL      = 14H
+ = 0000001B		      C VK_ESCAPE       = 1bH
+ = 00000020		      C VK_SPACE        = 20H
+			      C 
+ = 00000021		      C VK_PRIOR        = 21H
+ = 00000022		      C VK_NEXT         = 22H
+ = 00000023		      C VK_END          = 23H
+ = 00000024		      C VK_HOME         = 24H
+ = 00000025		      C VK_LEFT         = 25H
+ = 00000026		      C VK_UP           = 26H
+ = 00000027		      C VK_RIGHT        = 27H
+ = 00000028		      C VK_DOWN         = 28H
+			      C 
+			      C ;  VK_A thru VK_Z are the same as their ASCII equivalents: 'A' thru 'Z'
+			      C ;  VK_0 thru VK_9 are the same as their ASCII equivalents: '0' thru '0'
+			      C 
+ = 0000002A		      C VK_PRINT        = 2aH
+ = 0000002B		      C VK_EXECUTE      = 2bH
+ = 0000002C		      C VK_SNAPSHOT     = 2ch   ; Printscreen key..
+ = 0000002D		      C VK_INSERT       = 2dH
+ = 0000002E		      C VK_DELETE       = 2eH
+ = 0000002F		      C VK_HELP         = 2fH
+			      C 
+ = 00000060		      C VK_NUMPAD0      = 60H
+ = 00000061		      C VK_NUMPAD1      = 61H
+ = 00000062		      C VK_NUMPAD2      = 62H
+ = 00000063		      C VK_NUMPAD3      = 63H
+ = 00000064		      C VK_NUMPAD4      = 64H
+ = 00000065		      C VK_NUMPAD5      = 65H
+ = 00000066		      C VK_NUMPAD6      = 66H
+ = 00000067		      C VK_NUMPAD7      = 67H
+ = 00000068		      C VK_NUMPAD8      = 68H
+ = 00000069		      C VK_NUMPAD9      = 69H
+ = 0000006A		      C VK_MULTIPLY     = 6AH
+ = 0000006B		      C VK_ADD          = 6BH
+ = 0000006C		      C VK_SEPARATER    = 6CH
+ = 0000006D		      C VK_SUBTRACT     = 6DH
+ = 0000006E		      C VK_DECIMAL      = 6EH
+ = 0000006F		      C VK_DIVIDE       = 6FH
+			      C 
+ = 00000070		      C VK_F1           = 70H
+ = 00000071		      C VK_F2           = 71H
+ = 00000072		      C VK_F3           = 72H
+ = 00000073		      C VK_F4           = 73H
+ = 00000074		      C VK_F5           = 74H
+ = 00000075		      C VK_F6           = 75H
+ = 00000076		      C VK_F7           = 76H
+ = 00000077		      C VK_F8           = 77H
+ = 00000078		      C VK_F9           = 78H
+ = 00000079		      C VK_F10          = 79H
+ = 0000007A		      C VK_F11          = 7aH
+ = 0000007B		      C VK_F12          = 7bH
+ = 0000007C		      C VK_F13          = 7cH
+ = 0000007D		      C VK_F14          = 7dH
+ = 0000007E		      C VK_F15          = 7eH
+ = 0000007F		      C VK_F16          = 7fH
+ = 00000080		      C VK_F17          = 80H
+ = 00000081		      C VK_F18          = 81H
+ = 00000082		      C VK_F19          = 82H
+ = 00000083		      C VK_F20          = 83H
+ = 00000084		      C VK_F21          = 84H
+ = 00000085		      C VK_F22          = 85H
+ = 00000086		      C VK_F23          = 86H
+ = 00000087		      C VK_F24          = 87H
+			      C 
+			      C 
+ = 00000090		      C VK_NUMLOCK      = 90H
+ = 00000091		      C VK_SCROLL       = 91H
+			      C 
+			      C ; Not found in Windows header file:
+			      C 
+ = 000000BD		      C VK_11 = 0BDh 	; - key (on horizontal numbers row)
+ = 000000BB		      C VK_12 = 0BBh 	; + key (on horizontal numbers row)
+			      C .LIST
+			      C 
+			      C 
+			      C .NOLIST
+			      C ; Last update: 7/29/05
+			      C 
+			      C ;----------------------------------------
+			      C ; Procedure Prototypes
+			      C ;----------------------------------------
+			      C CloseFile PROTO		; close a file handle
+			      C Clrscr PROTO		; clear the screen
+			      C CreateOutputFile PROTO		; create file for writing
+			      C Crlf PROTO		; output carriage-return / linefeed
+			      C Delay PROTO		; delay for n milliseconds
+			      C DumpMem PROTO		; display memory dump
+			      C DumpRegs PROTO		; display register dump
+			      C GetCommandTail PROTO		; get command-line string
+			      C GetDateTime PROTO,		; get system date and time
+			      C   startTime:PTR QWORD
+			      C GetMaxXY PROTO		; get console rows and columns
+			      C GetMseconds PROTO		; get milliseconds past midnight
+			      C GetTextColor PROTO		; Get the console window's color attributes. 
+			      C Gotoxy PROTO		; set the cursor position
+			      C IsDigit PROTO		; return ZF=1 if AL is a decimal digit
+			      C MsgBox PROTO		; display popup message box
+			      C MsgBoxAsk PROTO		; display popup yes/no question box
+			      C OpenInputFile PROTO		; open file in input mode
+			      C ParseDecimal32 PROTO		; convert unsigned decimal string to 32-bit binary
+			      C ParseInteger32 PROTO		; convert signed decimal string to 32-bit binary
+			      C Randomize PROTO		; reseed random number generator
+			      C RandomRange PROTO		; generate random integer in specified range
+			      C Random32 PROTO		; generate 32-bit random integer
+			      C ReadInt PROTO		; read signed decimal integer from console
+			      C ReadChar PROTO		; reach single character from console
+			      C ReadDec PROTO		; read unsigned decimal integer from console
+			      C ReadFloat PROTO		; read floating-point value from keyboard
+			      C ReadFromFile PROTO   		; read buffer from input file
+			      C ReadHex PROTO		; read hexadecimal integer from console
+			      C ReadKey PROTO		; Reads keyboard input if available (4/6/03)
+			      C ReadKeyFlush PROTO		; Flush ReadKey buffer and repeat counter (4/6/03)
+			      C ReadString PROTO		; read string from console
+			      C SetTextColor PROTO		; set console text color
+			      C ShowFPUStack PROTO		; write floating-point stack to console window
+			      C StrLength PROTO		; returns the length of a string
+			      C WaitMsg PROTO		; display wait message, wait for Enter key
+			      C WriteBin PROTO		; write integer to output in binary format
+			      C WriteBinB PROTO		; write binary integer in byte, word,or doubleword format
+			      C WriteChar PROTO		; write single character to output
+			      C WriteDec PROTO		; write unsigned decimal integer to output
+			      C WriteFloat PROTO		; write ST(0) to console in floating-point format
+			      C WriteHex PROTO		; write hexadecimal integer to output
+			      C WriteHexB PROTO		; write hexadecimal integer in word or doubleword format
+			      C WriteInt PROTO		; write signed integer to output
+			      C ;WriteStackFrame		; write stack frame data (James Brink--see proto later in this file)
+			      C ;WriteStackFrameName		; write stack frame data with proc name (James Brink)
+			      C WriteString PROTO		; write null-terminated string to output
+			      C WriteToFile PROTO		; write a buffer to an output file
+			      C WriteWindowsMsg PROTO		; write last error message generated by MS-Windows
+			      C 
+			      C 
+			      C ; Copy a source string to a target string.
+			      C Str_copy PROTO,
+			      C  	source:PTR BYTE,
+			      C  	target:PTR BYTE
+			      C 
+			      C ; Return the length of a null-terminated string..
+			      C Str_length PROTO,
+			      C 	pString:PTR BYTE
+			      C 
+			      C ; Compare string1 to string2. Set the Zero and
+			      C ; Carry flags in the same way as the CMP instruction.
+			      C Str_compare PROTO,
+			      C 	string1:PTR BYTE,
+			      C 	string2:PTR BYTE
+			      C 
+			      C ; Trim a given trailing character from a string.
+			      C ; The second argument is the character to trim.
+			      C Str_trim PROTO,
+			      C 	pString:PTR BYTE,
+			      C 	char:BYTE
+			      C 
+			      C ; Convert a null-terminated string to upper case.
+			      C Str_ucase PROTO,
+			      C 	pString:PTR BYTE
+			      C 
+			      C ;******** Procedures by James Brink ********************************
+			      C ; Used by permission.
+			      C 
+			      C WriteStackFrameName PROTO,
+			      C            numParam:DWORD,     ; number of parameters passed to the procedure
+			      C            numLocalVal: DWORD, ; number of DWordLocal variables
+			      C            numSavedReg: DWORD, ; number of saved registers
+			      C            procName: PTR BYTE
+			      C 
+			      C WriteStackFrame PROTO,
+			      C            numParam:DWORD,     ; number of parameters passed to the procedure
+			      C            numLocalVal: DWORD, ; number of DWordLocal variables
+			      C            numSavedReg: DWORD  ; number of saved registers
+			      C 
+			      C 
+			      C ;-----------------------------------
+			      C ; Standard 4-bit color definitions
+			      C ;-----------------------------------
+ = 00000000		      C black        = 0000b
+ = 00000001		      C blue         = 0001b
+ = 00000002		      C green        = 0010b
+ = 00000003		      C cyan         = 0011b
+ = 00000004		      C red          = 0100b
+ = 00000005		      C magenta      = 0101b
+ = 00000006		      C brown        = 0110b
+ = 00000007		      C lightGray    = 0111b
+ = 00000008		      C gray         = 1000b
+ = 00000009		      C lightBlue    = 1001b
+ = 0000000A		      C lightGreen   = 1010b
+ = 0000000B		      C lightCyan    = 1011b
+ = 0000000C		      C lightRed     = 1100b
+ = 0000000D		      C lightMagenta = 1101b
+ = 0000000E		      C yellow       = 1110b
+ = 0000000F		      C white        = 1111b
+			      C 
+			      C ; This structure is returned by the FSTSW
+			      C ; instruction in protected mode:
+			      C 
+ 0000001C		      C FPU_ENVIRON STRUCT
+ 00000000  0000		      C 	controlWord    WORD ?
+			      C 	ALIGN DWORD
+ 00000004  0000		      C 	statusWord     WORD ?
+			      C 	ALIGN DWORD
+ 00000008  0000		      C 	tagWord        WORD ?
+			      C 	ALIGN DWORD
+ 0000000C  00000000	      C 	instrPointerOffset     DWORD ?
+ 00000010  00000000	      C 	instrPointerSelector   DWORD ?
+ 00000014  00000000	      C 	operandPointerOffset   DWORD ?
+ 00000018  0000		      C 	operandPointerSelector WORD ?
+ 0000001A  0000		      C 	WORD ?	; not used
+			      C FPU_ENVIRON ENDS
+			      C 
+			      C .LIST
+			      C 
+				INCLUDE GraphWin.inc
+			      C .NOLIST
+			      C ; GraphWin.inc - Include file for Graphics Windows Application
+			      C ; By Kip Irvine and Tom Joyce.
+			      C ; Most of the definitions found here are from three header files:
+			      C ; WinUser.h, WinBase.h, and Winnt.h
+			      C 
+			      C ; Last update: 6/10/2005
+			      C 
+			      C ;------------------ Structures ----------------
+			      C 
+ 00000008		      C POINT STRUCT
+ 00000000  00000000	      C   X   DWORD ?
+ 00000004  00000000	      C   Y   DWORD ?
+			      C POINT ENDS
+			      C 
+ 00000010		      C RECT STRUCT
+ 00000000  00000000	      C   left      DWORD ?
+ 00000004  00000000	      C   top       DWORD ?
+ 00000008  00000000	      C   right     DWORD ?
+ 0000000C  00000000	      C   bottom    DWORD ?
+			      C RECT ENDS
+			      C 
+ 0000001C		      C MSGStruct STRUCT
+ 00000000  00000000	      C   msgWnd        DWORD ?
+ 00000004  00000000	      C   msgMessage    DWORD ?
+ 00000008  00000000	      C   msgWparam     DWORD ?
+ 0000000C  00000000	      C   msgLparam     DWORD ?
+ 00000010  00000000	      C   msgTime       DWORD ?
+ 00000014  00000000	      C   msgPt         POINT <>
+	   00000000
+			      C MSGStruct ENDS
+			      C 
+ 00000028		      C WNDCLASS STRUC
+ 00000000  00000000	      C   style           DWORD ?
+ 00000004  00000000	      C   lpfnWndProc     DWORD ?
+ 00000008  00000000	      C   cbClsExtra      DWORD ?
+ 0000000C  00000000	      C   cbWndExtra      DWORD ?
+ 00000010  00000000	      C   hInstance       DWORD ?
+ 00000014  00000000	      C   hIcon           DWORD ?
+ 00000018  00000000	      C   hCursor         DWORD ?
+ 0000001C  00000000	      C   hbrBackground   DWORD ?
+ 00000020  00000000	      C   lpszMenuName    DWORD ?
+ 00000024  00000000	      C   lpszClassName   DWORD ?
+			      C WNDCLASS ENDS
+			      C 
+			      C ;-------------- Function Prototypes ------------------------
+			      C 
+			      C CreateWindowExA PROTO,	; create and register a window class
+			      C 	exWinStyle:DWORD,
+			      C 	className:PTR BYTE,
+			      C 	winName:PTR BYTE,
+			      C 	winStyle:DWORD,
+			      C 	X:DWORD,
+			      C 	Y:DWORD,
+			      C 	rWidth:DWORD,
+			      C 	rHeight:DWORD,
+			      C 	hWndParent:DWORD,
+			      C 	hMenu:DWORD,
+			      C 	hInstance:DWORD,
+			      C 	lpParam:DWORD
+			      C 
+			      C DefWindowProcA PROTO,	; default Windows message handler
+			      C 	hWnd:DWORD,
+			      C 	locMsg:DWORD,
+			      C 	wParam:DWORD,
+			      C 	lParam:DWORD
+			      C 
+			      C DispatchMessageA PROTO,	; dispatch a message to the application
+			      C 	pMsg:PTR BYTE
+			      C 
+			      C ExitProcess PROTO,	; exit the current process
+			      C 	exitCode:DWORD
+			      C 
+			      C GetMessageA PROTO,
+			      C 	lpMsg:PTR BYTE,
+			      C 	hWnd:DWORD,
+			      C 	firstMsg:DWORD,
+			      C 	lastMsg:DWORD
+			      C 
+			      C GetModuleHandleA PROTO,
+			      C 	pString:PTR BYTE
+			      C 
+			      C GetWindowDC PROTO,	; get the current window's device context
+			      C 	hWind:DWORD
+			      C 
+			      C GetWindowRect PROTO,	; get the current window's rectangle
+			      C 	hWind:DWORD,
+			      C 	pRect:PTR RECT
+			      C 
+			      C LoadCursorA PROTO,	; load a cursor resource
+			      C 	hInstance:DWORD,
+			      C 	pString:PTR BYTE
+			      C 
+			      C LoadIconA PROTO,	; loan an icon resource
+			      C 	hInstance:DWORD,
+			      C 	pString:PTR BYTE
+			      C 
+			      C PostQuitMessage PROTO,	; tell Windows to terminate the app
+			      C 	exitCode:DWORD
+			      C 
+			      C RegisterClassA PROTO,	; register a new window class
+			      C 	pWndClass:PTR WNDCLASS
+			      C 
+			      C ShowWindow PROTO,	; show a window
+			      C 	hWnd:DWORD,
+			      C 	showState:DWORD
+			      C 
+			      C UpdateWindow PROTO,	; draw(redraw) a window
+			      C 	hWnd:DWORD
+			      C 
+			      C Comment !
+			      C SelectObject PROTO,	; GDI32.LIB
+			      C 	hdc:DWORD
+			      C 	hGDIobject:DWORD
+			      C DeleteObject PROTO,	; GDI32.LIB
+			      C 	hGDIobject:DWORD
+			      C !
+			      C 
+			      C ; Redefine Win32 Names to standard API names.
+ = GetModuleHandleA	      C GetModuleHandle TEXTEQU <GetModuleHandleA>
+ = LoadCursorA		      C LoadCursor      TEXTEQU <LoadCursorA>
+ = LoadIconA		      C LoadIcon        TEXTEQU <LoadIconA>
+ = RegisterClassA	      C RegisterClass   TEXTEQU <RegisterClassA>
+ = CreateWindowExA	      C CreateWindowEx  TEXTEQU <CreateWindowExA>
+ = DispatchMessageA	      C DispatchMessage TEXTEQU <DispatchMessageA>
+ = GetMessageA		      C GetMessage      TEXTEQU <GetMessageA>
+ = DefWindowProcA	      C DefWindowProc   TEXTEQU <DefWindowProcA>
+ = FormatMessageA	      C FormatMessage   TEXTEQU <FormatMessageA>
+			      C 
+			      C ; RegisterClass Constants (from Winuser.h)
+ = 00000005		      C COLOR_WINDOW        = 5		; std window color
+ = 00000002		      C COLOR_BACKGROUND    = 2		; 2=blue F=gray
+ = 00007F00		      C IDI_APPLICATION     = 32512		; application icon
+ = 00007F00		      C IDC_ARROW           = 07f00h		; mouse cursor--arrow
+ = 80000000		      C CW_USEDEFAULT       = 80000000h		; default window size & position
+			      C 
+			      C ; Window Style Constants
+ = 00000000		      C WS_OVERLAPPED       =     00000000h
+ = 00800000		      C WS_BORDER           =     00800000h
+ = 00400000		      C WS_DLGFRAME         =     00400000h
+ = 00080000		      C WS_SYSMENU          =     00080000h
+ = 00010000		      C WS_MAXIMIZEBOX      =     00010000h
+ = 00020000		      C WS_MINIMIZEBOX      =     00020000h
+ = 00040000		      C WS_THICKFRAME       =     00040000h
+ = 00C00000		      C WS_CAPTION          =     WS_BORDER+WS_DLGFRAME
+ = 10000000		      C WS_VISIBLE          =     10000000h
+			      C 
+			      C ; Window show constants
+ = 00000005		      C SW_SHOW             =     05h
+			      C 
+			      C ; Window Messages
+ = 00000010		      C WM_CLOSE            =  0010h		; close window
+ = 00000001		      C WM_CREATE           =  01h		; create window
+ = 00000201		      C WM_LBUTTONDOWN      =  0201h		; left mouse button down
+			      C 
+			      C COMMENT @
+			      C MB_ICONERROR           =  010h	; stop sign icon
+			      C MB_ICONHAND            = 10h
+			      C MB_ICONQUESTION        = 20h
+			      C MB_ICONEXCLAMATION     = 30h
+			      C MB_ICONASTERISK        = 40h
+			      C 
+			      C MB_USERICON            = 80h
+			      C MB_ICONWARNING         = MB_ICONEXCLAMATION
+			      C MB_ICONERROR           = MB_ICONHAND
+			      C MB_ICONINFORMATION     = MB_ICONASTERISK
+			      C MB_ICONSTOP            = MB_ICONHAND
+			      C 
+			      C ; Message Box Buttons
+			      C MB_OK         = 0
+			      C MB_OKCANCEL   = 1
+			      C MB_ABORTRETRYIGNORE = 2
+			      C MB_YESNOCANCEL = 3
+			      C MB_YESNO       = 4
+			      C MB_RETRYCANCEL = 5
+			      C MB_CANCELTRYCONTINUE = 6
+			      C @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
+			      C 
+			      C ;Constants created by Irvine:
+ = 00000000		      C NULL EQU 0
+			      C 
+ = 118F0000		      C MAIN_WINDOW_STYLE = WS_VISIBLE+WS_DLGFRAME+WS_CAPTION+WS_BORDER+WS_SYSMENU \
+			      C 	+WS_MAXIMIZEBOX+WS_MINIMIZEBOX+WS_THICKFRAME
+			      C 
+			      C .LIST
+			      C 
+
+				;==================== DATA =======================
+ 00000000			.data
+
+				;FOR HEAP
+ = 000000FF			FILL_VAL EQU 0FFh
+ 00000000 00000000		hHeap   DWORD ?		; handle to the process heap
+
+
+
+
+
+ 00000004 41 70 70 6C 69	AppLoadMsgTitle BYTE "Application Loaded",0
+	   63 61 74 69 6F
+	   6E 20 4C 6F 61
+	   64 65 64 00
+ 00000017 54 68 69 73 20	AppLoadMsgText  BYTE "This window displays when the WM_CREATE "
+	   77 69 6E 64 6F
+	   77 20 64 69 73
+	   70 6C 61 79 73
+	   20 77 68 65 6E
+	   20 74 68 65 20
+	   57 4D 5F 43 52
+	   45 41 54 45 20
+ 0000003F  6D 65 73 73 61		            BYTE "message is received",0
+	   67 65 20 69 73
+	   20 72 65 63 65
+	   69 76 65 64 00
+
+ 00000053 50 6F 70 75 70	PopupTitle Byte "Popup Window",0
+	   20 57 69 6E 64
+	   6F 77 00
+ 00000060 54 68 69 73 20	PopupText byte "This window was activated by a BUTTON down message at x="
+	   77 69 6E 64 6F
+	   77 20 77 61 73
+	   20 61 63 74 69
+	   76 61 74 65 64
+	   20 62 79 20 61
+	   20 42 55 54 54
+	   4F 4E 20 64 6F
+	   77 6E 20 6D 65
+	   73 73 61 67 65
+	   20 61 74 20 78
+	   3D
+ 00000098  00000004 [		popupx BYTE 4 DUP(?)
+	    00
+	   ]
+ 0000009C  00			            BYTE 0 
+ 0000009D  57 4D 5F 4C 42		       BYTE "WM_LBUTTONDOWN message",0
+	   55 54 54 4F 4E
+	   44 4F 57 4E 20
+	   6D 65 73 73 61
+	   67 65 00
+ 000000B4 04			PopupTextSize BYTE 4 
+
+ 000000B5 00000055		ARRAY_SIZE DWORD ($-PopupText)
+ 000000B9  00000037 [		buffer dword 55 DUP (?)
+	    00000000
+	   ]
+
+ 00000195 4D 61 69 6E 20	GreetTitle BYTE "Main Window Active",0
+	   57 69 6E 64 6F
+	   77 20 41 63 74
+	   69 76 65 00
+ 000001A8 54 68 69 73 20	GreetText  BYTE "This window is shown immediately after "
+	   77 69 6E 64 6F
+	   77 20 69 73 20
+	   73 68 6F 77 6E
+	   20 69 6D 6D 65
+	   64 69 61 74 65
+	   6C 79 20 61 66
+	   74 65 72 20
+ 000001CF  43 72 65 61 74		       BYTE "CreateWindow and UpdateWindow are called.",0
+	   65 57 69 6E 64
+	   6F 77 20 61 6E
+	   64 20 55 70 64
+	   61 74 65 57 69
+	   6E 64 6F 77 20
+	   61 72 65 20 63
+	   61 6C 6C 65 64
+	   2E 00
+
+ 000001F9 57 4D 5F 43 4C	CloseMsg   BYTE "WM_CLOSE message received",0
+	   4F 53 45 20 6D
+	   65 73 73 61 67
+	   65 20 72 65 63
+	   65 69 76 65 64
+	   00
+
+ 00000213 45 72 72 6F 72	ErrorTitle  BYTE "Error",0
+	   00
+ 00000219 41 53 4D 20 57	WindowName  BYTE "ASM Windows App",0
+	   69 6E 64 6F 77
+	   73 20 41 70 70
+	   00
+ 00000229 41 53 4D 57 69	className   BYTE "ASMWin",0
+	   6E 00
+
+				; Define the Application's Window class structure.
+ 00000230 00000000		MainWin WNDCLASS <NULL,WinProc,NULL,NULL,NULL,NULL,NULL, \
+	   000000E9 R
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000005
+	   00000000
+	   00000229 R
+					COLOR_WINDOW,NULL,className>
+
+ 00000258 00000000		msg	      MSGStruct <>
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+ 00000274 00000000		winRect   RECT <>
+	   00000000
+	   00000000
+	   00000000
+ 00000284 00000000		hMainWnd  DWORD ?
+ 00000288 00000000		hInstance DWORD ?
+
+				;=================== CODE =========================
+ 00000000			.code
+ 00000000			WinMain PROC
+
+
+
+				; Get a handle to the current process.
+					INVOKE GetModuleHandle, NULL
+ 00000000  6A 00	   *	    push   +000000000h
+ 00000002  E8 00000000 E   *	    call   GetModuleHandleA
+ 00000007  A3 00000288 R		mov hInstance, eax
+ 0000000C  A3 00000240 R		mov MainWin.hInstance, eax
+
+				; Load the program's icon and cursor.
+					INVOKE LoadIcon, NULL, IDI_APPLICATION
+ 00000011  68 00007F00	   *	    push   +000007F00h
+ 00000016  6A 00	   *	    push   +000000000h
+ 00000018  E8 00000000 E   *	    call   LoadIconA
+ 0000001D  A3 00000244 R		mov MainWin.hIcon, eax
+					INVOKE LoadCursor, NULL, IDC_ARROW
+ 00000022  68 00007F00	   *	    push   +000007F00h
+ 00000027  6A 00	   *	    push   +000000000h
+ 00000029  E8 00000000 E   *	    call   LoadCursorA
+ 0000002E  A3 00000248 R		mov MainWin.hCursor, eax
+
+				; Register the window class.
+					INVOKE RegisterClass, ADDR MainWin
+ 00000033  68 00000230 R   *	    push   OFFSET MainWin
+ 00000038  E8 00000000 E   *	    call   RegisterClassA
+					.IF eax == 0
+ 0000003D  0B C0	   *	    or	eax, eax
+ 0000003F  75 0A	   *	    jne    @C0001
+ 00000041  E8 000001C7			  call ErrorHandler
+ 00000046  E9 00000097			  jmp Exit_Program
+					.ENDIF
+ 0000004B		   *@C0001:
+
+				; Create the application's main window.
+				; Returns a handle to the main window in EAX.
+					INVOKE CreateWindowEx, 0, ADDR className,
+					  ADDR WindowName,MAIN_WINDOW_STYLE,
+					  CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT,
+					  CW_USEDEFAULT,NULL,NULL,hInstance,NULL
+ 0000004B  6A 00	   *	    push   +000000000h
+ 0000004D  FF 35 00000288 R *	    push   hInstance
+ 00000053  6A 00	   *	    push   +000000000h
+ 00000055  6A 00	   *	    push   +000000000h
+ 00000057  68 80000000	   *	    push   +080000000h
+ 0000005C  68 80000000	   *	    push   +080000000h
+ 00000061  68 80000000	   *	    push   +080000000h
+ 00000066  68 80000000	   *	    push   +080000000h
+ 0000006B  68 118F0000	   *	    push   +0118F0000h
+ 00000070  68 00000219 R   *	    push   OFFSET WindowName
+ 00000075  68 00000229 R   *	    push   OFFSET className
+ 0000007A  6A 00	   *	    push   +000000000h
+ 0000007C  E8 00000000 E   *	    call   CreateWindowExA
+ 00000081  A3 00000284 R		mov hMainWnd,eax
+
+				; If CreateWindowEx failed, display a message & exit.
+					.IF eax == 0
+ 00000086  0B C0	   *	    or	eax, eax
+ 00000088  75 07	   *	    jne    @C0003
+ 0000008A  E8 0000017E			  call ErrorHandler
+ 0000008F  EB 51			  jmp  Exit_Program
+					.ENDIF
+ 00000091		   *@C0003:
+
+				; Show and draw the window.
+					INVOKE ShowWindow, hMainWnd, SW_SHOW
+ 00000091  6A 05	   *	    push   +000000005h
+ 00000093  FF 35 00000284 R *	    push   hMainWnd
+ 00000099  E8 00000000 E   *	    call   ShowWindow
+					INVOKE UpdateWindow, hMainWnd
+ 0000009E  FF 35 00000284 R *	    push   hMainWnd
+ 000000A4  E8 00000000 E   *	    call   UpdateWindow
+
+				; Display a greeting message.
+					INVOKE MessageBox, hMainWnd, ADDR GreetText,
+					  ADDR GreetTitle, MB_OK
+ 000000A9  6A 00	   *	    push   +000000000h
+ 000000AB  68 00000195 R   *	    push   OFFSET GreetTitle
+ 000000B0  68 000001A8 R   *	    push   OFFSET GreetText
+ 000000B5  FF 35 00000284 R *	    push   hMainWnd
+ 000000BB  E8 00000000 E   *	    call   MessageBoxA
+
+				; Begin the program's message-handling loop.
+ 000000C0			Message_Loop:
+					; Get next message from the queue.
+					INVOKE GetMessage, ADDR msg, NULL,NULL,NULL
+ 000000C0  6A 00	   *	    push   +000000000h
+ 000000C2  6A 00	   *	    push   +000000000h
+ 000000C4  6A 00	   *	    push   +000000000h
+ 000000C6  68 00000258 R   *	    push   OFFSET msg
+ 000000CB  E8 00000000 E   *	    call   GetMessageA
+
+					; Quit if no more messages.
+					.IF eax == 0
+ 000000D0  0B C0	   *	    or	eax, eax
+ 000000D2  75 02	   *	    jne    @C0005
+ 000000D4  EB 0C			  jmp Exit_Program
+					.ENDIF
+ 000000D6		   *@C0005:
+
+					; Relay the message to the program's WinProc.
+					INVOKE DispatchMessage, ADDR msg
+ 000000D6  68 00000258 R   *	    push   OFFSET msg
+ 000000DB  E8 00000000 E   *	    call   DispatchMessageA
+ 000000E0  EB DE		    jmp Message_Loop
+
+ 000000E2			Exit_Program:
+					  INVOKE ExitProcess,0
+ 000000E2  6A 00	   *	    push   +000000000h
+ 000000E4  E8 00000000 E   *	    call   ExitProcess
+ 000000E9			WinMain ENDP
+
+ 000000E9			WinProc PROC,
+					hWnd:DWORD, localMsg:DWORD, wParam:DWORD, lParam:DWORD
+				; The application's message handler, which handles
+				; application-specific messages. All other messages
+				; are forwarded to the default Windows message
+				; handler.
+				;-----------------------------------------------------
+
+
+ 000000E9  55		   *	    push   ebp
+ 000000EA  8B EC	   *	    mov    ebp, esp
+ 000000EC  66| BA 0000		mov DX, 0
+ 000000F0  66| BB 000A				mov BX, 10
+ 000000F4  66| 8B 45 14				mov AX, WORD PTR lparam
+ 000000F8  66| F7 F3				div BX
+ 000000FB  66| 83 F2 30				xor DX, 30h
+ 000000FF  88 15 0000009B R			mov popupx + 3, DL
+ 00000105  66| BA 0000				mov DX, 0
+ 00000109  66| F7 F3				div BX
+ 0000010C  66| 83 F2 30				xor DX, 30h
+ 00000110  88 15 0000009A R			mov popupx + 2, DL
+ 00000116  66| BA 0000				mov DX, 0
+ 0000011A  66| F7 F3				div BX
+ 0000011D  66| 83 F2 30				xor DX, 30h
+ 00000121  88 15 00000099 R			mov popupx + 1, DL
+ 00000127  66| BA 0000				mov DX, 0
+ 0000012B  66| F7 F3				div BX
+ 0000012E  66| 83 F2 30				xor DX, 30h
+ 00000132  88 15 00000098 R			mov popupx + 0, DL
+ 00000138  8B 45 0C			mov eax, localMsg
+
+					.IF eax == WM_LBUTTONDOWN		; mouse button?
+ 0000013B  3D 00000201	   *	    cmp    eax, WM_LBUTTONDOWN
+ 00000140  75 73	   *	    jne    @C0007
+						
+						INVOKE GetProcessHeap		; get handle to prog's heap
+ 00000142  E8 00000000 E   *	    call   GetProcessHeap
+						.IF eax == NULL			; failed?
+ 00000147  0B C0	   *	    or	eax, eax
+ 00000149  75 0C	   *	    jne    @C0009
+ 0000014B  E8 00000000 E				call	WriteWindowsMsg
+ 00000150  E9 000000B4					jmp	WinProcExit
+						.ELSE
+ 00000155  EB 05	   *	    jmp    @C000B
+ 00000157		   *@C0009:
+ 00000157  A3 00000000 R				mov	hHeap,eax		; success
+						.ENDIF
+
+ 0000015C		   *@C000B:
+ 0000015C  E8 000000F3				call	allocate_array
+ 00000161  73 0F			jnc	arrayOk		; failed (CF = 1)?
+ 00000163  E8 00000000 E		call	WriteWindowsMsg
+ 00000168  E8 00000000 E		call	Crlf
+ 0000016D  E9 00000097			jmp	WinProcExit
+
+ 00000172			arrayOk:				; ok to fill the array
+ 00000172  E8 00000000 E		call	Crlf
+
+
+ 00000177  FC					cld
+ 00000178  BE 00000060 R			mov esi, OFFSET PopupText
+ 0000017D  BF 000000B9 R			mov edi, offset buffer
+ 00000182  8B 0D 000000B5 R			mov ecx, Array_Size
+ 00000188  F3/ A4				rep movsb
+						
+
+					  INVOKE MessageBox, hWnd, ADDR PopupText,
+					    ADDR PopupTitle, MB_OK
+ 0000018A  6A 00	   *	    push   +000000000h
+ 0000018C  68 00000053 R   *	    push   OFFSET PopupTitle
+ 00000191  68 00000060 R   *	    push   OFFSET PopupText
+ 00000196  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
+ 00000199  E8 00000000 E   *	    call   MessageBoxA
+
+							; free the array
+						INVOKE HeapFree, hHeap, 0, buffer
+ 0000019E  FF 35 000000B9 R *	    push   buffer
+ 000001A4  6A 00	   *	    push   +000000000h
+ 000001A6  FF 35 00000000 R *	    push   hHeap
+ 000001AC  E8 00000000 E   *	    call   HeapFree
+
+						
+ 000001B1  EB 56			  jmp WinProcExit
+
+					  
+
+
+					.ELSEIF eax == WM_CREATE		; create window?
+ 000001B3  EB 54	   *	    jmp    @C000C
+ 000001B5		   *@C0007:
+ 000001B5  83 F8 01	   *	    cmp    eax, WM_CREATE
+ 000001B8  75 18	   *	    jne    @C000D
+					  INVOKE MessageBox, hWnd, ADDR AppLoadMsgText,
+					    ADDR AppLoadMsgTitle, MB_OK
+ 000001BA  6A 00	   *	    push   +000000000h
+ 000001BC  68 00000004 R   *	    push   OFFSET AppLoadMsgTitle
+ 000001C1  68 00000017 R   *	    push   OFFSET AppLoadMsgText
+ 000001C6  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
+ 000001C9  E8 00000000 E   *	    call   MessageBoxA
+ 000001CE  EB 39			  jmp WinProcExit
+					.ELSEIF eax == WM_CLOSE		; close window?
+ 000001D0  EB 37	   *	    jmp    @C000F
+ 000001D2		   *@C000D:
+ 000001D2  83 F8 10	   *	    cmp    eax, WM_CLOSE
+ 000001D5  75 1F	   *	    jne    @C0010
+					  INVOKE MessageBox, hWnd, ADDR CloseMsg,
+					    ADDR WindowName, MB_OK
+ 000001D7  6A 00	   *	    push   +000000000h
+ 000001D9  68 00000219 R   *	    push   OFFSET WindowName
+ 000001DE  68 000001F9 R   *	    push   OFFSET CloseMsg
+ 000001E3  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
+ 000001E6  E8 00000000 E   *	    call   MessageBoxA
+					  INVOKE PostQuitMessage,0
+ 000001EB  6A 00	   *	    push   +000000000h
+ 000001ED  E8 00000000 E   *	    call   PostQuitMessage
+ 000001F2  EB 15			  jmp WinProcExit
+					.ELSE		; other message?
+ 000001F4  EB 13	   *	    jmp    @C0012
+ 000001F6		   *@C0010:
+					  INVOKE DefWindowProc, hWnd, localMsg, wParam, lParam
+ 000001F6  FF 75 14	   *	    push   dword  ptr ss:[ebp]+000000014h
+ 000001F9  FF 75 10	   *	    push   dword  ptr ss:[ebp]+000000010h
+ 000001FC  FF 75 0C	   *	    push   dword  ptr ss:[ebp]+00000000Ch
+ 000001FF  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
+ 00000202  E8 00000000 E   *	    call   DefWindowProcA
+ 00000207  EB 00			  jmp WinProcExit
+					.ENDIF
+ 00000209		   *@C0012:
+ 00000209		   *@C000F:
+ 00000209		   *@C000C:
+
+ 00000209			WinProcExit:
+					ret
+ 00000209  C9		   *	    leave  
+ 0000020A  C2 0010	   *	    ret    00010h
+ 0000020D			WinProc ENDP
+
+				;---------------------------------------------------
+ 0000020D			ErrorHandler PROC
+				; Display the appropriate system error message.
+				;---------------------------------------------------
+ 0000028C			.data
+ 0000028C 00000000		pErrorMsg  DWORD ?		; ptr to error message
+ 00000290 00000000		messageID  DWORD ?
+ 0000020D			.code
+					INVOKE GetLastError	; Returns message ID in EAX
+ 0000020D  E8 00000000 E   *	    call   GetLastError
+ 00000212  A3 00000290 R		mov messageID,eax
+
+					; Get the corresponding message string.
+					INVOKE FormatMessage, FORMAT_MESSAGE_ALLOCATE_BUFFER + \
+					  FORMAT_MESSAGE_FROM_SYSTEM,NULL,messageID,NULL,
+					  ADDR pErrorMsg,NULL,NULL
+ 00000217  6A 00	   *	    push   +000000000h
+ 00000219  6A 00	   *	    push   +000000000h
+ 0000021B  68 0000028C R   *	    push   OFFSET pErrorMsg
+ 00000220  6A 00	   *	    push   +000000000h
+ 00000222  FF 35 00000290 R *	    push   messageID
+ 00000228  6A 00	   *	    push   +000000000h
+ 0000022A  68 00001100	   *	    push   +000001100h
+ 0000022F  E8 00000000 E   *	    call   FormatMessageA
+
+					; Display the error message.
+					INVOKE MessageBox,NULL, pErrorMsg, ADDR ErrorTitle,
+					  MB_ICONERROR+MB_OK
+ 00000234  6A 10	   *	    push   +000000010h
+ 00000236  68 00000213 R   *	    push   OFFSET ErrorTitle
+ 0000023B  FF 35 0000028C R *	    push   pErrorMsg
+ 00000241  6A 00	   *	    push   +000000000h
+ 00000243  E8 00000000 E   *	    call   MessageBoxA
+
+					; Free the error message string.
+					INVOKE LocalFree, pErrorMsg
+ 00000248  FF 35 0000028C R *	    push   pErrorMsg
+ 0000024E  E8 00000000 E   *	    call   LocalFree
+ 00000253  C3				ret
+ 00000254			ErrorHandler ENDP
+
+ 00000254			allocate_array PROC USES eax
+				;
+				; Dynamically allocates space for the array.
+				; Receives: nothing
+				; Returns: CF = 0 if allocation succeeds.
+				;--------------------------------------------------------
+ 00000254  50		   *	    push   eax
+					INVOKE HeapAlloc, hHeap, HEAP_ZERO_MEMORY, ARRAY_SIZE
+ 00000255  FF 35 000000B5 R *	    push   ARRAY_SIZE
+ 0000025B  6A 08	   *	    push   +000000008h
+ 0000025D  FF 35 00000000 R *	    push   hHeap
+ 00000263  E8 00000000 E   *	    call   HeapAlloc
+					
+					.IF eax == NULL
+ 00000268  0B C0	   *	    or	eax, eax
+ 0000026A  75 03	   *	    jne    @C0013
+ 0000026C  F9				   stc				; return with CF = 1
+					.ELSE
+ 0000026D  EB 06	   *	    jmp    @C0015
+ 0000026F		   *@C0013:
+ 0000026F  A3 000000B9 R		   mov buffer, eax		; save the pointer
+ 00000274  F8				   clc				; return with CF = 0
+					.ENDIF
+ 00000275		   *@C0015:
+
+					ret
+ 00000275  58		   *	    pop    eax
+ 00000276  C3		   *	    ret    00000h
+ 00000277			allocate_array ENDP
+
+
+				END WinMain
+Microsoft (R) Macro Assembler Version 14.15.26732.1	    11/14/18 20:57:41
+somestuff.asm						     Symbols 2 - 1
+
+
+
+
+Structures and Unions:
+
+                N a m e                  Size
+                                         Offset      Type
+
+CONSOLE_CURSOR_INFO  . . . . . .	 00000008
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+  bVisible . . . . . . . . . . .	 00000004	 DWord
+CONSOLE_SCREEN_BUFFER_INFO . . .	 00000016
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+  dwCursorPosition . . . . . . .	 00000004	 DWord
+  wAttributes  . . . . . . . . .	 00000008	 Word
+  srWindow . . . . . . . . . . .	 0000000A	 QWord
+  dwMaximumWindowSize  . . . . .	 00000012	 DWord
+COORD  . . . . . . . . . . . . .	 00000004
+  X  . . . . . . . . . . . . . .	 00000000	 Word
+  Y  . . . . . . . . . . . . . .	 00000002	 Word
+FILETIME . . . . . . . . . . . .	 00000008
+  loDateTime . . . . . . . . . .	 00000000	 DWord
+  hiDateTime . . . . . . . . . .	 00000004	 DWord
+FOCUS_EVENT_RECORD . . . . . . .	 00000004
+  bSetFocus  . . . . . . . . . .	 00000000	 DWord
+FPU_ENVIRON  . . . . . . . . . .	 0000001C
+  controlWord  . . . . . . . . .	 00000000	 Word
+  statusWord . . . . . . . . . .	 00000004	 Word
+  tagWord  . . . . . . . . . . .	 00000008	 Word
+  instrPointerOffset . . . . . .	 0000000C	 DWord
+  instrPointerSelector . . . . .	 00000010	 DWord
+  operandPointerOffset . . . . .	 00000014	 DWord
+  operandPointerSelector . . . .	 00000018	 Word
+INPUT_RECORD . . . . . . . . . .	 00000014
+  EventType  . . . . . . . . . .	 00000000	 Word
+  Event  . . . . . . . . . . . .	 00000004	 XmmWord
+  bKeyDown . . . . . . . . . . .	 00000000	 DWord
+  wRepeatCount . . . . . . . . .	 00000004	 Word
+  wVirtualKeyCode  . . . . . . .	 00000006	 Word
+  wVirtualScanCode . . . . . . .	 00000008	 Word
+  uChar  . . . . . . . . . . . .	 0000000A	 Word
+  UnicodeChar  . . . . . . . . .	 00000000	 Word
+  AsciiChar  . . . . . . . . . .	 00000000	 Byte
+  dwControlKeyState  . . . . . .	 0000000C	 DWord
+  dwMousePosition  . . . . . . .	 00000000	 DWord
+  dwButtonState  . . . . . . . .	 00000004	 DWord
+  dwMouseControlKeyState . . . .	 00000008	 DWord
+  dwEventFlags . . . . . . . . .	 0000000C	 DWord
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+  dwCommandId  . . . . . . . . .	 00000000	 DWord
+  bSetFocus  . . . . . . . . . .	 00000000	 DWord
+KEY_EVENT_RECORD . . . . . . . .	 00000010
+  bKeyDown . . . . . . . . . . .	 00000000	 DWord
+  wRepeatCount . . . . . . . . .	 00000004	 Word
+  wVirtualKeyCode  . . . . . . .	 00000006	 Word
+  wVirtualScanCode . . . . . . .	 00000008	 Word
+  uChar  . . . . . . . . . . . .	 0000000A	 Word
+  UnicodeChar  . . . . . . . . .	 00000000	 Word
+  AsciiChar  . . . . . . . . . .	 00000000	 Byte
+  dwControlKeyState  . . . . . .	 0000000C	 DWord
+MENU_EVENT_RECORD  . . . . . . .	 00000004
+  dwCommandId  . . . . . . . . .	 00000000	 DWord
+MOUSE_EVENT_RECORD . . . . . . .	 00000010
+  dwMousePosition  . . . . . . .	 00000000	 DWord
+  dwButtonState  . . . . . . . .	 00000004	 DWord
+  dwMouseControlKeyState . . . .	 00000008	 DWord
+  dwEventFlags . . . . . . . . .	 0000000C	 DWord
+MSGStruct  . . . . . . . . . . .	 0000001C
+  msgWnd . . . . . . . . . . . .	 00000000	 DWord
+  msgMessage . . . . . . . . . .	 00000004	 DWord
+  msgWparam  . . . . . . . . . .	 00000008	 DWord
+  msgLparam  . . . . . . . . . .	 0000000C	 DWord
+  msgTime  . . . . . . . . . . .	 00000010	 DWord
+  msgPt  . . . . . . . . . . . .	 00000014	 QWord
+POINT  . . . . . . . . . . . . .	 00000008
+  X  . . . . . . . . . . . . . .	 00000000	 DWord
+  Y  . . . . . . . . . . . . . .	 00000004	 DWord
+RECT . . . . . . . . . . . . . .	 00000010
+  left . . . . . . . . . . . . .	 00000000	 DWord
+  top  . . . . . . . . . . . . .	 00000004	 DWord
+  right  . . . . . . . . . . . .	 00000008	 DWord
+  bottom . . . . . . . . . . . .	 0000000C	 DWord
+SMALL_RECT . . . . . . . . . . .	 00000008
+  Left . . . . . . . . . . . . .	 00000000	 Word
+  Top  . . . . . . . . . . . . .	 00000002	 Word
+  Right  . . . . . . . . . . . .	 00000004	 Word
+  Bottom . . . . . . . . . . . .	 00000006	 Word
+SYSTEMTIME . . . . . . . . . . .	 00000010
+  wYear  . . . . . . . . . . . .	 00000000	 Word
+  wMonth . . . . . . . . . . . .	 00000002	 Word
+  wDayOfWeek . . . . . . . . . .	 00000004	 Word
+  wDay . . . . . . . . . . . . .	 00000006	 Word
+  wHour  . . . . . . . . . . . .	 00000008	 Word
+  wMinute  . . . . . . . . . . .	 0000000A	 Word
+  wSecond  . . . . . . . . . . .	 0000000C	 Word
+  wMilliseconds  . . . . . . . .	 0000000E	 Word
+WINDOW_BUFFER_SIZE_RECORD  . . .	 00000004
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+WNDCLASS . . . . . . . . . . . .	 00000028
+  style  . . . . . . . . . . . .	 00000000	 DWord
+  lpfnWndProc  . . . . . . . . .	 00000004	 DWord
+  cbClsExtra . . . . . . . . . .	 00000008	 DWord
+  cbWndExtra . . . . . . . . . .	 0000000C	 DWord
+  hInstance  . . . . . . . . . .	 00000010	 DWord
+  hIcon  . . . . . . . . . . . .	 00000014	 DWord
+  hCursor  . . . . . . . . . . .	 00000018	 DWord
+  hbrBackground  . . . . . . . .	 0000001C	 DWord
+  lpszMenuName . . . . . . . . .	 00000020	 DWord
+  lpszClassName  . . . . . . . .	 00000024	 DWord
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000294 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000277 Para	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+CloseFile  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+CloseHandle  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Clrscr . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+CreateFileA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+CreateOutputFile . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+CreateWindowExA  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Crlf . . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DefWindowProcA . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Delay  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DispatchMessageA . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DumpMem  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DumpRegs . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ErrorHandler . . . . . . . . . .	P Near	 0000020D _TEXT	Length= 00000047 Public STDCALL
+ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FileTimeToDosDateTime  . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FileTimeToSystemTime . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FlushConsoleInputBuffer  . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FormatMessageA . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetCommandLineA  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetCommandTail . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleCP . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleCursorInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleMode . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleScreenBufferInfo . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetDateTime  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetFileTime  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetKeyState  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetLastError . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetLocalTime . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetMaxXY . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetMessageA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetModuleHandleA . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetMseconds  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetNumberOfConsoleInputEvents  .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetProcessHeap . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetStdHandle . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetSystemTime  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetTextColor . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetTickCount . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetWindowDC  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetWindowRect  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Gotoxy . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapAlloc  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapCreate . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapDestroy  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapFree . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapSize . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+IsDigit  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+LoadCursorA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+LoadIconA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+LocalFree  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+MessageBoxA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+MsgBoxAsk  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+MsgBox . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+OpenInputFile  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ParseDecimal32 . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ParseInteger32 . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+PeekConsoleInputA  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+PostQuitMessage  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Random32 . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+RandomRange  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Randomize  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadChar . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadConsoleA . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadConsoleInputA  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadDec  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadFile . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadFloat  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadFromFile . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadHex  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadInt  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadKeyFlush . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadKey  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadString . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+RegisterClassA . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleCursorInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleCursorPosition . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleMode . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleScreenBufferSize . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleTextAttribute  . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleTitleA . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleWindowInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetFilePointer . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetLocalTime . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetTextColor . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ShowFPUStack . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ShowWindow . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Sleep  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+StrLength  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_compare  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_copy . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_length . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_trim . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_ucase  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SystemTimeToFileTime . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+UpdateWindow . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WaitMsg  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WinMain  . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 000000E9 Public STDCALL
+  Message_Loop . . . . . . . . .	L Near	 000000C0 _TEXT	
+  Exit_Program . . . . . . . . .	L Near	 000000E2 _TEXT	
+WinProc  . . . . . . . . . . . .	P Near	 000000E9 _TEXT	Length= 00000124 Public STDCALL
+  hWnd . . . . . . . . . . . . .	DWord	 bp + 00000008
+  localMsg . . . . . . . . . . .	DWord	 bp + 0000000C
+  wParam . . . . . . . . . . . .	DWord	 bp + 00000010
+  lParam . . . . . . . . . . . .	DWord	 bp + 00000014
+  arrayOk  . . . . . . . . . . .	L Near	 00000172 _TEXT	
+  WinProcExit  . . . . . . . . .	L Near	 00000209 _TEXT	
+WriteBinB  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteBin . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteChar  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteConsoleA  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteConsoleOutputAttribute  . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteConsoleOutputCharacterA . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteDec . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteFile  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteFloat . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteHexB  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteHex . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteInt . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteStackFrameName  . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+allocate_array . . . . . . . . .	P Near	 00000254 _TEXT	Length= 00000023 Public STDCALL
+printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
+scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
+wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000003h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+ALT_MASK . . . . . . . . . . . .	Number	 00000003h   
+ARRAY_SIZE . . . . . . . . . . .	DWord	 000000B5 _DATA	
+AppLoadMsgText . . . . . . . . .	Byte	 00000017 _DATA	
+AppLoadMsgTitle  . . . . . . . .	Byte	 00000004 _DATA	
+CAPSLOCK_ON  . . . . . . . . . .	Number	 00000080h   
+COLOR_BACKGROUND . . . . . . . .	Number	 00000002h   
+COLOR_WINDOW . . . . . . . . . .	Number	 00000005h   
+CREATE_ALWAYS  . . . . . . . . .	Number	 00000002h   
+CREATE_NEW . . . . . . . . . . .	Number	 00000001h   
+CTRL_MASK  . . . . . . . . . . .	Number	 0000000Ch   
+CW_USEDEFAULT  . . . . . . . . .	Number	 -80000000h   
+CloseMsg . . . . . . . . . . . .	Byte	 000001F9 _DATA	
+CreateFile . . . . . . . . . . .	Text   	 CreateFileA
+CreateWindowEx . . . . . . . . .	Text   	 CreateWindowExA
+DO_NOT_SHARE . . . . . . . . . .	Number	 00000000h   
+DefWindowProc  . . . . . . . . .	Text   	 DefWindowProcA
+DispatchMessage  . . . . . . . .	Text   	 DispatchMessageA
+ENABLE_ECHO_INPUT  . . . . . . .	Number	 00000004h   
+ENABLE_LINE_INPUT  . . . . . . .	Number	 00000002h   
+ENABLE_MOUSE_INPUT . . . . . . .	Number	 00000010h   
+ENABLE_PROCESSED_INPUT . . . . .	Number	 00000001h   
+ENABLE_PROCESSED_OUTPUT  . . . .	Number	 00000001h   
+ENABLE_WINDOW_INPUT  . . . . . .	Number	 00000008h   
+ENABLE_WRAP_AT_EOL_OUTPUT  . . .	Number	 00000002h   
+ENHANCED_KEY . . . . . . . . . .	Number	 00000100h   
+ErrorTitle . . . . . . . . . . .	Byte	 00000213 _DATA	
+FALSE  . . . . . . . . . . . . .	Number	 00000000h   
+FILE_APPEND_DATA . . . . . . . .	Number	 00000004h   
+FILE_ATTRIBUTE_ARCHIVE . . . . .	Number	 00000020h   
+FILE_ATTRIBUTE_COMPRESSED  . . .	Number	 00000800h   
+FILE_ATTRIBUTE_DEVICE  . . . . .	Number	 00000040h   
+FILE_ATTRIBUTE_DIRECTORY . . . .	Number	 00000010h   
+FILE_ATTRIBUTE_ENCRYPTED . . . .	Number	 00004000h   
+FILE_ATTRIBUTE_HIDDEN  . . . . .	Number	 00000002h   
+FILE_ATTRIBUTE_NORMAL  . . . . .	Number	 00000080h   
+FILE_ATTRIBUTE_NOT_CONTENT_INDEXED .	Number	 00002000h   
+FILE_ATTRIBUTE_OFFLINE . . . . .	Number	 00001000h   
+FILE_ATTRIBUTE_READONLY  . . . .	Number	 00000001h   
+FILE_ATTRIBUTE_REPARSE_POINT . .	Number	 00000400h   
+FILE_ATTRIBUTE_SPARSE_FILE . . .	Number	 00000200h   
+FILE_ATTRIBUTE_SYSTEM  . . . . .	Number	 00000004h   
+FILE_ATTRIBUTE_TEMPORARY . . . .	Number	 00000100h   
+FILE_BEGIN . . . . . . . . . . .	Number	 00000000h   
+FILE_CURRENT . . . . . . . . . .	Number	 00000001h   
+FILE_DELETE_CHILD  . . . . . . .	Number	 00000040h   
+FILE_END . . . . . . . . . . . .	Number	 00000002h   
+FILE_READ_DATA . . . . . . . . .	Number	 00000001h   
+FILE_SHARE_DELETE  . . . . . . .	Number	 00000004h   
+FILE_SHARE_READ  . . . . . . . .	Number	 00000001h   
+FILE_SHARE_WRITE . . . . . . . .	Number	 00000002h   
+FILE_WRITE_DATA  . . . . . . . .	Number	 00000002h   
+FILL_VAL . . . . . . . . . . . .	Number	 000000FFh   
+FOCUS_EVENT  . . . . . . . . . .	Number	 00000010h   
+FORMAT_MESSAGE_ALLOCATE_BUFFER .	Number	 00000100h   
+FORMAT_MESSAGE_FROM_SYSTEM . . .	Number	 00001000h   
+FormatMessage  . . . . . . . . .	Text   	 FormatMessageA
+GENERIC_ALL  . . . . . . . . . .	Number	 10000000h   
+GENERIC_EXECUTE  . . . . . . . .	Number	 20000000h   
+GENERIC_READ . . . . . . . . . .	Number	 -80000000h   
+GENERIC_WRITE  . . . . . . . . .	Number	 40000000h   
+GetCommandLine . . . . . . . . .	Text   	 GetCommandLineA
+GetMessage . . . . . . . . . . .	Text   	 GetMessageA
+GetModuleHandle  . . . . . . . .	Text   	 GetModuleHandleA
+GreetText  . . . . . . . . . . .	Byte	 000001A8 _DATA	
+GreetTitle . . . . . . . . . . .	Byte	 00000195 _DATA	
+HANDLE . . . . . . . . . . . . .	Text   	 DWORD
+HEAP_GENERATE_EXCEPTIONS . . . .	Number	 00000004h   
+HEAP_GROWABLE  . . . . . . . . .	Number	 00000002h   
+HEAP_NO_SERIALIZE  . . . . . . .	Number	 00000001h   
+HEAP_REALLOC_IN_PLACE_ONLY . . .	Number	 00000010h   
+HEAP_ZERO_MEMORY . . . . . . . .	Number	 00000008h   
+IDABORT  . . . . . . . . . . . .	Number	 00000003h   
+IDCANCEL . . . . . . . . . . . .	Number	 00000002h   
+IDCLOSE  . . . . . . . . . . . .	Number	 00000008h   
+IDCONTINUE . . . . . . . . . . .	Number	 0000000Bh   
+IDC_ARROW  . . . . . . . . . . .	Number	 00007F00h   
+IDHELP . . . . . . . . . . . . .	Number	 00000009h   
+IDIGNORE . . . . . . . . . . . .	Number	 00000005h   
+IDI_APPLICATION  . . . . . . . .	Number	 00007F00h   
+IDNO . . . . . . . . . . . . . .	Number	 00000007h   
+IDOK . . . . . . . . . . . . . .	Number	 00000001h   
+IDRETRY  . . . . . . . . . . . .	Number	 00000004h   
+IDTIMEOUT  . . . . . . . . . . .	Number	 00007D00h   
+IDTRYAGAIN . . . . . . . . . . .	Number	 0000000Ah   
+IDYES  . . . . . . . . . . . . .	Number	 00000006h   
+INVALID_HANDLE_VALUE . . . . . .	Number	 -00000001h   
+KBDOWN_FLAG  . . . . . . . . . .	Number	 00000001h   
+KEY_EVENT  . . . . . . . . . . .	Number	 00000001h   
+KEY_MASKS  . . . . . . . . . . .	Number	 0000001Fh   
+LEFT_ALT_PRESSED . . . . . . . .	Number	 00000002h   
+LEFT_CTRL_PRESSED  . . . . . . .	Number	 00000008h   
+LoadCursor . . . . . . . . . . .	Text   	 LoadCursorA
+LoadIcon . . . . . . . . . . . .	Text   	 LoadIconA
+MAIN_WINDOW_STYLE  . . . . . . .	Number	 118F0000h   
+MB_ABORTRETRYIGNORE  . . . . . .	Number	 00000002h   
+MB_APPLMODAL . . . . . . . . . .	Number	 00000000h   
+MB_CANCELTRYCONTINUE . . . . . .	Number	 00000006h   
+MB_DEFBUTTON1  . . . . . . . . .	Number	 00000000h   
+MB_DEFBUTTON2  . . . . . . . . .	Number	 00000100h   
+MB_DEFBUTTON3  . . . . . . . . .	Number	 00000200h   
+MB_DEFBUTTON4  . . . . . . . . .	Number	 00000300h   
+MB_HELP  . . . . . . . . . . . .	Number	 00004000h   
+MB_ICONASTERISK  . . . . . . . .	Number	 00000040h   
+MB_ICONERROR . . . . . . . . . .	Number	 00000010h   
+MB_ICONEXCLAMATION . . . . . . .	Number	 00000030h   
+MB_ICONHAND  . . . . . . . . . .	Number	 00000010h   
+MB_ICONINFORMATION . . . . . . .	Number	 00000040h   
+MB_ICONQUESTION  . . . . . . . .	Number	 00000020h   
+MB_ICONSTOP  . . . . . . . . . .	Number	 00000010h   
+MB_ICONWARNING . . . . . . . . .	Number	 00000030h   
+MB_OKCANCEL  . . . . . . . . . .	Number	 00000001h   
+MB_OK  . . . . . . . . . . . . .	Number	 00000000h   
+MB_RETRYCANCEL . . . . . . . . .	Number	 00000005h   
+MB_SYSTEMMODAL . . . . . . . . .	Number	 00001000h   
+MB_TASKMODAL . . . . . . . . . .	Number	 00002000h   
+MB_USERICON  . . . . . . . . . .	Number	 00000080h   
+MB_YESNOCANCEL . . . . . . . . .	Number	 00000003h   
+MB_YESNO . . . . . . . . . . . .	Number	 00000004h   
+MENU_EVENT . . . . . . . . . . .	Number	 00000008h   
+MOUSE_EVENT  . . . . . . . . . .	Number	 00000002h   
+MainWin  . . . . . . . . . . . .	WNDCLASS  00000230 _DATA	
+MessageBox . . . . . . . . . . .	Text   	 MessageBoxA
+NULL . . . . . . . . . . . . . .	Number	 00000000h   
+NUMLOCK_ON . . . . . . . . . . .	Number	 00000020h   
+OPEN_ALWAYS  . . . . . . . . . .	Number	 00000004h   
+OPEN_EXISTING  . . . . . . . . .	Number	 00000003h   
+PeekConsoleInput . . . . . . . .	Text   	 PeekConsoleInputA
+PopupTextSize  . . . . . . . . .	Byte	 000000B4 _DATA	
+PopupText  . . . . . . . . . . .	Byte	 00000060 _DATA	
+PopupTitle . . . . . . . . . . .	Byte	 00000053 _DATA	
+RIGHT_ALT_PRESSED  . . . . . . .	Number	 00000001h   
+RIGHT_CTRL_PRESSED . . . . . . .	Number	 00000004h   
+ReadConsoleInput . . . . . . . .	Text   	 ReadConsoleInputA
+ReadConsole  . . . . . . . . . .	Text   	 ReadConsoleA
+RegisterClass  . . . . . . . . .	Text   	 RegisterClassA
+SCROLLLOCK_ON  . . . . . . . . .	Number	 00000040h   
+SHIFT_MASK . . . . . . . . . . .	Number	 00000010h   
+SHIFT_PRESSED  . . . . . . . . .	Number	 00000010h   
+STD_ERROR_HANDLE . . . . . . . .	Number	 -0000000Ch   
+STD_INPUT_HANDLE . . . . . . . .	Number	 -0000000Ah   
+STD_OUTPUT_HANDLE  . . . . . . .	Number	 -0000000Bh   
+SW_SHOW  . . . . . . . . . . . .	Number	 00000005h   
+SetConsoleTitle  . . . . . . . .	Text   	 SetConsoleTitleA
+TAB  . . . . . . . . . . . . . .	Number	 00000009h   
+TRUE . . . . . . . . . . . . . .	Number	 00000001h   
+TRUNCATE_EXISTING  . . . . . . .	Number	 00000005h   
+VK_11  . . . . . . . . . . . . .	Number	 000000BDh   
+VK_12  . . . . . . . . . . . . .	Number	 000000BBh   
+VK_ADD . . . . . . . . . . . . .	Number	 0000006Bh   
+VK_BACK  . . . . . . . . . . . .	Number	 00000008h   
+VK_CANCEL  . . . . . . . . . . .	Number	 00000003h   
+VK_CAPITAL . . . . . . . . . . .	Number	 00000014h   
+VK_CLEAR . . . . . . . . . . . .	Number	 0000000Ch   
+VK_CONTROL . . . . . . . . . . .	Number	 00000011h   
+VK_DECIMAL . . . . . . . . . . .	Number	 0000006Eh   
+VK_DELETE  . . . . . . . . . . .	Number	 0000002Eh   
+VK_DIVIDE  . . . . . . . . . . .	Number	 0000006Fh   
+VK_DOWN  . . . . . . . . . . . .	Number	 00000028h   
+VK_END . . . . . . . . . . . . .	Number	 00000023h   
+VK_ESCAPE  . . . . . . . . . . .	Number	 0000001Bh   
+VK_EXECUTE . . . . . . . . . . .	Number	 0000002Bh   
+VK_F10 . . . . . . . . . . . . .	Number	 00000079h   
+VK_F11 . . . . . . . . . . . . .	Number	 0000007Ah   
+VK_F12 . . . . . . . . . . . . .	Number	 0000007Bh   
+VK_F13 . . . . . . . . . . . . .	Number	 0000007Ch   
+VK_F14 . . . . . . . . . . . . .	Number	 0000007Dh   
+VK_F15 . . . . . . . . . . . . .	Number	 0000007Eh   
+VK_F16 . . . . . . . . . . . . .	Number	 0000007Fh   
+VK_F17 . . . . . . . . . . . . .	Number	 00000080h   
+VK_F18 . . . . . . . . . . . . .	Number	 00000081h   
+VK_F19 . . . . . . . . . . . . .	Number	 00000082h   
+VK_F1  . . . . . . . . . . . . .	Number	 00000070h   
+VK_F20 . . . . . . . . . . . . .	Number	 00000083h   
+VK_F21 . . . . . . . . . . . . .	Number	 00000084h   
+VK_F22 . . . . . . . . . . . . .	Number	 00000085h   
+VK_F23 . . . . . . . . . . . . .	Number	 00000086h   
+VK_F24 . . . . . . . . . . . . .	Number	 00000087h   
+VK_F2  . . . . . . . . . . . . .	Number	 00000071h   
+VK_F3  . . . . . . . . . . . . .	Number	 00000072h   
+VK_F4  . . . . . . . . . . . . .	Number	 00000073h   
+VK_F5  . . . . . . . . . . . . .	Number	 00000074h   
+VK_F6  . . . . . . . . . . . . .	Number	 00000075h   
+VK_F7  . . . . . . . . . . . . .	Number	 00000076h   
+VK_F8  . . . . . . . . . . . . .	Number	 00000077h   
+VK_F9  . . . . . . . . . . . . .	Number	 00000078h   
+VK_HELP  . . . . . . . . . . . .	Number	 0000002Fh   
+VK_HOME  . . . . . . . . . . . .	Number	 00000024h   
+VK_INSERT  . . . . . . . . . . .	Number	 0000002Dh   
+VK_LBUTTON . . . . . . . . . . .	Number	 00000001h   
+VK_LCONTROL  . . . . . . . . . .	Number	 000000A2h   
+VK_LEFT  . . . . . . . . . . . .	Number	 00000025h   
+VK_LMENU . . . . . . . . . . . .	Number	 000000A4h   
+VK_LSHIFT  . . . . . . . . . . .	Number	 000000A0h   
+VK_MENU  . . . . . . . . . . . .	Number	 00000012h   
+VK_MULTIPLY  . . . . . . . . . .	Number	 0000006Ah   
+VK_NEXT  . . . . . . . . . . . .	Number	 00000022h   
+VK_NUMLOCK . . . . . . . . . . .	Number	 00000090h   
+VK_NUMPAD0 . . . . . . . . . . .	Number	 00000060h   
+VK_NUMPAD1 . . . . . . . . . . .	Number	 00000061h   
+VK_NUMPAD2 . . . . . . . . . . .	Number	 00000062h   
+VK_NUMPAD3 . . . . . . . . . . .	Number	 00000063h   
+VK_NUMPAD4 . . . . . . . . . . .	Number	 00000064h   
+VK_NUMPAD5 . . . . . . . . . . .	Number	 00000065h   
+VK_NUMPAD6 . . . . . . . . . . .	Number	 00000066h   
+VK_NUMPAD7 . . . . . . . . . . .	Number	 00000067h   
+VK_NUMPAD8 . . . . . . . . . . .	Number	 00000068h   
+VK_NUMPAD9 . . . . . . . . . . .	Number	 00000069h   
+VK_PAUSE . . . . . . . . . . . .	Number	 00000013h   
+VK_PRINT . . . . . . . . . . . .	Number	 0000002Ah   
+VK_PRIOR . . . . . . . . . . . .	Number	 00000021h   
+VK_RBUTTON . . . . . . . . . . .	Number	 00000002h   
+VK_RCONTROL  . . . . . . . . . .	Number	 000000A3h   
+VK_RETURN  . . . . . . . . . . .	Number	 0000000Dh   
+VK_RIGHT . . . . . . . . . . . .	Number	 00000027h   
+VK_RMENU . . . . . . . . . . . .	Number	 000000A5h   
+VK_RSHIFT  . . . . . . . . . . .	Number	 000000A1h   
+VK_SCROLL  . . . . . . . . . . .	Number	 00000091h   
+VK_SEPARATER . . . . . . . . . .	Number	 0000006Ch   
+VK_SHIFT . . . . . . . . . . . .	Number	 00000010h   
+VK_SNAPSHOT  . . . . . . . . . .	Number	 0000002Ch   
+VK_SPACE . . . . . . . . . . . .	Number	 00000020h   
+VK_SUBTRACT  . . . . . . . . . .	Number	 0000006Dh   
+VK_TAB . . . . . . . . . . . . .	Number	 00000009h   
+VK_UP  . . . . . . . . . . . . .	Number	 00000026h   
+WINDOW_BUFFER_SIZE_EVENT . . . .	Number	 00000004h   
+WM_CLOSE . . . . . . . . . . . .	Number	 00000010h   
+WM_CREATE  . . . . . . . . . . .	Number	 00000001h   
+WM_LBUTTONDOWN . . . . . . . . .	Number	 00000201h   
+WS_BORDER  . . . . . . . . . . .	Number	 00800000h   
+WS_CAPTION . . . . . . . . . . .	Number	 00C00000h   
+WS_DLGFRAME  . . . . . . . . . .	Number	 00400000h   
+WS_MAXIMIZEBOX . . . . . . . . .	Number	 00010000h   
+WS_MINIMIZEBOX . . . . . . . . .	Number	 00020000h   
+WS_OVERLAPPED  . . . . . . . . .	Number	 00000000h   
+WS_SYSMENU . . . . . . . . . . .	Number	 00080000h   
+WS_THICKFRAME  . . . . . . . . .	Number	 00040000h   
+WS_VISIBLE . . . . . . . . . . .	Number	 10000000h   
+WindowName . . . . . . . . . . .	Byte	 00000219 _DATA	
+WriteConsoleOutputCharacter  . .	Text   	 WriteConsoleOutputCharacterA
+WriteConsole . . . . . . . . . .	Text   	 WriteConsoleA
+black  . . . . . . . . . . . . .	Number	 00000000h   
+blue . . . . . . . . . . . . . .	Number	 00000001h   
+brown  . . . . . . . . . . . . .	Number	 00000006h   
+buffer . . . . . . . . . . . . .	DWord	 000000B9 _DATA	
+className  . . . . . . . . . . .	Byte	 00000229 _DATA	
+cyan . . . . . . . . . . . . . .	Number	 00000003h   
+exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
+gray . . . . . . . . . . . . . .	Number	 00000008h   
+green  . . . . . . . . . . . . .	Number	 00000002h   
+hHeap  . . . . . . . . . . . . .	DWord	 00000000 _DATA	
+hInstance  . . . . . . . . . . .	DWord	 00000288 _DATA	
+hMainWnd . . . . . . . . . . . .	DWord	 00000284 _DATA	
+lightBlue  . . . . . . . . . . .	Number	 00000009h   
+lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
+lightGray  . . . . . . . . . . .	Number	 00000007h   
+lightGreen . . . . . . . . . . .	Number	 0000000Ah   
+lightMagenta . . . . . . . . . .	Number	 0000000Dh   
+lightRed . . . . . . . . . . . .	Number	 0000000Ch   
+magenta  . . . . . . . . . . . .	Number	 00000005h   
+messageID  . . . . . . . . . . .	DWord	 00000290 _DATA	
+msg  . . . . . . . . . . . . . .	MSGStruct  00000258 _DATA	
+pErrorMsg  . . . . . . . . . . .	DWord	 0000028C _DATA	
+popupx . . . . . . . . . . . . .	Byte	 00000098 _DATA	
+red  . . . . . . . . . . . . . .	Number	 00000004h   
+white  . . . . . . . . . . . . .	Number	 0000000Fh   
+winRect  . . . . . . . . . . . .	RECT	 00000274 _DATA	
+wsprintf . . . . . . . . . . . .	Text   	 wsprintfA
+yellow . . . . . . . . . . . . .	Number	 0000000Eh   
+
+	   0 Warnings
+	   0 Errors

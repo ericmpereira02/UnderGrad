@@ -1,0 +1,161 @@
+Section 5.9
+Task 8: 
+Q: Write a program that displays a single character in all possible combinations of foreground and
+background colors (16 x 16 = 256). The colors are numbered from 0 to 15, so you can use a
+nested loop to generate all possible combinations.
+
+A: 
+INCLUDE Irvine32.inc
+
+.386
+.model flat,stdcall
+.stack 4096
+ExitProcess PROTO, dwExitCode:DWORD
+
+.data
+
+someChar BYTE 'U'
+
+rowCol LABEL WORD
+column BYTE 0
+row    BYTE 0
+
+.code
+main PROC
+	call SetTextColor
+	call Clrscr
+	mov  rowCol,0
+	mov  dx,0
+	call Gotoxy
+
+	mov  eax,0	
+	mov  ecx,16	
+L1:	push ecx	
+	mov  dx,rowCol	
+	call Gotoxy
+	mov  ecx,16	
+
+L2:	call SetTextColor
+	push eax
+	mov  al, someChar	
+	call WriteChar	
+	pop  eax
+	inc  al	
+	loop L2	
+
+	inc  row	
+	pop  ecx	
+	loop L1
+
+	INVOKE ExitProcess,0
+main ENDP
+END main
+
+
+Section 5.8:
+1: 
+Q: Which instruction pushes all of the 32-bit general-purpose registers on the stack?
+
+A: PUSHAD
+
+12:
+Q: (True/False): The USES operator only generates PUSH instructions, so you must code POP
+instructions yourself.
+
+A: False
+
+Section 5.8.2
+Task 5: 
+Q: . Write a sequence of statements that display a subroutine’s return address. Be sure that whatever
+modifications you make to the stack do not prevent the subroutine from returning to its
+caller.
+
+A: 
+INCLUDE Irvine32.inc
+.386
+.model flat,stdcall
+.stack 4096
+ExitProcess proto,dwExitCode:dword
+
+.code
+main proc
+	call subproc
+	invoke ExitProcess,0
+main endp
+
+subproc proc
+	mov eax, esp
+	call WriteHex
+subproc endp
+
+end main
+ 
+6.10.1:
+14:
+Q: What will be the final value in EDX after this code executes?
+ mov edx,1
+ mov eax,7FFFh
+ cmp eax,0FFFF8000h
+ jl L2
+ mov edx,0
+L2:
+
+A: 00000000
+
+17:
+Q: What will be the value of RBX after the following instructions execute?
+mov rbx,0FFFFFFFFFFFFFFFFh
+and rbx,80h
+
+A: 0FFFFFFFFFFFFFF80h
+
+19: 
+Q: What will be the value of RBX after the following instructions execute?
+mov rbx,0FFFFFFFFFFFFFFFFh
+and rbx,80808080h
+
+A: 0FFFFFFFFFF808080h
+
+6.10.2:
+9:
+Q: . Implement the following pseudocode in assembly language. Use short-circuit evaluation
+and assume that X is a 32-bit variable.
+if( ebx > ecx AND ebx > edx) OR ( edx > eax )
+ X = 1
+else
+ X = 2
+
+A:
+.386
+.stack 4096
+ExitProcess PROTO, dwExitCode:DWORD
+
+.data
+X BYTE 0
+
+.code
+main PROC
+
+cmp edx, eax
+jg THETRUTH
+
+cmp ebx, ecx
+jg SECONDCHECK
+jmp THEFALSE
+
+SECONDCHECK:
+	cmp ecx, edx
+	jg THETRUTH
+	jmp THEFALSE
+
+THETRUTH:
+	mov X, 1
+	jmp GETOUT
+
+THEFALSE:
+	mov X,2
+
+GETOUT:
+	INVOKE ExitProcess,0
+main ENDP
+END main

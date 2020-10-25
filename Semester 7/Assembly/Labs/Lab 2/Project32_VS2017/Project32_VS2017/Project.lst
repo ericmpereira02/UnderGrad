@@ -1,0 +1,1687 @@
+Microsoft (R) Macro Assembler Version 14.16.27034.0	    10/22/20 16:11:36
+GoL.asm							     Page 1 - 1
+
+
+				; Conway's Game of Life
+				; Created by Dmitri Piquero & Eric Pereira
+				; CSE 3120 : Computer Architecture & Assembly
+				; Programming Contest
+
+				INCLUDE Irvine32.inc
+			      C ; Include file for Irvine32.lib             (Irvine32.inc)
+			      C 
+			      C ;OPTION CASEMAP:NONE		; optional: make identifiers case-sensitive
+			      C 
+			      C INCLUDE SmallWin.inc		; MS-Windows prototypes, structures, and constants
+			      C .NOLIST
+			      C .LIST
+			      C 
+			      C INCLUDE VirtualKeys.inc
+			      C ; VirtualKeys.inc
+			      C .NOLIST
+			      C .LIST
+			      C 
+			      C 
+			      C .NOLIST
+			      C .LIST
+			      C 
+
+ = 0000001C			rows	EQU		28
+ = 00000064			cols	EQU		100
+ = 00000AF0			gridS	EQU		rows * cols
+ = 0000001B			mrows	EQU		rows - 1
+ = 00000063			mcols	EQU		cols - 1
+
+ 00000000			.data
+ 00000000  00000AF0 [		grid	BYTE	gridS DUP(0)
+	    00
+	   ]
+ 00000AF0 0000 0000		cursor	COORD	<>
+ 00000AF4 00			dir		BYTE	?
+ 00000AF5 00			icount	BYTE	?
+ 00000AF6 00			ucount	BYTE	?
+ 00000AF7 00			iflag	BYTE	?
+ 00000AF8 00			paused	BYTE	?
+ 00000AF9 00			speed	BYTE	?
+ 00000AFA 0000			iter	WORD	?
+ 00000AFC 00			count	BYTE	?
+
+ 00000AFD 43 6F 6E 77 61	tTtle1	BYTE	"Conway's",0
+	   79 27 73 00
+ 00000B06 47 61 6D 65 20	tTtle2	BYTE	"Game of Life",0
+	   6F 66 20 4C 69
+	   66 65 00
+ 00000B13 43 6F 6E 74 72	tCntrl	BYTE	"Controls",0
+	   6F 6C 73 00
+ 00000B1C 4D 6F 76 65 00	tMove1	BYTE	"Move",0
+ 00000B21 41 72 72 6F 77	tMove2	BYTE	"Arrow Keys",0
+	   20 4B 65 79 73
+	   00
+ 00000B2C 54 6F 67 67 6C	tTgle1	BYTE	"Toggle Cells",0
+	   65 20 43 65 6C
+	   6C 73 00
+ 00000B39 53 70 61 63 65	tTgle2	BYTE	"Spacebar",0
+	   62 61 72 00
+ 00000B42 43 68 61 6E 67	tSped1	BYTE	"Change Speed",0
+	   65 20 53 70 65
+	   65 64 00
+ 00000B4F 31 2C 20 32 2C	tSped2	BYTE	"1, 2, 3, 4, 5, 6",0
+	   20 33 2C 20 34
+	   2C 20 35 2C 20
+	   36 00
+ 00000B60 50 61 75 73 65	tPase1	BYTE	"Pause Game",0
+	   20 47 61 6D 65
+	   00
+ 00000B6B 45 6E 74 65 72	tPase2	BYTE	"Enter / Return",0
+	   20 2F 20 52 65
+	   74 75 72 6E 00
+ 00000B7A 52 65 73 74 61	tRsrt1	BYTE	"Restart Game",0
+	   72 74 20 47 61
+	   6D 65 00
+ 00000B87 72 20 6F 72 20	tRsrt2	BYTE	"r or R",0
+	   52 00
+ 00000B8E 51 75 69 74 00	tLeav1	BYTE	"Quit",0
+ 00000B93 45 73 63 61 70	tLeav2	BYTE	"Escape",0
+	   65 00
+ 00000B9A 50 61 75 73 65	tTog1	BYTE	"Paused ",0
+	   64 20 00
+ 00000BA2 52 75 6E 6E 69	tTog2   BYTE    "Running",0
+	   6E 67 00
+ 00000BAA 20 20 20 20 20	tPsSpc	BYTE	"      ",0
+	   20 00
+ 00000BB1 53 70 65 65 64	tSpeed	BYTE	"Speed: 1",0
+	   3A 20 31 00
+ 00000BBA 43 79 63 6C 65	tIters	BYTE	"Cycle: 0        ",0
+	   3A 20 30 20 20
+	   20 20 20 20 20
+	   20 00
+ 00000BCB 00000000		point	DWORD	?
+ 00000BCF 00			TR		BYTE	?
+ 00000BD0 00			TC		BYTE	?
+
+ 00000BD1 00			borV	BYTE	cols + 2 DUP("*"),0
+ 00000C38 2A			borH	BYTE	"*"
+						BYTE	cols DUP(" ")
+ 00000C9D  2A 00				BYTE	"*",0
+
+ 00000000			.code
+ 00000000			main PROC
+ 00000000			LR:
+ 00000000  E8 0000004E			call	Init		; init / restart
+
+ 00000005			LG:						; game loop
+ 00000005  C6 05 00000AF7 R		mov iflag, 0		; reset input flag
+	   00
+ 0000000C  C6 05 00000AF4 R		mov dir, 0			; reset player direction
+	   00
+
+ 00000013			LI:						; input loop
+ 00000013  E8 00000101			call	Input
+ 00000018  80 3D 00000AF7 R		cmp iflag, 1		; quit?
+	   01
+ 0000001F  74 26			je LExit
+ 00000021  80 3D 00000AF7 R		cmp iflag, 2		; restart?
+	   02
+ 00000028  74 D6			je LR
+					
+ 0000002A  FE 05 00000AF5 R		inc icount
+ 00000030  80 3D 00000AF5 R		cmp icount, 5		; keep checking for input
+	   05
+ 00000037  72 DA			jb LI
+
+ 00000039  E8 00000219			call	Update
+ 0000003E  C6 05 00000AF5 R		mov icount, 0
+	   00
+ 00000045  EB BE			jmp LG				; continue game
+
+				; exit
+ 00000047			LExit:
+ 00000047  E8 00000000 E		call	Clrscr
+					exit
+ 0000004C  6A 00	   *	    push   +000000000h
+ 0000004E  E8 00000000 E   *	    call   ExitProcess
+ 00000053			main ENDP
+
+ 00000053			Init PROC USES EAX EBX ECX EDX ESI
+					; reset position
+ 00000053  50		   *	    push   eax
+ 00000054  53		   *	    push   ebx
+ 00000055  51		   *	    push   ecx
+ 00000056  52		   *	    push   edx
+ 00000057  56		   *	    push   esi
+ 00000058  66| BB 0002			mov BX, 2
+					
+ 0000005C  66| BA 0000			mov DX, 0
+ 00000060  66| B8 0064			mov AX, cols
+ 00000064  66| F7 F3			div BX
+ 00000067  66| A3			mov cursor.x, AX
+	   00000AF0 R
+ 0000006D  66| BA 0000			mov DX, 0
+ 00000071  66| B8 001C			mov AX, rows
+ 00000075  66| F7 F3			div BX
+ 00000078  66| A3			mov cursor.y, AX
+	   00000AF2 R
+
+					; reset everything else
+ 0000007E  C6 05 00000AF4 R		mov dir, 0
+	   00
+ 00000085  C6 05 00000AF5 R		mov icount, 0
+	   00
+ 0000008C  C6 05 00000AF6 R		mov ucount, 0
+	   00
+ 00000093  C6 05 00000AF7 R		mov iflag, 0
+	   00
+ 0000009A  C6 05 00000AF8 R		mov paused, 1
+	   01
+ 000000A1  C6 05 00000AF9 R		mov speed, 20
+	   14
+ 000000A8  66| C7 05			mov iter, 0
+	   00000AFA R
+	   0000
+
+					; reset the grid
+ 000000B1  B9 00000AF0			mov ECX, gridS
+ 000000B6  BE 00000000			mov ESI, 0
+ 000000BB			LG:
+ 000000BB  C6 86 00000000 R		mov grid[ESI], 0
+	   00
+ 000000C2  46				inc ESI
+
+ 000000C3  E2 F6			loop LG
+
+ 000000C5  E8 000006A4			call	DrawInfoBar
+
+					; draw the border
+ 000000CA  B2 00			mov DL, 0
+ 000000CC  B6 00			mov DH, 0
+ 000000CE  E8 00000000 E		call	Gotoxy			; top row
+ 000000D3  BA 00000BD1 R		mov EDX, OFFSET borV
+ 000000D8  E8 00000000 E		call	WriteString		; draw top border
+
+ 000000DD  B9 0000001C			mov ECX, rows
+ 000000E2  BE 00000000			mov ESI, 0
+ 000000E7			LB:
+ 000000E7  46				inc ESI
+ 000000E8  66| 8B C6			mov AX, SI
+ 000000EB  B2 00			mov DL, 0
+ 000000ED  8A F0			mov DH, AL
+ 000000EF  E8 00000000 E		call	Gotoxy			; update the row
+ 000000F4  BA 00000C38 R		mov EDX, OFFSET borH
+ 000000F9  E8 00000000 E		call	WriteString		; draw side borders
+
+ 000000FE  E2 E7			loop LB
+
+ 00000100  B2 00			mov DL, 0
+ 00000102  B6 1D			mov DH, rows + 1
+ 00000104  E8 00000000 E		call	Gotoxy			; move to last row
+ 00000109  BA 00000BD1 R		mov EDX, OFFSET borV
+ 0000010E  E8 00000000 E		call	WriteString		; draw bottom border
+
+					ret
+ 00000113  5E		   *	    pop    esi
+ 00000114  5A		   *	    pop    edx
+ 00000115  59		   *	    pop    ecx
+ 00000116  5B		   *	    pop    ebx
+ 00000117  58		   *	    pop    eax
+ 00000118  C3		   *	    ret    00000h
+ 00000119			Init ENDP
+
+ 00000119			Input PROC uses EAX EDX
+ 00000119  50		   *	    push   eax
+ 0000011A  52		   *	    push   edx
+ 0000011B  B8 0000000A			mov EAX, 10
+ 00000120  E8 00000000 E		call	Delay
+
+ 00000125  E8 00000000 E		call	ReadKey
+ 0000012A  0F 84 00000124		jz LNK
+
+					; quit
+					.IF DX == VK_ESCAPE
+ 00000130  66| 83 FA 1B	   *	    cmp    dx, VK_ESCAPE
+ 00000134  75 0C	   *	    jne    @C0001
+ 00000136  C6 05 00000AF7 R			mov iflag, 1
+	   01
+					; restart
+					.ELSEIF DX == 'R'
+ 0000013D  E9 000000F9	   *	    jmp    @C0003
+ 00000142		   *@C0001:
+ 00000142  66| 83 FA 52	   *	    cmp    dx, 'R'
+ 00000146  75 0C	   *	    jne    @C0004
+ 00000148  C6 05 00000AF7 R			mov iflag, 2
+	   02
+					; toggle
+					.ELSEIF DX == VK_SPACE
+ 0000014F  E9 000000E7	   *	    jmp    @C0006
+ 00000154		   *@C0004:
+ 00000154  66| 83 FA 20	   *	    cmp    dx, VK_SPACE
+ 00000158  75 0C	   *	    jne    @C0007
+ 0000015A  C6 05 00000AF7 R			mov iflag, 3
+	   03
+					; pause
+					.ELSEIF DX == VK_RETURN
+ 00000161  E9 000000D5	   *	    jmp    @C0009
+ 00000166		   *@C0007:
+ 00000166  66| 83 FA 0D	   *	    cmp    dx, VK_RETURN
+ 0000016A  75 38	   *	    jne    @C000A
+ 0000016C  B0 01				mov AL, 1
+ 0000016E  2A 05 00000AF8 R			sub AL, paused
+ 00000174  A2 00000AF8 R			mov paused, AL
+
+ 00000179  B2 64				mov DL, cols
+ 0000017B  80 C2 03				add DL, 3
+ 0000017E  B6 1C				mov DH, rows
+ 00000180  E8 00000000 E			call	Gotoxy
+
+						.IF paused == 1
+ 00000185  80 3D 00000AF8 R
+	   01		   *	    cmp    paused, 001h
+ 0000018C  75 07	   *	    jne    @C000C
+ 0000018E  BA 00000B9A R				mov EDX, OFFSET tTog1
+						.ELSE
+ 00000193  EB 05	   *	    jmp    @C000E
+ 00000195		   *@C000C:
+ 00000195  BA 00000BA2 R				mov EDX, OFFSET tTog2
+						.ENDIF
+
+ 0000019A		   *@C000E:
+ 0000019A  E8 00000000 E			call	WriteString
+
+					; move the cursor
+					.ELSEIF DX == VK_UP
+ 0000019F  E9 00000097	   *	    jmp    @C000F
+ 000001A4		   *@C000A:
+ 000001A4  66| 83 FA 26	   *	    cmp    dx, VK_UP
+ 000001A8  75 0C	   *	    jne    @C0010
+ 000001AA  C6 05 00000AF4 R			mov dir, 1
+	   01
+					.ELSEIF DX == VK_RIGHT
+ 000001B1  E9 00000085	   *	    jmp    @C0012
+ 000001B6		   *@C0010:
+ 000001B6  66| 83 FA 27	   *	    cmp    dx, VK_RIGHT
+ 000001BA  75 09	   *	    jne    @C0013
+ 000001BC  C6 05 00000AF4 R			mov dir, 2
+	   02
+					.ELSEIF DX == VK_DOWN
+ 000001C3  EB 76	   *	    jmp    @C0015
+ 000001C5		   *@C0013:
+ 000001C5  66| 83 FA 28	   *	    cmp    dx, VK_DOWN
+ 000001C9  75 09	   *	    jne    @C0016
+ 000001CB  C6 05 00000AF4 R			mov dir, 3
+	   03
+					.ELSEIF DX == VK_LEFT
+ 000001D2  EB 67	   *	    jmp    @C0018
+ 000001D4		   *@C0016:
+ 000001D4  66| 83 FA 25	   *	    cmp    dx, VK_LEFT
+ 000001D8  75 09	   *	    jne    @C0019
+ 000001DA  C6 05 00000AF4 R			mov dir, 4
+	   04
+
+					; speed of simulation
+					.ELSEIF DX == '1'
+ 000001E1  EB 58	   *	    jmp    @C001B
+ 000001E3		   *@C0019:
+ 000001E3  66| 83 FA 31	   *	    cmp    dx, '1'
+ 000001E7  75 09	   *	    jne    @C001C
+ 000001E9  C6 05 00000AF9 R			mov speed, 64
+	   40
+					.ELSEIF DX == '2'
+ 000001F0  EB 49	   *	    jmp    @C001E
+ 000001F2		   *@C001C:
+ 000001F2  66| 83 FA 32	   *	    cmp    dx, '2'
+ 000001F6  75 09	   *	    jne    @C001F
+ 000001F8  C6 05 00000AF9 R			mov speed, 32
+	   20
+					.ELSEIF DX == '3'
+ 000001FF  EB 3A	   *	    jmp    @C0021
+ 00000201		   *@C001F:
+ 00000201  66| 83 FA 33	   *	    cmp    dx, '3'
+ 00000205  75 09	   *	    jne    @C0022
+ 00000207  C6 05 00000AF9 R			mov speed, 16
+	   10
+					.ELSEIF DX == '4'
+ 0000020E  EB 2B	   *	    jmp    @C0024
+ 00000210		   *@C0022:
+ 00000210  66| 83 FA 34	   *	    cmp    dx, '4'
+ 00000214  75 09	   *	    jne    @C0025
+ 00000216  C6 05 00000AF9 R			mov speed, 4
+	   04
+					.ELSEIF DX == '5'
+ 0000021D  EB 1C	   *	    jmp    @C0027
+ 0000021F		   *@C0025:
+ 0000021F  66| 83 FA 35	   *	    cmp    dx, '5'
+ 00000223  75 09	   *	    jne    @C0028
+ 00000225  C6 05 00000AF9 R			mov speed, 2
+	   02
+					.ELSEIF DX == '6'
+ 0000022C  EB 0D	   *	    jmp    @C002A
+ 0000022E		   *@C0028:
+ 0000022E  66| 83 FA 36	   *	    cmp    dx, '6'
+ 00000232  75 07	   *	    jne    @C002B
+ 00000234  C6 05 00000AF9 R			mov speed, 1
+	   01
+					.ENDIF
+ 0000023B		   *@C002B:
+ 0000023B		   *@C002A:
+ 0000023B		   *@C0027:
+ 0000023B		   *@C0024:
+ 0000023B		   *@C0021:
+ 0000023B		   *@C001E:
+ 0000023B		   *@C001B:
+ 0000023B		   *@C0018:
+ 0000023B		   *@C0015:
+ 0000023B		   *@C0012:
+ 0000023B		   *@C000F:
+ 0000023B		   *@C0009:
+ 0000023B		   *@C0006:
+ 0000023B		   *@C0003:
+
+					.IF AL >= '1' && AL <= '6'
+ 0000023B  3C 31	   *	    cmp    al, '1'
+ 0000023D  72 15	   *	    jb	@C002D
+ 0000023F  3C 36	   *	    cmp    al, '6'
+ 00000241  77 11	   *	    ja	@C002D
+ 00000243  B2 64				mov DL, cols
+ 00000245  80 C2 0A				add DL, 10
+ 00000248  B6 1B				mov DH, mrows
+ 0000024A  E8 00000000 E			call	Gotoxy
+ 0000024F  E8 00000000 E			call	WriteChar
+					.ENDIF
+ 00000254		   *@C002D:
+
+				; no key pressed
+ 00000254			LNK:
+					ret
+ 00000254  5A		   *	    pop    edx
+ 00000255  58		   *	    pop    eax
+ 00000256  C3		   *	    ret    00000h
+ 00000257			Input ENDP
+
+ 00000257			Update PROC
+					; placed a thing
+ 00000257  80 3D 00000AF7 R		cmp iflag, 3
+	   03
+ 0000025E  75 10			jne LU
+
+					; toggle cell state
+ 00000260  E8 000006FD			call	GridAtCursor
+ 00000265  8B F0			mov ESI, EAX
+ 00000267  B8 00000023			mov EAX, '#'
+ 0000026C  2B 06			sub EAX, [ESI]
+ 0000026E  88 06			mov [ESI], AL
+
+ 00000270			LU:
+					; skip if simulation paused
+ 00000270  80 3D 00000AF8 R		cmp paused, 1
+	   01
+ 00000277  74 1F			je LC
+
+ 00000279  A0 00000AF9 R		mov AL, speed
+ 0000027E  FE 05 00000AF6 R		inc ucount
+ 00000284  38 05 00000AF6 R		cmp ucount, AL
+ 0000028A  72 0C			jb LC
+
+ 0000028C  E8 00000089			call	UpdateCells
+ 00000291  C6 05 00000AF6 R		mov ucount, 0
+	   00
+
+ 00000298			LC:
+					; draw a cell if its at the cursor's position
+ 00000298  E8 00000683			call	DrawCursorBG
+
+					; update the cursor's position
+					.IF dir == 1 && cursor.y > 0
+ 0000029D  80 3D 00000AF4 R
+	   01		   *	    cmp    dir, 001h
+ 000002A4  75 13	   *	    jne    @C0030
+ 000002A6  66| 83 3D
+	   00000AF2 R 00   *	    cmp    cursor . Y, 000h
+ 000002AE  76 09	   *	    jbe    @C0030
+ 000002B0  66| FF 0D				dec cursor.y
+	   00000AF2 R
+					.ELSEIF dir == 2 && cursor.x < mcols
+ 000002B7  EB 52	   *	    jmp    @C0033
+ 000002B9		   *@C0030:
+ 000002B9  80 3D 00000AF4 R
+	   02		   *	    cmp    dir, 002h
+ 000002C0  75 13	   *	    jne    @C0034
+ 000002C2  66| 83 3D
+	   00000AF0 R 63   *	    cmp    cursor . X, mcols
+ 000002CA  73 09	   *	    jae    @C0034
+ 000002CC  66| FF 05				inc cursor.x
+	   00000AF0 R
+					.ELSEIF dir == 3 && cursor.y < mrows
+ 000002D3  EB 36	   *	    jmp    @C0037
+ 000002D5		   *@C0034:
+ 000002D5  80 3D 00000AF4 R
+	   03		   *	    cmp    dir, 003h
+ 000002DC  75 13	   *	    jne    @C0038
+ 000002DE  66| 83 3D
+	   00000AF2 R 1B   *	    cmp    cursor . Y, mrows
+ 000002E6  73 09	   *	    jae    @C0038
+ 000002E8  66| FF 05				inc cursor.y
+	   00000AF2 R
+					.ELSEIF dir == 4 && cursor.x > 0
+ 000002EF  EB 1A	   *	    jmp    @C003B
+ 000002F1		   *@C0038:
+ 000002F1  80 3D 00000AF4 R
+	   04		   *	    cmp    dir, 004h
+ 000002F8  75 11	   *	    jne    @C003C
+ 000002FA  66| 83 3D
+	   00000AF0 R 00   *	    cmp    cursor . X, 000h
+ 00000302  76 07	   *	    jbe    @C003C
+ 00000304  66| FF 0D				dec cursor.x
+	   00000AF0 R
+					.ENDIF
+ 0000030B		   *@C003C:
+ 0000030B		   *@C003B:
+ 0000030B		   *@C0037:
+ 0000030B		   *@C0033:
+
+					; draw the cursor
+ 0000030B  E8 00000678			call	GoToCursor
+ 00000310  66| B8 0024			mov AX, '$'
+ 00000314  E8 00000000 E		call	WriteChar
+					
+ 00000319  C3				ret
+ 0000031A			Update ENDP
+
+ 0000031A			UpdateCells PROC USES EAX EBX ECX EDX ESI
+					; CELLULAR AUTOMATA RULES
+ 0000031A  50		   *	    push   eax
+ 0000031B  53		   *	    push   ebx
+ 0000031C  51		   *	    push   ecx
+ 0000031D  52		   *	    push   edx
+ 0000031E  56		   *	    push   esi
+ 0000031F  66| FF 05			inc iter
+	   00000AFA R
+					
+ 00000326  B5 00			mov CH, 0
+ 00000328			L1:
+ 00000328  B1 00			mov CL, 0
+ 0000032A			L2:
+ 0000032A  C6 05 00000AFC R		mov count, 0
+	   00
+ 00000331  8D 35 00000000 R		lea ESI, grid
+ 00000337  0F B6 C5				movzx EAX, CH
+ 0000033A  BB 00000064				mov EBX, cols
+ 0000033F  F7 E3				mul EBX
+ 00000341  03 F0				add ESI, EAX
+ 00000343  0F B6 C1				movzx EAX, CL
+ 00000346  03 F0				add ESI, EAX
+ 00000348  0F B6 06				movzx EAX, byte ptr [ESI]
+ 0000034B  A3 00000BCB R			mov point, EAX
+
+ 00000350  88 2D 00000BCF R			mov TR, CH
+ 00000356  88 0D 00000BD0 R			mov TC, CL
+ 0000035C  33 DB				xor ebx, ebx ;sets EBX to 0
+						.IF CH == 0; checks if row is 0
+ 0000035E  0A ED	   *	    or	ch, ch
+ 00000360  0F 85 00000091  *	    jne    @C003F
+							.IF CL == 0 ;if col and row are 0, topleft corner
+ 00000366  0A C9	   *	    or	cl, cl
+ 00000368  75 26	   *	    jne    @C0041
+ 0000036A  FE 05 00000BCF R					inc TR
+ 00000370  E8 000002DC						call GridCheck ;checks if point below is point
+
+ 00000375  FE 05 00000BD0 R					inc TC
+ 0000037B  E8 000002D1						call GridCheck ;checks point bottom right of curr point
+
+ 00000380  FE 0D 00000BCF R					dec TR
+ 00000386  E8 000002C6						call GridCheck ;checks point right of curr point
+								
+							.ELSEIF CL == cols ;if row is 0 and col is furthest right, upper right corner
+ 0000038B  E9 000001D7	   *	    jmp    @C0043
+ 00000390		   *@C0041:
+ 00000390  80 F9 64	   *	    cmp    cl, cols
+ 00000393  75 26	   *	    jne    @C0044
+ 00000395  FE 05 00000BCF R					inc TR ;checks if point below is point
+ 0000039B  E8 000002B1						call GridCheck
+
+ 000003A0  FE 0D 00000BD0 R					dec TC
+ 000003A6  E8 000002A6						call GridCheck ;checks if bottomleft is point
+
+ 000003AB  FE 0D 00000BCF R					dec TR
+ 000003B1  E8 0000029B						call GridCheck ;checks if left is point
+
+							.ELSE ;top row
+ 000003B6  E9 000001AC	   *	    jmp    @C0046
+ 000003BB		   *@C0044:
+ 000003BB  FE 0D 00000BD0 R					dec TC
+ 000003C1  E8 0000028B						call GridCheck ;checks if left is point
+
+ 000003C6  FE 05 00000BCF R					inc TR
+ 000003CC  E8 00000280						call GridCheck ;checks if bottomleft is point
+
+ 000003D1  FE 05 00000BD0 R					inc TC 
+ 000003D7  E8 00000275						call GridCheck ;checks below is point
+
+ 000003DC  FE 05 00000BD0 R					inc TC
+ 000003E2  E8 0000026A						call GridCheck ;checs if bottomright is point
+
+ 000003E7  FE 0D 00000BCF R					dec TR
+ 000003ED  E8 0000025F						call GridCheck ;checks if right is point
+
+							.ENDIF
+
+							
+						.ELSEIF CH == rows ;checks if row is col length
+ 000003F2  E9 00000170	   *	    jmp    @C0047
+ 000003F7		   *@C003F:
+ 000003F7  80 FD 1C	   *	    cmp    ch, rows
+ 000003FA  0F 85 00000091  *	    jne    @C0048
+						
+							.IF CL == 0 ; row is max length and col is 0, bottomleft corner
+ 00000400  0A C9	   *	    or	cl, cl
+ 00000402  75 26	   *	    jne    @C004A
+ 00000404  FE 0D 00000BCF R					dec TR
+ 0000040A  E8 00000242						call GridCheck ;checks spot above 
+
+ 0000040F  FE 05 00000BD0 R					inc TC
+ 00000415  E8 00000237						call GridCheck ;checks topright
+
+ 0000041A  FE 05 00000BCF R					inc TR
+ 00000420  E8 0000022C						call GridCheck ;checks right
+
+								
+							.ELSEIF CL == cols ;row is max length and col is maxlength, bottomright corner
+ 00000425  E9 0000013D	   *	    jmp    @C004C
+ 0000042A		   *@C004A:
+ 0000042A  80 F9 64	   *	    cmp    cl, cols
+ 0000042D  75 26	   *	    jne    @C004D
+							
+ 0000042F  FE 0D 00000BCF R					dec TR
+ 00000435  E8 00000217						call GridCheck ;checks above
+
+ 0000043A  FE 0D 00000BD0 R					dec TC
+ 00000440  E8 0000020C						call GridCheck ;checks upperleft
+
+ 00000445  FE 0D 00000BCF R					dec TR
+ 0000044B  E8 00000201						call GridCheck ;checks left
+
+							.ELSE; bottom row
+ 00000450  E9 00000112	   *	    jmp    @C004F
+ 00000455		   *@C004D:
+ 00000455  FE 0D 00000BD0 R					dec TC
+ 0000045B  E8 000001F1						call GridCheck ;checks left
+
+ 00000460  FE 0D 00000BCF R					dec TR
+ 00000466  E8 000001E6						call GridCheck ;checks upperright
+
+ 0000046B  FE 05 00000BD0 R					inc TC
+ 00000471  E8 000001DB						call GridCheck ;checks above
+
+ 00000476  FE 05 00000BD0 R					inc TC
+ 0000047C  E8 000001D0						call GridCheck ;checs upperright
+
+ 00000481  FE 05 00000BCF R					inc TR 
+ 00000487  E8 000001C5						call GridCheck ;checks right			
+							.ENDIF
+						.ELSE
+ 0000048C  E9 000000D6	   *	    jmp    @C0050
+ 00000491		   *@C0048:
+							.IF CL == 0 ;left column, not in upper right or bottom right
+ 00000491  0A C9	   *	    or	cl, cl
+ 00000493  75 3C	   *	    jne    @C0051
+ 00000495  FE 05 00000BCF R					inc TR
+ 0000049B  E8 000001B1						call GridCheck ;checks position below current spot
+
+ 000004A0  FE 05 00000BD0 R					inc TC
+ 000004A6  E8 000001A6						call GridCheck ;checks bottomright
+
+ 000004AB  FE 0D 00000BCF R					dec TR
+ 000004B1  E8 0000019B						call GridCheck ;checks right
+
+ 000004B6  FE 0D 00000BCF R					dec TR
+ 000004BC  E8 00000190						call GridCheck ;checks upperright
+
+ 000004C1  FE 0D 00000BD0 R					dec TC
+ 000004C7  E8 00000185						call GridCheck ;checkas above
+
+								
+							.ELSEIF CL == cols ;right column, not in most upper right or most upper left
+ 000004CC  E9 00000096	   *	    jmp    @C0053
+ 000004D1		   *@C0051:
+ 000004D1  80 F9 64	   *	    cmp    cl, cols
+ 000004D4  75 39	   *	    jne    @C0054
+								
+
+ 000004D6  FE 05 00000BCF R					inc TR
+ 000004DC  E8 00000170						call GridCheck ;checks position below current spot
+
+ 000004E1  FE 0D 00000BD0 R					dec TC
+ 000004E7  E8 00000165						call GridCheck ;checks bottomleft
+
+ 000004EC  FE 0D 00000BCF R					dec TR
+ 000004F2  E8 0000015A						call GridCheck ;checks left
+
+ 000004F7  FE 0D 00000BCF R					dec TR
+ 000004FD  E8 0000014F						call GridCheck ;checks upperleft
+
+ 00000502  FE 05 00000BD0 R					inc TC
+ 00000508  E8 00000144						call GridCheck ;checkas above
+
+							.ELSE ;all central blocks not near an edge
+ 0000050D  EB 58	   *	    jmp    @C0056
+ 0000050F		   *@C0054:
+
+ 0000050F  FE 05 00000BCF R					inc TR
+ 00000515  E8 00000137						call GridCheck ;checks position below current spot
+
+ 0000051A  FE 05 00000BD0 R					inc TC
+ 00000520  E8 0000012C						call GridCheck ;checks bottomright of current spot
+
+ 00000525  FE 0D 00000BCF R					dec TR
+ 0000052B  E8 00000121						call GridCheck ;checks right of position
+
+ 00000530  FE 0D 00000BCF R					dec TR
+ 00000536  E8 00000116						call GridCheck ;checks topright of position
+
+ 0000053B  FE 0D 00000BD0 R					dec TC
+ 00000541  E8 0000010B						call GridCheck ;checks above positon
+
+ 00000546  FE 0D 00000BD0 R					dec TC
+ 0000054C  E8 00000100						call GridCheck ;checks topleft of position
+
+ 00000551  FE 05 00000BCF R					inc TR
+ 00000557  E8 000000F5						call GridCheck ;checks left of position
+
+ 0000055C  FE 05 00000BCF R					inc TR
+ 00000562  E8 000000EA						call GridCheck ;checks bottomleft of position
+							.ENDIF
+						.ENDIF
+ 00000567		   *@C0056:
+ 00000567		   *@C0053:
+ 00000567		   *@C0050:
+ 00000567		   *@C0047:
+ 00000567		   *@C0046:
+ 00000567		   *@C0043:
+ 00000567		   *@C004F:
+ 00000567		   *@C004C:
+
+
+
+						.IF point == '#' ;checks if point is hash
+ 00000567  83 3D 00000BCB R
+	   23		   *	    cmp    point, '#'
+ 0000056E  75 4E	   *	    jne    @C0057
+
+							.IF count == 2 || count == 3
+ 00000570  80 3D 00000AFC R
+	   02		   *	    cmp    count, 002h
+ 00000577  74 09	   *	    je	@C005A
+ 00000579  80 3D 00000AFC R
+	   03		   *	    cmp    count, 003h
+ 00000580  75 7F	   *	    jne    @C0059
+ 00000582		   *@C005A:
+ 00000582  B8 00000022						mov  EAX,green+(green*16)
+ 00000587  E8 00000000 E					call SetTextColor
+
+ 0000058C  8A F5						mov DH, CH
+ 0000058E  FE C6						inc DH
+ 00000590  8A D1						mov DL, CL
+ 00000592  FE C2						inc DL 
+ 00000594  E8 00000000 E					call Gotoxy
+ 00000599  66| B8 0025						mov AX, '%'
+ 0000059D  E8 00000000 E					call WriteChar
+
+								; toggle cell state
+ 000005A2  88 2D 00000BCF R					mov TR, CH
+ 000005A8  88 0D 00000BD0 R					mov TC, CL
+ 000005AE  E8 00000195						call	GridAtPoint
+ 000005B3  8B F0						mov ESI, EAX
+ 000005B5  B8 00000025						mov EAX, '%'
+								;sub EAX, [ESI]
+ 000005BA  88 06						mov [ESI], AL
+							.ENDIF
+						.ELSE ;spot is an empty space
+ 000005BC  EB 43	   *	    jmp    @C005C
+ 000005BE		   *@C0057:
+							.IF count == 3
+ 000005BE  80 3D 00000AFC R
+	   03		   *	    cmp    count, 003h
+ 000005C5  75 3A	   *	    jne    @C005D
+								
+ 000005C7  8A D1						mov DL, CL
+ 000005C9  FE C2						inc DL
+ 000005CB  8A F5						mov DH, CH
+ 000005CD  FE C6						inc DH
+ 000005CF  E8 00000000 E					call Gotoxy
+ 000005D4  B8 00000022						mov  EAX,green+(green*16)
+ 000005D9  E8 00000000 E					call SetTextColor
+ 000005DE  66| B8 0026						mov AX, '&'
+ 000005E2  E8 00000000 E					call WriteChar
+
+ 000005E7  88 2D 00000BCF R					mov TR, CH
+ 000005ED  88 0D 00000BD0 R					mov TC, CL
+ 000005F3  E8 00000150						call	GridAtPoint
+ 000005F8  8B F0						mov ESI, EAX
+ 000005FA  B8 00000026						mov EAX, '&'
+								;sub EAX, [ESI]
+ 000005FF  88 06						mov [ESI], AL
+							.ENDIF
+						.ENDIF
+ 00000601		   *@C005D:
+ 00000601		   *@C005C:
+ 00000601		   *@C0059:
+
+ 00000601  B8 0000000F			mov  EAX,white+(black*16)
+ 00000606  E8 00000000 E		call SetTextColor
+
+					
+						
+ 0000060B  FE C1			inc CL
+ 0000060D  80 F9 64			cmp CL, cols
+ 00000610  0F 85 FFFFFD14		jne L2
+ 00000616  FE C5			inc CH
+ 00000618  80 FD 1C			cmp CH, rows
+ 0000061B  0F 85 FFFFFD07		jne L1
+
+ 00000621  E8 00000066			call RemoveCells
+
+ 00000626  B2 64			mov DL, cols
+ 00000628  80 C2 0A			add DL, 10
+ 0000062B  B6 1C			mov DH, rows
+ 0000062D  80 EE 02			sub DH, 2
+ 00000630  E8 00000000 E		call	Gotoxy
+					
+ 00000635  B8 0000000F			mov  EAX,white+(black*16)
+ 0000063A  E8 00000000 E		call SetTextColor
+ 0000063F  0F B7 05			movzx EAX, iter
+	   00000AFA R
+ 00000646  E8 00000000 E		call	WriteDec
+						
+					ret
+ 0000064B  5E		   *	    pop    esi
+ 0000064C  5A		   *	    pop    edx
+ 0000064D  59		   *	    pop    ecx
+ 0000064E  5B		   *	    pop    ebx
+ 0000064F  58		   *	    pop    eax
+ 00000650  C3		   *	    ret    00000h
+ 00000651			UpdateCells ENDP
+
+ 00000651			GridCheck PROC uses EAX EBX EDX ESI
+ 00000651  50		   *	    push   eax
+ 00000652  53		   *	    push   ebx
+ 00000653  52		   *	    push   edx
+ 00000654  56		   *	    push   esi
+ 00000655  8D 35 00000000 R		lea ESI, grid
+ 0000065B  0F B6 05				movzx EAX, TR
+	   00000BCF R
+ 00000662  BB 00000064				mov EBX, cols
+ 00000667  F7 E3				mul EBX
+ 00000669  03 F0				add ESI, EAX
+ 0000066B  0F B6 05				movzx EAX, TC
+	   00000BD0 R
+ 00000672  03 F0				add ESI, EAX
+ 00000674  0F B6 06				movzx EAX, byte ptr [ESI]
+
+					.IF EAX == '#' || EAX == '%'
+ 00000677  83 F8 23	   *	    cmp    eax, '#'
+ 0000067A  74 05	   *	    je	@C0060
+ 0000067C  83 F8 25	   *	    cmp    eax, '%'
+ 0000067F  75 06	   *	    jne    @C005F
+ 00000681		   *@C0060:
+ 00000681  FE 05 00000AFC R			inc count
+					.ENDIF
+ 00000687		   *@C005F:
+
+					ret
+ 00000687  5E		   *	    pop    esi
+ 00000688  5A		   *	    pop    edx
+ 00000689  5B		   *	    pop    ebx
+ 0000068A  58		   *	    pop    eax
+ 0000068B  C3		   *	    ret    00000h
+ 0000068C			GridCheck ENDP
+
+
+
+				;removecells is done
+ 0000068C			RemoveCells proc uses EAX 
+ 0000068C  50		   *	    push   eax
+ 0000068D  B5 00			mov CH, 0
+ 0000068F			L1:
+ 0000068F  B1 00			mov CL, 0
+ 00000691			L2:
+ 00000691  8D 35 00000000 R		lea ESI, grid
+ 00000697  0F B6 C5				movzx EAX, CH
+ 0000069A  BB 00000064				mov EBX, cols
+ 0000069F  F7 E3				mul EBX
+ 000006A1  03 F0				add ESI, EAX
+ 000006A3  0F B6 C1				movzx EAX, CL
+ 000006A6  03 F0				add ESI, EAX
+ 000006A8  0F B6 06				movzx EAX, BYTE PTR [ESI]
+						
+
+					.IF EAX == '#' 
+ 000006AB  83 F8 23	   *	    cmp    eax, '#'
+ 000006AE  75 3C	   *	    jne    @C0062
+ 000006B0  8A F5				mov DH, CH
+ 000006B2  FE C6				inc DH
+ 000006B4  8A D1				mov DL, CL
+ 000006B6  FE C2				inc DL
+ 000006B8  E8 00000000 E			call Gotoxy
+ 000006BD  B8 00000000				mov  EAX,black+(black*16)
+ 000006C2  E8 00000000 E			call SetTextColor
+ 000006C7  66| B8 0020				mov AX, ' '
+ 000006CB  E8 00000000 E			call WriteChar
+ 000006D0  88 2D 00000BCF R					mov TR, CH
+								;inc TR
+ 000006D6  88 0D 00000BD0 R					mov TC, CL
+								;inc TC
+ 000006DC  E8 00000067						call	GridAtPoint
+ 000006E1  8B F0						mov ESI, EAX
+ 000006E3  B8 00000000						mov EAX, 0
+								;sub EAX, [ESI]
+ 000006E8  88 06						mov [ESI], AL
+
+					.ELSEIF EAX == '&' || EAX == '%'
+ 000006EA  EB 44	   *	    jmp    @C0064
+ 000006EC		   *@C0062:
+ 000006EC  83 F8 26	   *	    cmp    eax, '&'
+ 000006EF  74 05	   *	    je	@C0066
+ 000006F1  83 F8 25	   *	    cmp    eax, '%'
+ 000006F4  75 3A	   *	    jne    @C0065
+ 000006F6		   *@C0066:
+ 000006F6  8A F5				mov DH, CH
+ 000006F8  FE C6				inc DH
+ 000006FA  8A D1				mov DL, CL
+ 000006FC  FE C2				inc DL
+ 000006FE  E8 00000000 E			call Gotoxy
+ 00000703  B8 00000022				mov  EAX,green+(green*16)
+ 00000708  E8 00000000 E			call SetTextColor
+ 0000070D  66| B8 0023				mov AX, '#'
+ 00000711  E8 00000000 E			call WriteChar
+ 00000716  88 2D 00000BCF R			mov TR, CH
+ 0000071C  88 0D 00000BD0 R			mov TC, CL
+ 00000722  E8 00000021				call	GridAtPoint
+
+ 00000727  8B F0					mov ESI, EAX
+ 00000729  B8 00000023					mov EAX, '#'
+							;sub EAX, [ESI]
+ 0000072E  88 06					mov [ESI], AL
+
+					.ENDIF
+ 00000730		   *@C0065:
+ 00000730		   *@C0064:
+
+					;mov  EAX,white+(black*16)
+					;call SetTextColor
+
+
+						
+ 00000730  FE C1			inc CL
+ 00000732  80 F9 64			cmp CL, cols
+ 00000735  0F 85 FFFFFF56		jne L2
+ 0000073B  FE C5			inc CH
+ 0000073D  80 FD 1C			cmp CH, rows
+ 00000740  0F 85 FFFFFF49		jne L1
+
+
+					ret
+ 00000746  58		   *	    pop    eax
+ 00000747  C3		   *	    ret    00000h
+ 00000748			RemoveCells ENDP
+
+ 00000748			GridAtPoint PROC USES EBX ESI
+ 00000748  53		   *	    push   ebx
+ 00000749  56		   *	    push   esi
+ 0000074A  8D 35 00000000 R		lea ESI, grid
+ 00000750  0F B6 05			movzx EAX, TR
+	   00000BCF R
+ 00000757  BB 00000064			mov EBX, cols
+ 0000075C  F7 E3			mul EBX
+ 0000075E  03 F0			add ESI, EAX
+ 00000760  0F B6 05			movzx EAX, TC
+	   00000BD0 R
+ 00000767  03 F0			add ESI, EAX
+ 00000769  8B C6			mov EAX, ESI
+
+					ret
+ 0000076B  5E		   *	    pop    esi
+ 0000076C  5B		   *	    pop    ebx
+ 0000076D  C3		   *	    ret    00000h
+ 0000076E			GridAtPoint ENDP
+
+
+ 0000076E			DrawInfoBar PROC USES EAX EDX
+ 0000076E  50		   *	    push   eax
+ 0000076F  52		   *	    push   edx
+ 00000770  B0 01			mov AL, 1
+
+ 00000772  B2 64			mov DL, cols
+ 00000774  80 C2 06			add DL, 6
+ 00000777  8A F0			mov DH, AL
+ 00000779  E8 00000000 E		call	Gotoxy
+ 0000077E  BA 00000AFD R		mov EDX, OFFSET tTtle1
+ 00000783  E8 00000000 E		call	WriteString
+
+ 00000788  FE C0			inc AL
+
+ 0000078A  B2 64			mov DL, cols
+ 0000078C  80 C2 04			add DL, 4
+ 0000078F  8A F0			mov DH, AL
+ 00000791  E8 00000000 E		call	Gotoxy
+ 00000796  BA 00000B06 R		mov EDX, OFFSET tTtle2
+ 0000079B  E8 00000000 E		call	WriteString
+
+ 000007A0  04 03			add AL, 3
+
+ 000007A2  B2 64			mov DL, cols
+ 000007A4  80 C2 06			add DL, 6
+ 000007A7  8A F0			mov DH, AL
+ 000007A9  E8 00000000 E		call	Gotoxy
+ 000007AE  BA 00000B13 R		mov EDX, OFFSET tCntrl
+ 000007B3  E8 00000000 E		call	WriteString
+
+ 000007B8  04 02			add AL, 2
+
+ 000007BA  B2 64			mov DL, cols
+ 000007BC  80 C2 08			add DL, 8
+ 000007BF  8A F0			mov DH, AL
+ 000007C1  E8 00000000 E		call	Gotoxy
+ 000007C6  BA 00000B1C R		mov EDX, OFFSET tMove1
+ 000007CB  E8 00000000 E		call	WriteString
+
+ 000007D0  FE C0			inc AL
+
+ 000007D2  B2 64			mov DL, cols
+ 000007D4  80 C2 05			add DL, 5
+ 000007D7  8A F0			mov DH, AL
+ 000007D9  E8 00000000 E		call	Gotoxy
+ 000007DE  BA 00000B21 R		mov EDX, OFFSET tMove2
+ 000007E3  E8 00000000 E		call	WriteString
+
+ 000007E8  04 02			add AL, 2
+
+ 000007EA  B2 64			mov DL, cols
+ 000007EC  80 C2 04			add DL, 4
+ 000007EF  8A F0			mov DH, AL
+ 000007F1  E8 00000000 E		call	Gotoxy
+ 000007F6  BA 00000B2C R		mov EDX, OFFSET tTgle1
+ 000007FB  E8 00000000 E		call	WriteString
+
+ 00000800  FE C0			inc AL
+
+ 00000802  B2 64			mov DL, cols
+ 00000804  80 C2 06			add DL, 6
+ 00000807  8A F0			mov DH, AL
+ 00000809  E8 00000000 E		call	Gotoxy
+ 0000080E  BA 00000B39 R		mov EDX, OFFSET tTgle2
+ 00000813  E8 00000000 E		call	WriteString
+
+ 00000818  04 02			add AL, 2
+
+ 0000081A  B2 64			mov DL, cols
+ 0000081C  80 C2 04			add DL, 4
+ 0000081F  8A F0			mov DH, AL
+ 00000821  E8 00000000 E		call	Gotoxy
+ 00000826  BA 00000B42 R		mov EDX, OFFSET tSped1
+ 0000082B  E8 00000000 E		call	WriteString
+
+ 00000830  FE C0			inc AL
+
+ 00000832  B2 64			mov DL, cols
+ 00000834  80 C2 03			add DL, 3
+ 00000837  8A F0			mov DH, AL
+ 00000839  E8 00000000 E		call	Gotoxy
+ 0000083E  BA 00000B4F R		mov EDX, OFFSET tSped2
+ 00000843  E8 00000000 E		call	WriteString
+
+ 00000848  04 02			add AL, 2
+
+ 0000084A  B2 64			mov DL, cols
+ 0000084C  80 C2 05			add DL, 5
+ 0000084F  8A F0			mov DH, AL
+ 00000851  E8 00000000 E		call	Gotoxy
+ 00000856  BA 00000B60 R		mov EDX, OFFSET tPase1
+ 0000085B  E8 00000000 E		call	WriteString
+
+ 00000860  FE C0			inc AL
+
+ 00000862  B2 64			mov DL, cols
+ 00000864  80 C2 03			add DL, 3
+ 00000867  8A F0			mov DH, AL
+ 00000869  E8 00000000 E		call	Gotoxy
+ 0000086E  BA 00000B6B R		mov EDX, OFFSET tPase2
+ 00000873  E8 00000000 E		call	WriteString
+
+ 00000878  04 02			add AL, 2
+
+ 0000087A  B2 64			mov DL, cols
+ 0000087C  80 C2 04			add DL, 4
+ 0000087F  8A F0			mov DH, AL
+ 00000881  E8 00000000 E		call	Gotoxy
+ 00000886  BA 00000B7A R		mov EDX, OFFSET tRsrt1
+ 0000088B  E8 00000000 E		call	WriteString
+
+ 00000890  FE C0			inc AL
+
+ 00000892  B2 64			mov DL, cols
+ 00000894  80 C2 07			add DL, 7
+ 00000897  8A F0			mov DH, AL
+ 00000899  E8 00000000 E		call	Gotoxy
+ 0000089E  BA 00000B87 R		mov EDX, OFFSET tRsrt2
+ 000008A3  E8 00000000 E		call	WriteString
+
+ 000008A8  04 02			add AL, 2
+
+ 000008AA  B2 64			mov DL, cols
+ 000008AC  80 C2 08			add DL, 8
+ 000008AF  8A F0			mov DH, AL
+ 000008B1  E8 00000000 E		call	Gotoxy
+ 000008B6  BA 00000B8E R		mov EDX, OFFSET tLeav1
+ 000008BB  E8 00000000 E		call	WriteString
+
+ 000008C0  FE C0			inc AL
+
+ 000008C2  B2 64			mov DL, cols
+ 000008C4  80 C2 07			add DL, 7
+ 000008C7  8A F0			mov DH, AL
+ 000008C9  E8 00000000 E		call	Gotoxy
+ 000008CE  BA 00000B93 R		mov EDX, OFFSET tLeav2
+ 000008D3  E8 00000000 E		call	WriteString
+
+ 000008D8  B2 64			mov DL, cols
+ 000008DA  80 C2 03			add DL, 3
+ 000008DD  B6 1B			mov DH, mrows
+ 000008DF  E8 00000000 E		call	Gotoxy
+ 000008E4  BA 00000BB1 R		mov EDX, OFFSET tSpeed
+ 000008E9  E8 00000000 E		call	WriteString
+
+ 000008EE  B2 64			mov DL, cols
+ 000008F0  80 C2 03			add DL, 3
+ 000008F3  B6 1C			mov DH, rows
+ 000008F5  E8 00000000 E		call	Gotoxy
+ 000008FA  BA 00000B9A R		mov EDX, OFFSET tTog1
+ 000008FF  E8 00000000 E		call	WriteString
+
+ 00000904  B2 64			mov DL, cols
+ 00000906  80 C2 03			add DL, 3
+ 00000909  B6 1C			mov DH, rows
+ 0000090B  80 EE 02			sub DH, 2
+ 0000090E  E8 00000000 E		call	Gotoxy
+ 00000913  BA 00000BBA R		mov EDX, OFFSET tIters
+ 00000918  E8 00000000 E		call	WriteString
+
+					ret
+ 0000091D  5A		   *	    pop    edx
+ 0000091E  58		   *	    pop    eax
+ 0000091F  C3		   *	    ret    00000h
+ 00000920			DrawInfoBar ENDP
+
+ 00000920			DrawCursorBG PROC USES EAX
+ 00000920  50		   *	    push   eax
+ 00000921  E8 0000003C			call	GridAtCursor
+ 00000926  0F B6 00			movzx	EAX, BYTE PTR[EAX]
+ 00000929  E8 0000005A			call	GoToCursor
+
+					.IF EAX > 0
+ 0000092E  83 F8 00	   *	    cmp    eax, 000h
+ 00000931  76 10	   *	    jbe    @C0068
+ 00000933  B8 00000022				mov  EAX,green+(green*16)
+ 00000938  E8 00000000 E			call SetTextColor
+ 0000093D  66| B8 0023				mov AX, '#'
+					.ELSE
+ 00000941  EB 0E	   *	    jmp    @C006A
+ 00000943		   *@C0068:
+ 00000943  B8 0000000F				mov  EAX,white+(black*16)
+ 00000948  E8 00000000 E			call SetTextColor
+ 0000094D  66| B8 0020				mov AX, ' '
+					.ENDIF
+ 00000951		   *@C006A:
+ 00000951  E8 00000000 E		call	WriteChar
+ 00000956  B8 0000000F			mov EAX, white+(black*16)
+ 0000095B  E8 00000000 E		call setTextColor
+
+					ret
+ 00000960  58		   *	    pop    eax
+ 00000961  C3		   *	    ret    00000h
+ 00000962			DrawCursorBG ENDP
+
+ 00000962			GridAtCursor PROC USES EBX ESI
+ 00000962  53		   *	    push   ebx
+ 00000963  56		   *	    push   esi
+ 00000964  8D 35 00000000 R		lea ESI, grid
+ 0000096A  0F B7 05			movzx EAX, cursor.y
+	   00000AF2 R
+ 00000971  BB 00000064			mov EBX, cols
+ 00000976  F7 E3			mul EBX
+ 00000978  03 F0			add ESI, EAX
+ 0000097A  0F B7 05			movzx EAX, cursor.x
+	   00000AF0 R
+ 00000981  03 F0			add ESI, EAX
+ 00000983  8B C6			mov EAX, ESI
+
+					ret
+ 00000985  5E		   *	    pop    esi
+ 00000986  5B		   *	    pop    ebx
+ 00000987  C3		   *	    ret    00000h
+ 00000988			GridAtCursor ENDP
+
+
+ 00000988			GoToCursor PROC USES EAX EDX
+ 00000988  50		   *	    push   eax
+ 00000989  52		   *	    push   edx
+ 0000098A  66| A1			mov AX, cursor.x
+	   00000AF0 R
+ 00000990  66| 40			inc AX
+ 00000992  8A D0			mov DL, AL
+ 00000994  66| A1			mov AX, cursor.y
+	   00000AF2 R
+ 0000099A  66| 40			inc AX
+ 0000099C  8A F0			mov DH, AL
+ 0000099E  E8 00000000 E		call	Gotoxy
+
+					ret
+ 000009A3  5A		   *	    pop    edx
+ 000009A4  58		   *	    pop    eax
+ 000009A5  C3		   *	    ret    00000h
+ 000009A6			GoToCursor ENDP
+
+				END main
+Microsoft (R) Macro Assembler Version 14.16.27034.0	    10/22/20 16:11:36
+GoL.asm							     Symbols 2 - 1
+
+
+
+
+Structures and Unions:
+
+                N a m e                  Size
+                                         Offset      Type
+
+CONSOLE_CURSOR_INFO  . . . . . .	 00000008
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+  bVisible . . . . . . . . . . .	 00000004	 DWord
+CONSOLE_SCREEN_BUFFER_INFO . . .	 00000016
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+  dwCursorPosition . . . . . . .	 00000004	 DWord
+  wAttributes  . . . . . . . . .	 00000008	 Word
+  srWindow . . . . . . . . . . .	 0000000A	 QWord
+  dwMaximumWindowSize  . . . . .	 00000012	 DWord
+COORD  . . . . . . . . . . . . .	 00000004
+  X  . . . . . . . . . . . . . .	 00000000	 Word
+  Y  . . . . . . . . . . . . . .	 00000002	 Word
+FILETIME . . . . . . . . . . . .	 00000008
+  loDateTime . . . . . . . . . .	 00000000	 DWord
+  hiDateTime . . . . . . . . . .	 00000004	 DWord
+FOCUS_EVENT_RECORD . . . . . . .	 00000004
+  bSetFocus  . . . . . . . . . .	 00000000	 DWord
+FPU_ENVIRON  . . . . . . . . . .	 0000001C
+  controlWord  . . . . . . . . .	 00000000	 Word
+  statusWord . . . . . . . . . .	 00000004	 Word
+  tagWord  . . . . . . . . . . .	 00000008	 Word
+  instrPointerOffset . . . . . .	 0000000C	 DWord
+  instrPointerSelector . . . . .	 00000010	 DWord
+  operandPointerOffset . . . . .	 00000014	 DWord
+  operandPointerSelector . . . .	 00000018	 Word
+INPUT_RECORD . . . . . . . . . .	 00000014
+  EventType  . . . . . . . . . .	 00000000	 Word
+  Event  . . . . . . . . . . . .	 00000004	 XmmWord
+  bKeyDown . . . . . . . . . . .	 00000000	 DWord
+  wRepeatCount . . . . . . . . .	 00000004	 Word
+  wVirtualKeyCode  . . . . . . .	 00000006	 Word
+  wVirtualScanCode . . . . . . .	 00000008	 Word
+  uChar  . . . . . . . . . . . .	 0000000A	 Word
+  UnicodeChar  . . . . . . . . .	 00000000	 Word
+  AsciiChar  . . . . . . . . . .	 00000000	 Byte
+  dwControlKeyState  . . . . . .	 0000000C	 DWord
+  dwMousePosition  . . . . . . .	 00000000	 DWord
+  dwButtonState  . . . . . . . .	 00000004	 DWord
+  dwMouseControlKeyState . . . .	 00000008	 DWord
+  dwEventFlags . . . . . . . . .	 0000000C	 DWord
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+  dwCommandId  . . . . . . . . .	 00000000	 DWord
+  bSetFocus  . . . . . . . . . .	 00000000	 DWord
+KEY_EVENT_RECORD . . . . . . . .	 00000010
+  bKeyDown . . . . . . . . . . .	 00000000	 DWord
+  wRepeatCount . . . . . . . . .	 00000004	 Word
+  wVirtualKeyCode  . . . . . . .	 00000006	 Word
+  wVirtualScanCode . . . . . . .	 00000008	 Word
+  uChar  . . . . . . . . . . . .	 0000000A	 Word
+  UnicodeChar  . . . . . . . . .	 00000000	 Word
+  AsciiChar  . . . . . . . . . .	 00000000	 Byte
+  dwControlKeyState  . . . . . .	 0000000C	 DWord
+MENU_EVENT_RECORD  . . . . . . .	 00000004
+  dwCommandId  . . . . . . . . .	 00000000	 DWord
+MOUSE_EVENT_RECORD . . . . . . .	 00000010
+  dwMousePosition  . . . . . . .	 00000000	 DWord
+  dwButtonState  . . . . . . . .	 00000004	 DWord
+  dwMouseControlKeyState . . . .	 00000008	 DWord
+  dwEventFlags . . . . . . . . .	 0000000C	 DWord
+SMALL_RECT . . . . . . . . . . .	 00000008
+  Left . . . . . . . . . . . . .	 00000000	 Word
+  Top  . . . . . . . . . . . . .	 00000002	 Word
+  Right  . . . . . . . . . . . .	 00000004	 Word
+  Bottom . . . . . . . . . . . .	 00000006	 Word
+SYSTEMTIME . . . . . . . . . . .	 00000010
+  wYear  . . . . . . . . . . . .	 00000000	 Word
+  wMonth . . . . . . . . . . . .	 00000002	 Word
+  wDayOfWeek . . . . . . . . . .	 00000004	 Word
+  wDay . . . . . . . . . . . . .	 00000006	 Word
+  wHour  . . . . . . . . . . . .	 00000008	 Word
+  wMinute  . . . . . . . . . . .	 0000000A	 Word
+  wSecond  . . . . . . . . . . .	 0000000C	 Word
+  wMilliseconds  . . . . . . . .	 0000000E	 Word
+WINDOW_BUFFER_SIZE_RECORD  . . .	 00000004
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000C9F Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000009A6 Para	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+CloseFile  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+CloseHandle  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Clrscr . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+CreateFileA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+CreateOutputFile . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Crlf . . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Delay  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DrawCursorBG . . . . . . . . . .	P Near	 00000920 _TEXT	Length= 00000042 Public STDCALL
+DrawInfoBar  . . . . . . . . . .	P Near	 0000076E _TEXT	Length= 000001B2 Public STDCALL
+DumpMem  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DumpRegs . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FileTimeToDosDateTime  . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FileTimeToSystemTime . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FlushConsoleInputBuffer  . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FormatMessageA . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetCommandLineA  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetCommandTail . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleCP . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleCursorInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleMode . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleScreenBufferInfo . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetDateTime  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetFileTime  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetKeyState  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetLastError . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetLocalTime . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetMaxXY . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetMseconds  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetNumberOfConsoleInputEvents  .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetProcessHeap . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetStdHandle . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetSystemTime  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetTextColor . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetTickCount . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GoToCursor . . . . . . . . . . .	P Near	 00000988 _TEXT	Length= 0000001E Public STDCALL
+Gotoxy . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GridAtCursor . . . . . . . . . .	P Near	 00000962 _TEXT	Length= 00000026 Public STDCALL
+GridAtPoint  . . . . . . . . . .	P Near	 00000748 _TEXT	Length= 00000026 Public STDCALL
+GridCheck  . . . . . . . . . . .	P Near	 00000651 _TEXT	Length= 0000003B Public STDCALL
+HeapAlloc  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapCreate . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapDestroy  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapFree . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapSize . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Init . . . . . . . . . . . . . .	P Near	 00000053 _TEXT	Length= 000000C6 Public STDCALL
+  LG . . . . . . . . . . . . . .	L Near	 000000BB _TEXT	
+  LB . . . . . . . . . . . . . .	L Near	 000000E7 _TEXT	
+Input  . . . . . . . . . . . . .	P Near	 00000119 _TEXT	Length= 0000013E Public STDCALL
+  LNK  . . . . . . . . . . . . .	L Near	 00000254 _TEXT	
+IsDigit  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+LocalFree  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+MessageBoxA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+MsgBoxAsk  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+MsgBox . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+OpenInputFile  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ParseDecimal32 . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ParseInteger32 . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+PeekConsoleInputA  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Random32 . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+RandomRange  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Randomize  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadChar . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadConsoleA . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadConsoleInputA  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadDec  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadFile . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadFloat  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadFromFile . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadHex  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadInt  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadKeyFlush . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadKey  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadString . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+RemoveCells  . . . . . . . . . .	P Near	 0000068C _TEXT	Length= 000000BC Public STDCALL
+  L1 . . . . . . . . . . . . . .	L Near	 0000068F _TEXT	
+  L2 . . . . . . . . . . . . . .	L Near	 00000691 _TEXT	
+SetConsoleCursorInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleCursorPosition . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleMode . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleScreenBufferSize . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleTextAttribute  . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleTitleA . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleWindowInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetFilePointer . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetLocalTime . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetTextColor . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ShowFPUStack . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Sleep  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+StrLength  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_compare  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_copy . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_length . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_trim . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_ucase  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SystemTimeToFileTime . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+UpdateCells  . . . . . . . . . .	P Near	 0000031A _TEXT	Length= 00000337 Public STDCALL
+  L1 . . . . . . . . . . . . . .	L Near	 00000328 _TEXT	
+  L2 . . . . . . . . . . . . . .	L Near	 0000032A _TEXT	
+Update . . . . . . . . . . . . .	P Near	 00000257 _TEXT	Length= 000000C3 Public STDCALL
+  LU . . . . . . . . . . . . . .	L Near	 00000270 _TEXT	
+  LC . . . . . . . . . . . . . .	L Near	 00000298 _TEXT	
+WaitMsg  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteBinB  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteBin . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteChar  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteConsoleA  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteConsoleOutputAttribute  . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteConsoleOutputCharacterA . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteDec . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteFile  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteFloat . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteHexB  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteHex . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteInt . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteStackFrameName  . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000053 Public STDCALL
+  LR . . . . . . . . . . . . . .	L Near	 00000000 _TEXT	
+  LG . . . . . . . . . . . . . .	L Near	 00000005 _TEXT	
+  LI . . . . . . . . . . . . . .	L Near	 00000013 _TEXT	
+  LExit  . . . . . . . . . . . .	L Near	 00000047 _TEXT	
+printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
+scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
+wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000003h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+ALT_MASK . . . . . . . . . . . .	Number	 00000003h   
+CAPSLOCK_ON  . . . . . . . . . .	Number	 00000080h   
+CREATE_ALWAYS  . . . . . . . . .	Number	 00000002h   
+CREATE_NEW . . . . . . . . . . .	Number	 00000001h   
+CTRL_MASK  . . . . . . . . . . .	Number	 0000000Ch   
+CreateFile . . . . . . . . . . .	Text   	 CreateFileA
+DO_NOT_SHARE . . . . . . . . . .	Number	 00000000h   
+ENABLE_ECHO_INPUT  . . . . . . .	Number	 00000004h   
+ENABLE_LINE_INPUT  . . . . . . .	Number	 00000002h   
+ENABLE_MOUSE_INPUT . . . . . . .	Number	 00000010h   
+ENABLE_PROCESSED_INPUT . . . . .	Number	 00000001h   
+ENABLE_PROCESSED_OUTPUT  . . . .	Number	 00000001h   
+ENABLE_WINDOW_INPUT  . . . . . .	Number	 00000008h   
+ENABLE_WRAP_AT_EOL_OUTPUT  . . .	Number	 00000002h   
+ENHANCED_KEY . . . . . . . . . .	Number	 00000100h   
+FALSE  . . . . . . . . . . . . .	Number	 00000000h   
+FILE_APPEND_DATA . . . . . . . .	Number	 00000004h   
+FILE_ATTRIBUTE_ARCHIVE . . . . .	Number	 00000020h   
+FILE_ATTRIBUTE_COMPRESSED  . . .	Number	 00000800h   
+FILE_ATTRIBUTE_DEVICE  . . . . .	Number	 00000040h   
+FILE_ATTRIBUTE_DIRECTORY . . . .	Number	 00000010h   
+FILE_ATTRIBUTE_ENCRYPTED . . . .	Number	 00004000h   
+FILE_ATTRIBUTE_HIDDEN  . . . . .	Number	 00000002h   
+FILE_ATTRIBUTE_NORMAL  . . . . .	Number	 00000080h   
+FILE_ATTRIBUTE_NOT_CONTENT_INDEXED .	Number	 00002000h   
+FILE_ATTRIBUTE_OFFLINE . . . . .	Number	 00001000h   
+FILE_ATTRIBUTE_READONLY  . . . .	Number	 00000001h   
+FILE_ATTRIBUTE_REPARSE_POINT . .	Number	 00000400h   
+FILE_ATTRIBUTE_SPARSE_FILE . . .	Number	 00000200h   
+FILE_ATTRIBUTE_SYSTEM  . . . . .	Number	 00000004h   
+FILE_ATTRIBUTE_TEMPORARY . . . .	Number	 00000100h   
+FILE_BEGIN . . . . . . . . . . .	Number	 00000000h   
+FILE_CURRENT . . . . . . . . . .	Number	 00000001h   
+FILE_DELETE_CHILD  . . . . . . .	Number	 00000040h   
+FILE_END . . . . . . . . . . . .	Number	 00000002h   
+FILE_READ_DATA . . . . . . . . .	Number	 00000001h   
+FILE_SHARE_DELETE  . . . . . . .	Number	 00000004h   
+FILE_SHARE_READ  . . . . . . . .	Number	 00000001h   
+FILE_SHARE_WRITE . . . . . . . .	Number	 00000002h   
+FILE_WRITE_DATA  . . . . . . . .	Number	 00000002h   
+FOCUS_EVENT  . . . . . . . . . .	Number	 00000010h   
+FORMAT_MESSAGE_ALLOCATE_BUFFER .	Number	 00000100h   
+FORMAT_MESSAGE_FROM_SYSTEM . . .	Number	 00001000h   
+FormatMessage  . . . . . . . . .	Text   	 FormatMessageA
+GENERIC_ALL  . . . . . . . . . .	Number	 10000000h   
+GENERIC_EXECUTE  . . . . . . . .	Number	 20000000h   
+GENERIC_READ . . . . . . . . . .	Number	 -80000000h   
+GENERIC_WRITE  . . . . . . . . .	Number	 40000000h   
+GetCommandLine . . . . . . . . .	Text   	 GetCommandLineA
+HANDLE . . . . . . . . . . . . .	Text   	 DWORD
+HEAP_GENERATE_EXCEPTIONS . . . .	Number	 00000004h   
+HEAP_GROWABLE  . . . . . . . . .	Number	 00000002h   
+HEAP_NO_SERIALIZE  . . . . . . .	Number	 00000001h   
+HEAP_REALLOC_IN_PLACE_ONLY . . .	Number	 00000010h   
+HEAP_ZERO_MEMORY . . . . . . . .	Number	 00000008h   
+IDABORT  . . . . . . . . . . . .	Number	 00000003h   
+IDCANCEL . . . . . . . . . . . .	Number	 00000002h   
+IDCLOSE  . . . . . . . . . . . .	Number	 00000008h   
+IDCONTINUE . . . . . . . . . . .	Number	 0000000Bh   
+IDHELP . . . . . . . . . . . . .	Number	 00000009h   
+IDIGNORE . . . . . . . . . . . .	Number	 00000005h   
+IDNO . . . . . . . . . . . . . .	Number	 00000007h   
+IDOK . . . . . . . . . . . . . .	Number	 00000001h   
+IDRETRY  . . . . . . . . . . . .	Number	 00000004h   
+IDTIMEOUT  . . . . . . . . . . .	Number	 00007D00h   
+IDTRYAGAIN . . . . . . . . . . .	Number	 0000000Ah   
+IDYES  . . . . . . . . . . . . .	Number	 00000006h   
+INVALID_HANDLE_VALUE . . . . . .	Number	 -00000001h   
+KBDOWN_FLAG  . . . . . . . . . .	Number	 00000001h   
+KEY_EVENT  . . . . . . . . . . .	Number	 00000001h   
+KEY_MASKS  . . . . . . . . . . .	Number	 0000001Fh   
+LEFT_ALT_PRESSED . . . . . . . .	Number	 00000002h   
+LEFT_CTRL_PRESSED  . . . . . . .	Number	 00000008h   
+MB_ABORTRETRYIGNORE  . . . . . .	Number	 00000002h   
+MB_APPLMODAL . . . . . . . . . .	Number	 00000000h   
+MB_CANCELTRYCONTINUE . . . . . .	Number	 00000006h   
+MB_DEFBUTTON1  . . . . . . . . .	Number	 00000000h   
+MB_DEFBUTTON2  . . . . . . . . .	Number	 00000100h   
+MB_DEFBUTTON3  . . . . . . . . .	Number	 00000200h   
+MB_DEFBUTTON4  . . . . . . . . .	Number	 00000300h   
+MB_HELP  . . . . . . . . . . . .	Number	 00004000h   
+MB_ICONASTERISK  . . . . . . . .	Number	 00000040h   
+MB_ICONERROR . . . . . . . . . .	Number	 00000010h   
+MB_ICONEXCLAMATION . . . . . . .	Number	 00000030h   
+MB_ICONHAND  . . . . . . . . . .	Number	 00000010h   
+MB_ICONINFORMATION . . . . . . .	Number	 00000040h   
+MB_ICONQUESTION  . . . . . . . .	Number	 00000020h   
+MB_ICONSTOP  . . . . . . . . . .	Number	 00000010h   
+MB_ICONWARNING . . . . . . . . .	Number	 00000030h   
+MB_OKCANCEL  . . . . . . . . . .	Number	 00000001h   
+MB_OK  . . . . . . . . . . . . .	Number	 00000000h   
+MB_RETRYCANCEL . . . . . . . . .	Number	 00000005h   
+MB_SYSTEMMODAL . . . . . . . . .	Number	 00001000h   
+MB_TASKMODAL . . . . . . . . . .	Number	 00002000h   
+MB_USERICON  . . . . . . . . . .	Number	 00000080h   
+MB_YESNOCANCEL . . . . . . . . .	Number	 00000003h   
+MB_YESNO . . . . . . . . . . . .	Number	 00000004h   
+MENU_EVENT . . . . . . . . . . .	Number	 00000008h   
+MOUSE_EVENT  . . . . . . . . . .	Number	 00000002h   
+MessageBox . . . . . . . . . . .	Text   	 MessageBoxA
+NULL . . . . . . . . . . . . . .	Number	 00000000h   
+NUMLOCK_ON . . . . . . . . . . .	Number	 00000020h   
+OPEN_ALWAYS  . . . . . . . . . .	Number	 00000004h   
+OPEN_EXISTING  . . . . . . . . .	Number	 00000003h   
+PeekConsoleInput . . . . . . . .	Text   	 PeekConsoleInputA
+RIGHT_ALT_PRESSED  . . . . . . .	Number	 00000001h   
+RIGHT_CTRL_PRESSED . . . . . . .	Number	 00000004h   
+ReadConsoleInput . . . . . . . .	Text   	 ReadConsoleInputA
+ReadConsole  . . . . . . . . . .	Text   	 ReadConsoleA
+SCROLLLOCK_ON  . . . . . . . . .	Number	 00000040h   
+SHIFT_MASK . . . . . . . . . . .	Number	 00000010h   
+SHIFT_PRESSED  . . . . . . . . .	Number	 00000010h   
+STD_ERROR_HANDLE . . . . . . . .	Number	 -0000000Ch   
+STD_INPUT_HANDLE . . . . . . . .	Number	 -0000000Ah   
+STD_OUTPUT_HANDLE  . . . . . . .	Number	 -0000000Bh   
+SetConsoleTitle  . . . . . . . .	Text   	 SetConsoleTitleA
+TAB  . . . . . . . . . . . . . .	Number	 00000009h   
+TC . . . . . . . . . . . . . . .	Byte	 00000BD0 _DATA	
+TRUE . . . . . . . . . . . . . .	Number	 00000001h   
+TRUNCATE_EXISTING  . . . . . . .	Number	 00000005h   
+TR . . . . . . . . . . . . . . .	Byte	 00000BCF _DATA	
+VK_11  . . . . . . . . . . . . .	Number	 000000BDh   
+VK_12  . . . . . . . . . . . . .	Number	 000000BBh   
+VK_ADD . . . . . . . . . . . . .	Number	 0000006Bh   
+VK_BACK  . . . . . . . . . . . .	Number	 00000008h   
+VK_CANCEL  . . . . . . . . . . .	Number	 00000003h   
+VK_CAPITAL . . . . . . . . . . .	Number	 00000014h   
+VK_CLEAR . . . . . . . . . . . .	Number	 0000000Ch   
+VK_CONTROL . . . . . . . . . . .	Number	 00000011h   
+VK_DECIMAL . . . . . . . . . . .	Number	 0000006Eh   
+VK_DELETE  . . . . . . . . . . .	Number	 0000002Eh   
+VK_DIVIDE  . . . . . . . . . . .	Number	 0000006Fh   
+VK_DOWN  . . . . . . . . . . . .	Number	 00000028h   
+VK_END . . . . . . . . . . . . .	Number	 00000023h   
+VK_ESCAPE  . . . . . . . . . . .	Number	 0000001Bh   
+VK_EXECUTE . . . . . . . . . . .	Number	 0000002Bh   
+VK_F10 . . . . . . . . . . . . .	Number	 00000079h   
+VK_F11 . . . . . . . . . . . . .	Number	 0000007Ah   
+VK_F12 . . . . . . . . . . . . .	Number	 0000007Bh   
+VK_F13 . . . . . . . . . . . . .	Number	 0000007Ch   
+VK_F14 . . . . . . . . . . . . .	Number	 0000007Dh   
+VK_F15 . . . . . . . . . . . . .	Number	 0000007Eh   
+VK_F16 . . . . . . . . . . . . .	Number	 0000007Fh   
+VK_F17 . . . . . . . . . . . . .	Number	 00000080h   
+VK_F18 . . . . . . . . . . . . .	Number	 00000081h   
+VK_F19 . . . . . . . . . . . . .	Number	 00000082h   
+VK_F1  . . . . . . . . . . . . .	Number	 00000070h   
+VK_F20 . . . . . . . . . . . . .	Number	 00000083h   
+VK_F21 . . . . . . . . . . . . .	Number	 00000084h   
+VK_F22 . . . . . . . . . . . . .	Number	 00000085h   
+VK_F23 . . . . . . . . . . . . .	Number	 00000086h   
+VK_F24 . . . . . . . . . . . . .	Number	 00000087h   
+VK_F2  . . . . . . . . . . . . .	Number	 00000071h   
+VK_F3  . . . . . . . . . . . . .	Number	 00000072h   
+VK_F4  . . . . . . . . . . . . .	Number	 00000073h   
+VK_F5  . . . . . . . . . . . . .	Number	 00000074h   
+VK_F6  . . . . . . . . . . . . .	Number	 00000075h   
+VK_F7  . . . . . . . . . . . . .	Number	 00000076h   
+VK_F8  . . . . . . . . . . . . .	Number	 00000077h   
+VK_F9  . . . . . . . . . . . . .	Number	 00000078h   
+VK_HELP  . . . . . . . . . . . .	Number	 0000002Fh   
+VK_HOME  . . . . . . . . . . . .	Number	 00000024h   
+VK_INSERT  . . . . . . . . . . .	Number	 0000002Dh   
+VK_LBUTTON . . . . . . . . . . .	Number	 00000001h   
+VK_LCONTROL  . . . . . . . . . .	Number	 000000A2h   
+VK_LEFT  . . . . . . . . . . . .	Number	 00000025h   
+VK_LMENU . . . . . . . . . . . .	Number	 000000A4h   
+VK_LSHIFT  . . . . . . . . . . .	Number	 000000A0h   
+VK_MENU  . . . . . . . . . . . .	Number	 00000012h   
+VK_MULTIPLY  . . . . . . . . . .	Number	 0000006Ah   
+VK_NEXT  . . . . . . . . . . . .	Number	 00000022h   
+VK_NUMLOCK . . . . . . . . . . .	Number	 00000090h   
+VK_NUMPAD0 . . . . . . . . . . .	Number	 00000060h   
+VK_NUMPAD1 . . . . . . . . . . .	Number	 00000061h   
+VK_NUMPAD2 . . . . . . . . . . .	Number	 00000062h   
+VK_NUMPAD3 . . . . . . . . . . .	Number	 00000063h   
+VK_NUMPAD4 . . . . . . . . . . .	Number	 00000064h   
+VK_NUMPAD5 . . . . . . . . . . .	Number	 00000065h   
+VK_NUMPAD6 . . . . . . . . . . .	Number	 00000066h   
+VK_NUMPAD7 . . . . . . . . . . .	Number	 00000067h   
+VK_NUMPAD8 . . . . . . . . . . .	Number	 00000068h   
+VK_NUMPAD9 . . . . . . . . . . .	Number	 00000069h   
+VK_PAUSE . . . . . . . . . . . .	Number	 00000013h   
+VK_PRINT . . . . . . . . . . . .	Number	 0000002Ah   
+VK_PRIOR . . . . . . . . . . . .	Number	 00000021h   
+VK_RBUTTON . . . . . . . . . . .	Number	 00000002h   
+VK_RCONTROL  . . . . . . . . . .	Number	 000000A3h   
+VK_RETURN  . . . . . . . . . . .	Number	 0000000Dh   
+VK_RIGHT . . . . . . . . . . . .	Number	 00000027h   
+VK_RMENU . . . . . . . . . . . .	Number	 000000A5h   
+VK_RSHIFT  . . . . . . . . . . .	Number	 000000A1h   
+VK_SCROLL  . . . . . . . . . . .	Number	 00000091h   
+VK_SEPARATER . . . . . . . . . .	Number	 0000006Ch   
+VK_SHIFT . . . . . . . . . . . .	Number	 00000010h   
+VK_SNAPSHOT  . . . . . . . . . .	Number	 0000002Ch   
+VK_SPACE . . . . . . . . . . . .	Number	 00000020h   
+VK_SUBTRACT  . . . . . . . . . .	Number	 0000006Dh   
+VK_TAB . . . . . . . . . . . . .	Number	 00000009h   
+VK_UP  . . . . . . . . . . . . .	Number	 00000026h   
+WINDOW_BUFFER_SIZE_EVENT . . . .	Number	 00000004h   
+WriteConsoleOutputCharacter  . .	Text   	 WriteConsoleOutputCharacterA
+WriteConsole . . . . . . . . . .	Text   	 WriteConsoleA
+black  . . . . . . . . . . . . .	Number	 00000000h   
+blue . . . . . . . . . . . . . .	Number	 00000001h   
+borH . . . . . . . . . . . . . .	Byte	 00000C38 _DATA	
+borV . . . . . . . . . . . . . .	Byte	 00000BD1 _DATA	
+brown  . . . . . . . . . . . . .	Number	 00000006h   
+cols . . . . . . . . . . . . . .	Number	 00000064h   
+count  . . . . . . . . . . . . .	Byte	 00000AFC _DATA	
+cursor . . . . . . . . . . . . .	COORD	 00000AF0 _DATA	
+cyan . . . . . . . . . . . . . .	Number	 00000003h   
+dir  . . . . . . . . . . . . . .	Byte	 00000AF4 _DATA	
+exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
+gray . . . . . . . . . . . . . .	Number	 00000008h   
+green  . . . . . . . . . . . . .	Number	 00000002h   
+gridS  . . . . . . . . . . . . .	Number	 00000AF0h   
+grid . . . . . . . . . . . . . .	Byte	 00000000 _DATA	
+icount . . . . . . . . . . . . .	Byte	 00000AF5 _DATA	
+iflag  . . . . . . . . . . . . .	Byte	 00000AF7 _DATA	
+iter . . . . . . . . . . . . . .	Word	 00000AFA _DATA	
+lightBlue  . . . . . . . . . . .	Number	 00000009h   
+lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
+lightGray  . . . . . . . . . . .	Number	 00000007h   
+lightGreen . . . . . . . . . . .	Number	 0000000Ah   
+lightMagenta . . . . . . . . . .	Number	 0000000Dh   
+lightRed . . . . . . . . . . . .	Number	 0000000Ch   
+magenta  . . . . . . . . . . . .	Number	 00000005h   
+mcols  . . . . . . . . . . . . .	Number	 00000063h   
+mrows  . . . . . . . . . . . . .	Number	 0000001Bh   
+paused . . . . . . . . . . . . .	Byte	 00000AF8 _DATA	
+point  . . . . . . . . . . . . .	DWord	 00000BCB _DATA	
+red  . . . . . . . . . . . . . .	Number	 00000004h   
+rows . . . . . . . . . . . . . .	Number	 0000001Ch   
+speed  . . . . . . . . . . . . .	Byte	 00000AF9 _DATA	
+tCntrl . . . . . . . . . . . . .	Byte	 00000B13 _DATA	
+tIters . . . . . . . . . . . . .	Byte	 00000BBA _DATA	
+tLeav1 . . . . . . . . . . . . .	Byte	 00000B8E _DATA	
+tLeav2 . . . . . . . . . . . . .	Byte	 00000B93 _DATA	
+tMove1 . . . . . . . . . . . . .	Byte	 00000B1C _DATA	
+tMove2 . . . . . . . . . . . . .	Byte	 00000B21 _DATA	
+tPase1 . . . . . . . . . . . . .	Byte	 00000B60 _DATA	
+tPase2 . . . . . . . . . . . . .	Byte	 00000B6B _DATA	
+tPsSpc . . . . . . . . . . . . .	Byte	 00000BAA _DATA	
+tRsrt1 . . . . . . . . . . . . .	Byte	 00000B7A _DATA	
+tRsrt2 . . . . . . . . . . . . .	Byte	 00000B87 _DATA	
+tSped1 . . . . . . . . . . . . .	Byte	 00000B42 _DATA	
+tSped2 . . . . . . . . . . . . .	Byte	 00000B4F _DATA	
+tSpeed . . . . . . . . . . . . .	Byte	 00000BB1 _DATA	
+tTgle1 . . . . . . . . . . . . .	Byte	 00000B2C _DATA	
+tTgle2 . . . . . . . . . . . . .	Byte	 00000B39 _DATA	
+tTog1  . . . . . . . . . . . . .	Byte	 00000B9A _DATA	
+tTog2  . . . . . . . . . . . . .	Byte	 00000BA2 _DATA	
+tTtle1 . . . . . . . . . . . . .	Byte	 00000AFD _DATA	
+tTtle2 . . . . . . . . . . . . .	Byte	 00000B06 _DATA	
+ucount . . . . . . . . . . . . .	Byte	 00000AF6 _DATA	
+white  . . . . . . . . . . . . .	Number	 0000000Fh   
+wsprintf . . . . . . . . . . . .	Text   	 wsprintfA
+yellow . . . . . . . . . . . . .	Number	 0000000Eh   
+
+	   0 Warnings
+	   0 Errors

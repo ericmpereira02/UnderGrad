@@ -1,0 +1,153 @@
+\documentclass[12pt]{article}
+\newcommand\tab[1][1cm]{\hspace{#1}}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{color}
+%\documentclass[12pt]{article}
+%\newcommand\tab[1][1cm]{\hspace{#1}}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{color}
+\pagenumbering{gobble}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\hypersetup{
+	colorlinks,
+	citecolor=black,
+	filecolor=black,
+	linkcolor=black,
+	urlcolor=black
+}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+
+\lstset{style=mystyle}
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+
+
+\begin{document}
+\author{Eric Pereira\\
+	CSE3120: Section 02}
+\date{August 27, 2018}
+\title{Chapter 1: Data Representation}
+\maketitle
+\section*{Section 1.7.1}
+\subsection*{2a: What is the Decimal representation of the following unsigned binary integer?: 00110101}
+\begin{center}
+$00110101 = 2^0 + 2^2 + 2^4 + 2^5 = 1 + 4 + 16 + 32 = 53$
+\end{center}
+\paragraph*{Answer:} 53
+
+\subsection*{3a: What is the sum of the pair of binary integers?: 10101111 + 11011011}
+\subsubsection*{Answer:}
+\[
+\begin{array} {@{}cr}
+	& 10101111 \\
+   +& 11011011 \\
+   \cline{2-2} 
+    & 110001010   
+  \end{array}	
+  \]
+  
+\subsection*{4: Calculate binary 00001101 minus 00000111}
+\subsubsection*{Answer:}
+\[
+\begin{array} {@{}cr}
+& 00001101 \\
+-& 00000111 \\
+\cline{2-2} 
+& 00000110
+\end{array}	
+\]
+
+\subsection*{5: How many bits are used by each of the following data types?}
+\subsubsection*{a. word}
+\paragraph{Answer: } 16 bits, 2 bytes
+\subsubsection*{b. doubleword}
+\paragraph{Answer: } 32 bits, 4 bytes
+\subsubsection*{c. quadword}
+\paragraph{Answer: } 64 bits, 8 bytes
+\subsubsection*{d. double quadword}
+\paragraph{Answer: } 128 bits, 16 bytes
+
+\subsection*{7a: What is the hexadecimal representation of the following binary number: 0011 0101 1101 1010?}
+$0011 = 2^0 + 2^1 = 1 + 2 = 3$ \\ 
+$0101 = 2^0 + 2^2 = 1 + 4 = 5$ \\
+$1101 = 2^0 + 2^2 + 2^3 = 1 + 4 + 8 = 13$ OR D in hexadecimal \\ 
+$1010 = 2^1 + 2^3 = 2 + 8 = 10$ OR A in hexadecimal \\
+When Placed in order you get 35DA
+\paragraph*{Answer: } 35DA
+
+\subsection*{15a: What is the decimal representation of the following signed binary number: 10110101?}
+\tab A one is the leftmost number of this byte, which indicates that this is a negatively signed number. In order to find the answer we have to use two's complement. First we start by inverting the number. \\
+\begin{center}
+	01001010
+\end{center}
+After this we add 1 to the new number.
+\begin{center}
+	01001011
+\end{center}
+Finally, we convert the number to decimal and add a negative symbol in front of it. \\
+\begin{center}
+	$01001011 = 2^0 + 2^1 + 2^3 + 2^6 = 1 + 2 + 8 + 64 = 75$
+\end{center}
+\paragraph*{Answer:} -75 
+
+\section*{Section 1.7.2}
+\subsection*{8: Write a Java program that contains the calculation shown below. Then, use the \textit{javap -c} command to disassemble your code. Add comments to each line that provide your best guess as to its purpose.\\ \\ 
+ \tt{int Y;\\
+ int X = (Y + 4) * 3;}\\}
+\paragraph*{Answer: \\}
+\begin{lstlisting}[language=Java, caption=Java Code Written]
+public class homework1 {
+   public static void main(String[] args){
+      int Y = 5;
+      int X = (Y + 4) * 3;
+   }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption = Return of \textit{javap -c homework1.java} with notes]
+public class homework1 {
+public homework1();
+Code:
+0: aload_0
+1: invokespecial #1                  
+4: return
+
+public static void main(java.lang.String[]);
+Code:
+0: iconst_5	 //I think this is where I have constant 5
+1: istore_1  //This is where it was stored, in value Y
+2: iload_1  //This loads Y, starting in int X equation
+3: iconst_4  //This gets the constant 4 in the equation
+4: iadd  //This adds Y and 4
+5: iconst_3 //This gets the constant 3 in the equation
+6: imul //This multiplies 3 and result of line 4:
+7: istore_2 //This stores value in X
+8: return //returns out of function
+}
+\end{lstlisting}
+\end{document}

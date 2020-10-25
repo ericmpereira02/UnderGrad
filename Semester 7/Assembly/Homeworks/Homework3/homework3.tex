@@ -1,0 +1,74 @@
+\documentclass[12pt]{article}
+\newcommand\tab[1][1cm]{\hspace{#1}}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{textcomp}
+\pagenumbering{gobble}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+
+\lstset{style=mystyle}
+
+
+\begin{document}
+\author{Eric Pereira\\
+	CSE3120: Section 02}
+\date{September 8\textsuperscript{th}, 2018}
+\title{Chapter 3: Assembly Introduction}
+\maketitle
+
+
+\section*{Section 3.5.5}
+\subsection*{5. Use a TEXTEQU expression to redefine “proc” as “procedure.”}
+\begin{lstlisting}
+procedure TEXTEQU <proc> 
+\end{lstlisting}
+
+\section*{3.9.1}
+\subsection*{16. Show an example of a block comment.}
+\begin{lstlisting}
+	COMMENT ! 
+	this
+	is
+	a
+	block
+	comment
+	!
+\end{lstlisting}
+\section*{3.9.2}
+\subsection*{4. Find out if you can declare a variable of type DWORD and assign it a negative value. What does this tell you about the assembler’s type checking?}
+\tab DWORD is an unsigned variable, however you can assign it a negative value. It will not store it as a negative value though, instead it will store it as $2^3^2-x$ where x is the absolute value of the negative number it was assigned.
+\subsection*{6. Given the number 456789ABh, list out its byte values in little-endian order.}
+\tab the order would be: 0000:AB, 0001:89, 0002:67, 0003:45
+\subsection*{12. Declare an uninitialized array of 50 signed doublewords named dArray.}
+\begin{lstlisting}
+	dArray DWORD 50 DUP(?)
+\end{lstlisting}
+
+\section*{3.10}
+\subsection*{3. Data Definitions: Write a program that contains a definition of each data type listed in Table 3-2 in Section 3.4. Initialize each variable to a value that is consistent with its data type.}
+
+\end{document}

@@ -1,0 +1,25 @@
+.Ltext0:
+        .globl square_root_proc
+        .type square_root_proc, @function
+        .comm ctrlWord, 4
+
+        .text
+square_root_proc:
+
+        FINIT
+        pushl %eax
+        FILD (%esp)
+        FSTCW ctrlWord
+        orw $0b110000000000, ctrlWord
+        FLDCW ctrlWord
+        FSQRT
+        FISTP (%esp) 
+        popl %eax
+
+ 
+        fstcw ctrlWord
+        andw  $0b001111111111, ctrlWord
+        fldcw ctrlWord
+  
+
+        ret

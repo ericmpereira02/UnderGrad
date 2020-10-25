@@ -1,0 +1,59 @@
+\documentclass[12pt]{article}
+\newcommand\tab[1][1cm]{\hspace{#1}}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{color}
+\pagenumbering{gobble}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+
+\lstset{style=mystyle}
+
+
+\begin{document}
+\author{Eric Pereira\\
+	CSE3120: Section 02}
+\date{September 5\textsuperscript{th}, 2018}
+\title{Chapter 2: Architecture}
+\maketitle
+
+\section*{2.8 Review Questions}
+
+\subsection*{1: In 32-bit mode, aside from the stack pointer (ESP), what other register points to variables on the stack?}
+\subsubsection*{Answer:}
+The base pointer register. 
+\subsection*{3: Which flag is set when the result of an unsigned arithmetic operation is too large to fit into the destination?}
+\subsubsection*{Answer:}
+The carry flag
+\subsection*{4: Which flag is set when the result of a signed arithmetic operation is either too large or too small to fit into the destination?}
+\subsubsection*{Answer:}
+The overflow flag
+\subsection*{6: Which flag is set when an arithmetic or logical operation generates a negative result?}
+\subsubsection*{Answer:}
+The sign flag
+\subsection*{8: On a 32-bit processor, how many bits are contained in each floating-point data register?}
+\subsubsection*{Answer:}
+80 bits
+\end{document}
