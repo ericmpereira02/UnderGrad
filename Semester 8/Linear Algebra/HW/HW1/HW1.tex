@@ -1,0 +1,225 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amssymb}
+
+\usetikzlibrary{automata,positioning}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass\ (\hmwkClassInstructor\ \hmwkClassTime): \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Homework\ \#1}
+\newcommand{\hmwkDueDate}{January 25, 2019}
+\newcommand{\hmwkClass}{Linear Algebra}
+\newcommand{\hmwkClassTime}{Section 01}
+\newcommand{\hmwkClassInstructor}{Dr. Munevver Subasi}
+\newcommand{\hmwkAuthorName}{\textbf{Eric Pereira}}
+
+%
+% Title Page
+%
+\pagenumbering{gobble}
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ at 11:59pm}\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+    \vspace{3in}
+}
+
+\author{\hmwkAuthorName}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+\pagenumbering{arabic}
+
+\begin{homeworkProblem}
+	\tab Let \textbf{u}, \textbf{v} $\in$ $\mathbb{R} ^2$ and $\theta$ be the angle between them. Prove that 
+	\begin{equation*}
+		\cos \theta = \frac{\textbf{u} \cdot \textbf{v}}{||\textbf{u}||||		\textbf{v}||}
+	\end{equation*}
+	\tab Where $||$\textbf{u}$||$=$\sqrt{u_1^2+...+u_n^2} $ and $||$\textbf{v}$||$=$\sqrt{v_1^2+...+v_n^2}$ \\
+
+    \textbf{Solution} \\
+	\tab To start let us recognize the law of cosines: 
+	\begin{equation*}
+		c^2 = a^2 + b^2 - 2ab\cos\theta
+	\end{equation*}
+	\tab Now lets put this in terms of $||\textbf{u}||$ and $||\textbf{v}||$ where:
+	\begin{equation*}
+		a=||\textbf{u}|| $$  $$  
+		b=||\textbf{v}|| $$  $$
+		c=||\textbf{v}-\textbf{u}||
+	\end{equation*}
+	\tab So now the law of cosines equation becomes:
+	\begin{equation*}
+		||\textbf{v-u}||^2=||\textbf{u}||^2 + ||\textbf{v}||^2 - 2||\textbf{u}||||\textbf{v}||\cos\theta $$ 
+		\tab Furthermore, this is the definition of dot product: $$
+		\textbf{u} \cdot \textbf{v} = ||\textbf{u}||||\textbf{v}||\cos\theta $$
+		\tab Using the definition of dot product we can put it in terms of cos $\theta$ and use it in the law of cosines equation: $$
+		\textbf{u} \cdot \textbf{v} = ||\textbf{u}||||\textbf{v}||\cos\theta $$ $$
+		\frac{\textbf{u} \cdot \textbf{v}}{||\textbf{u}||||\textbf{v}||}=\cos\theta $$
+		\tab Now to utilize this in the dot product equation: $$
+		||\textbf{v} - \textbf{u} ||^2 = ||\textbf{u}||^2+ ||\textbf{v}||^2-2\textbf{u} \cdot \textbf{v} $$
+		\tab We can replace $||\textbf{v}-\textbf{u}||^2$ with $||\textbf{u}||^2+||\textbf{v}||^2-2||\textbf{u}||||\textbf{v}||\cos\theta$ and compare. $$
+		||\textbf{u}||^2+||\textbf{v}||^2-2||\textbf{u}||||\textbf{v}||\cos\theta = ||\textbf{u}||^2+ ||\textbf{v}||^2-2\textbf{u} \cdot \textbf{v} $$ $$
+		-2||\textbf{u}||||\textbf{v}||\cos\theta=-2\textbf{u}\cdot\textbf{v} $$ $$
+		||\textbf{u}||||\textbf{v}||\cos\theta=\textbf{u}\cdot\textbf{v} $$ $$
+		\cos\theta=\frac{\textbf{u}\cdot\textbf{v}}{||\textbf{u}||||\textbf{v}||}
+	\end{equation*}
+\end{homeworkProblem}
+\newpage 
+
+\begin{homeworkProblem}
+	\tab Let \textbf{u}, \textbf{v} $\in$ $\mathbb{R} ^n$ . Prove the Cauchy-Schwarz Inequality in $\mathbb{R} ^n$
+	
+	\begin{equation*}
+	(\textbf{u} \cdot \textbf{v})^2 \leq ||\textbf{u}||^2||\textbf{v}||^2
+	\end{equation*}
+	\tab or equivalently,
+	\begin{equation*}
+		(\textbf{u} \cdot \textbf{v})\leq ||\textbf{u}||||\textbf{v}||,
+	\end{equation*}
+	\tab where $||\textbf{u}||=\sqrt{u_1^2+...+u_n^2}$ and $||\textbf{v}||=\sqrt{v_1^2+...+v_n^2}$ \\
+\textbf{Solution} \\
+	\tab To start the solution the definiton of the dot product can be used.
+	\begin{equation*}
+		\textbf{u} \cdot \textbf{v} = ||\textbf{u}||||\textbf{v}||\cos\theta $$
+		\tab Use this definition to replace dot product with the Cauchy-Schwarz Inequality: $$
+		(||\textbf{u}||||\textbf{v}||\cos\theta)^2\leq||u||^2||v||^2 $$ $$
+		||\textbf{u}||^2||\textbf{v}||^2\cos^2\theta\leq||u||^2||v||^2 $$ $$
+		\cos^2\theta\leq1
+	\end{equation*}
+	\tab We know that for any $\cos^2\theta$ will hold the maximum value of 1, which makes this statement true.
+\end{homeworkProblem}
+\newpage
+
+\begin{homeworkProblem}
+	\tab Let \textbf{u}, \textbf{v} $\in$ $\mathbb{R} ^n$ . Prove the Parallelogram Equation for Vectors:
+	\begin{equation*}
+		||\textbf{u}+\textbf{v}||^2  + ||\textbf{u}-\textbf{v}||^2=2(||\textbf{u}||^2+||\textbf{v}||^2),
+	\end{equation*}
+	\tab where $||\textbf{u}||=\sqrt{u_1^2+...+u_n^2}$ and $||\textbf{v}||=\sqrt{v_1^2+...+v_n^2}$ \\
+	\textbf{Solution} \\
+	\tab This problem can be solved using basic algebra. Lets start with the left side:
+	\begin{equation*}
+		||\textbf{u}||+||\textbf{v}||^2  + ||\textbf{u}-\textbf{v}||^2 = 2(||\textbf{u}||^2+||\textbf{v}||^2)$$ $$
+		(||\textbf{u}||+||\textbf{v}||)(||\textbf{u}||+||\textbf{v}||) + (||\textbf{u}-\textbf{v}||)(||\textbf{u}-\textbf{v}||) = 2(||\textbf{u}||^2+||\textbf{v}||^2)$$ $$
+		(||\textbf{u}||^2+||\textbf{v}||^2+2||\textbf{u}||||\textbf{v}||)+(||\textbf{u}||^2+||\textbf{v}||^2-2||\textbf{u}||||\textbf{v}||)= 2(||\textbf{u}||^2+||\textbf{v}||^2) $$ $$
+		2||\textbf{u}||^2+2||\textbf{v}||^2 = 2(||\textbf{u}||^2+||\textbf{v}||^2) $$ $$
+		2(||\textbf{u}||^2+||\textbf{v}||^2)=2(||\textbf{u}||^2+||\textbf{v}||^2)
+	\end{equation*}
+	\tab As a result of doing this algebra it is easy to see that both sides are the same, and prove the Parallelogram Equation for Vectors.
+\end{homeworkProblem}
+\end{document}

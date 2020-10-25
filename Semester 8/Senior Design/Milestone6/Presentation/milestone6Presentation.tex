@@ -1,0 +1,209 @@
+\documentclass[aspectratio=169]{beamer}
+
+\input{../../presentationPream}
+
+\usetheme{PaloAlto}
+\usecolortheme{whale}
+
+\title[]{Revamp of High Energy Physics Laboratory's Computer Systems}
+\author[]{Josef Bostik \\Eric Pereira \\Ryan Wojtyla}
+\date{April 19, 2019}
+
+\begin{document}
+
+%----------BEGIN TITLE----------
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%-----------END TITLE-----------
+
+%----------BEGIN GOALS----------
+
+\section{Milestone 6 Goals}
+
+\begin{frame}
+  
+  \frametitle{Milestone 6 Progress}
+
+\begin{adjustwidth}{-0.4cm}{}
+	
+	 \begin{center}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			Task & Progress & Notes\\
+			\hline
+			Polish Cluster Documentation & 100\% & \\
+			Polish MTS Documentation & 100\% &  \\
+			Create MTS Automation Script & 70\% &  \\
+			Integrate Remainder of Cluster Components & 50\% & \begin{tabular}{@{}c@{}} NAS-0 must be included \end{tabular} \\
+			Assist Researchers & 100\% & \begin{tabular}{@{}c@{}} helping out with
+				general\\ problems as they arise \end{tabular} \\
+			Create GEM computer Backups & 50\% & \begin{tabular}{@{}c@{}} issues with
+				hardware \\ requirements \end{tabular} \\
+			
+			\hline
+		\end{tabular}
+	\end{center}
+ 
+\end{adjustwidth}
+  
+\end{frame}
+
+%-----------END GOALS-----------
+
+%----------BEGIN GEM COMPUTERS----------
+
+\section{GEM Computers}
+
+\begin{frame}
+
+  \frametitle{GEM Computers}
+
+  \begin{itemize}
+    \item RAID array optimized for storage, preventing redundancy.
+    \item Package and software installation problems.
+  \end{itemize}
+
+\end{frame}
+
+%-----------END GEM COMPUTERS-----------
+
+%----------BEGIN CLUSTER----------
+
+\section{Compute Cluster}
+
+\begin{frame}
+
+  \frametitle{Compute Cluster}
+
+  \begin{itemize}
+  \item NAS-0 hard drive issues have been slowing its integration into the cluster.
+    \begin{itemize}
+      \item Confusing drive labels makes replacing several drives challenging.
+    \end{itemize}
+  \item SE software installation and configuration is being used for training.
+    \begin{itemize}
+    \item The sysadmins need to get used to working without me.
+    \item They will gain valuable, first-hand knowledge about how the
+      cluster is put together.
+    \end{itemize}
+  \end{itemize}
+  
+\end{frame}
+
+%-----------END CLUSTER-----------
+
+\section{Muon Tomography Station}
+
+%----------BEGIN EXISTING MTS----------
+
+\subsection{Existing MTS}
+
+\begin{frame}
+
+  \frametitle{Existing MTS}
+
+  \begin{itemize}
+  \item The MTS is being operated in a degraded state.
+    \begin{itemize}
+    \item Not all sides of the detector are operational.
+    \item Data can still be collected.
+    \end{itemize}
+  \item User-friendliness script is being written.
+    \begin{itemize}
+    \item Packaging provided operation instructions into an easy-to-use
+      script.
+    \item Ease workload of MTS researchers.
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+%-----------END EXISTING MTS-----------
+
+%----------BEGIN DEVELOPMENT MTS----------
+
+\subsection{Development MTS}
+
+\begin{frame}
+
+  \frametitle{Development MTS}
+
+  \begin{itemize}
+    \item Attempted to build AMORE from source
+    \item Makefile 'Makefile.arch' was not found during build configuration, but
+      we did find the file in another directory, and made AMORE reliant on that
+      Makefile instead.
+    \item Build got further, but a few header files weren't found. The
+      configuration seems to not know the proper location to find some files.
+    \item Continued attempting to get the previous build of AMORE working,
+    	  manually changing dependencies to our new version of root.
+  \end{itemize}
+
+\end{frame}
+
+%-----------END DEVELOPMENT MTS-----------
+
+%----------BEGIN DOCUMENTATION----------
+
+\section{Documentation}
+
+\begin{frame}
+
+  \frametitle{Documentation}
+
+  \begin{itemize}
+    \item Manuals have been created for:
+      \begin{itemize}
+        \item the rebuild of the computing cluster.
+        \item the construction of the development MTS machine.
+      \end{itemize}
+    \item These manuals are incomplete, but they are living documents to be
+      lengthened as the two projects develop.
+  \end{itemize}
+
+
+\end{frame}
+
+%-----------END DOCUMENTATION-----------
+
+%----------BEGIN MILESTONE 5 GOALS----------
+
+\section{Future Work}
+
+\begin{frame}
+
+  \frametitle{Future Work}
+
+  \begin{itemize}
+    \item Computing Cluster
+      \begin{itemize}
+        \item Fully integrate remaining cluster component.
+        \item 
+      \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+%-----------END MILESTONE 6 GOALS-----------
+
+%----------BEGIN QUESTIONS----------
+
+\section{Questions}
+
+\begin{frame}
+
+  \frametitle{Questions}
+
+  \begin{center}
+    {\fontsize{200}{200}\selectfont ?}
+  \end{center}
+  
+\end{frame}
+
+%-----------END QUESTIONS-----------
+
+
+\end{document}

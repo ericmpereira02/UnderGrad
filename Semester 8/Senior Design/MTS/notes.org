@@ -1,0 +1,41 @@
+* General Info
+** username: MTSUser
+** Password: MHa#PH12
+* Software
+** ROOT
+*** graphing processed data
+** DATE
+*** get info from FECs
+** AMORE
+*** process info from FECs
+*** info -> ROOT
+* Noteworthy Files
+** ~/date.sh
+*** first script run
+*** starts up DATE, which actually runs MTS
+*** maybe starts/maybe collects
+** ~/slow_control/slow_control.c
+*** maybe starts/maybe collects
+*** ./slow_control startTest.c
+**** would start making stuff appear in the DATE window if we could click to enable it
+** ~/amoreSRS/OnlinePedRun_Lazarus.sh
+*** 
+* Procedure
+** `~/date.sh`
+** `~/slow_control/slow_control.c startTest.txt`
+** `~/amoreSRS/OnlinePedRun_Lazarus.sh`
+*** prepares data to be collected by AMORE
+** `amoreGui`
+*** shows graphs of data as data is collected in real time
+** `~/amoreSRS/ProcessPeds_Lazarus.sh`
+*** converts collected data into a ROOT file
+** `root`
+*** to view collected data
+*** procedure in ROOT interpreter
+**** `new TBrowser()`
+***** opens window to browse ROOT files for verification
+** START actual run: from Pedestal run to CAEN run
+*** minicom to talk to CAEN
+** repeat other steps for Actual run rather than PED run
+** NOTE: actual run uses pedestal run file to cancel out background noise
+

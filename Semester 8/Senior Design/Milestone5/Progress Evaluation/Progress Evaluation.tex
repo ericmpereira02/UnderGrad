@@ -1,0 +1,327 @@
+\documentclass[12pt]{article}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{color}
+\pagenumbering{gobble}
+\usepackage{changepage}
+
+\usepackage{makecell}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\hypersetup{
+	colorlinks,
+	citecolor=black,
+	filecolor=black,
+	linkcolor=black,
+	urlcolor=black
+}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\newcommand{\titledate}[2][2.5in]{%
+	\noindent%
+	\begin{tabular}{@{}p{#1}@{}}
+		\\ \hline \\[-.75\normalbaselineskip]
+		#2
+	\end{tabular} \hspace{1in}
+	\begin{tabular}{@{}p{#1}@{}}
+		\\ \hline \\[-.75\normalbaselineskip]
+		Date
+	\end{tabular}
+}
+
+% for forcing tables to fit
+\usepackage{changepage}
+
+\begin{document}
+	
+
+\begin{titlepage}
+	
+\author{Josef Bostik\\
+	Eric Pereira\\
+	Ryan Wojtyla\\}
+\date{March 18\textsuperscript{th}, 2019}
+\title{Revamp of High Energy Physics Laboratory's Computer Systems: Milestone 5}
+
+\maketitle
+
+\end{titlepage}
+
+\tableofcontents
+
+\newpage \pagenumbering{arabic}
+
+\section{High Energy Physics (HEP) Senior Design}
+
+\begin{itemize}
+	\item Josef Bostik - \href{mailto:jbostik2015@my.fit.edu}{jbostik2015@my.fit.edu}
+	\item Eric Pereira - \href{mailto:epereira2015@my.fit.edu}{epereira2015@my.fit.edu}
+	\item Ryan Wojtyla - \href{mailto:rwojtyla2015@my.fit.edu}{rwojtyla2015@my.fit.edu}
+\end{itemize}
+
+\section{Faculty Sponsor}
+
+\tab Eraldo Ribeiro - \href{mailto:eribeiro@fit.edu}{eribeiro@fit.edu}
+
+\section{Client}
+
+\tab Marcus Hohlmann - \href{mailto:hohlmann@fit.edu}{hohlmann@fit.edu} \\ 
+\tab Head of the Florida Institute of Technology HEP group
+
+\section{Meeting with Faculty Sponsor}
+
+\begin{itemize}
+	\item 18 March 2019
+\end{itemize}
+\section{Meeting with Client}
+
+\begin{itemize}
+	\item 11 February 2019
+	\item 18 February 2019
+	\item 25 February 2019
+	\item 11 March 2019
+\end{itemize}
+
+\section{Progress of current Milestone}
+
+\begin{adjustwidth}{-2.5cm}{}
+  \begin{center}
+      \begin{tabular}{|c|c|c|c|}
+    	\hline
+    	Task & Progress & Notes\\
+    	\hline
+    	Continue to Care for Existing MTS & 40\% & \\
+    	Compile Instructions for MTS Operation & 50\% & improve upon provided
+                                                        instructions \\
+    	Prepare Development MTS Machine & 50\% & coax AMORE into building \\
+    	Integrate Nodes into Cluster & 100\% & NAS-0 and SE still must be
+                                               included \\
+    	Assist Researchers & 100\% & helping out with general problems as they
+                                     arise \\
+    	\hline
+    \end{tabular}
+  \end{center}
+\end{adjustwidth}
+
+
+
+\section{Discussion - Current Milestone}
+
+\subsection{Existing MTS Progress}
+
+\tab The existing MTS continues to suffer from its hardware ailments. While we
+were able to get new firmware for the FEC, it did not fix the FEC. Although the
+firmware was able to be installed onto the FEC, the firmware is not working
+properly. Additionally, the ethernet port of a second FEC has suddenly stopped
+working.
+
+\subsection{Development MTS Computer Progress}
+
+\tab We have been provided with the source repository for AMORE! We have cloned
+the repository onto the development MTS machine and tried to make it. However,
+all documentation on AMORE states that this is not the recommended way of
+building AMORE, and so there is very little documentation on the process for
+building AMORE via its source. When {\tt make} was run in the root of the
+repository, it, of course, ran into some issues. A path variable was incorrectly
+configured in one of the internal make files, so we had to overwrite it so that
+it pointed to the correct directory. After that was fixed, it complained that it
+could not find a particular ROOT file that was not on the machine. Fortunately,
+however, the existing MTS has that file, so we copied it over, and it stopped
+complaining. Our next hurdle is figuring out how to deal with some type errors
+in yet another file.
+
+\subsection{Computing Cluster}
+
+\tab The nodes have been integrated into the cluster! Turns out their boot order
+was messed up; the correct order is PXE network boot, CD, then HDD. With PXE
+networking booting enabled and set to the highest priority, the nodes will
+automatically listen for kickstart files from the CE on boot. This allowed the
+CE to send over all the files necessary to install ROCKS 7 and incorporate the
+nodes into the cluster! 
+
+\tab This victory is not without its pitfalls, however. A couple of the nodes
+were rather uncooperative, and it took us some time to get them sorted
+out. Additionally, we are unable to run all the nodes simultaneously due to
+issues with the UPSs powering the nodes; if seven nodes are turned on at the
+same time, the UPS's breaker is tripped and it shuts off. Until we can solve
+this problem, the nodes will be operated on in two groups of ten nodes each,
+five for each UPS.
+
+\tab Since the nodes have been brought into the cluster, we began trying to
+incorporate some other components; we started with NAS-0. There are {\tt
+  insert-ethers} options for NASs, so the process is very similar to that of the
+nodes. We modified NAS-0's boot order in the same manner as the nodes, and it
+successfully requested its kickstart file from the CE to begin the ROCKS 7
+installation. Unfortunately, NAS-0's OS drive was not seen by the installer;
+only the data storage drives appeared. 
+
+\subsection{GEM Machines}
+
+\tab The computers in the lab all seem to be suffering a major issue that was
+brought into light due to the failure of a hard drive in the Truth PC. There
+seemed to be something strange going on, the Truth PC was thought to be running
+in RAID 1, which means that with two hard drives if there was a hard drive failure it would not be catastrophic. However upon further investigation there
+seemed to be confusion as the BIOS stated that it was "RAID(1)" meaning that it 
+was RAID array 1, not RAID 1. The RAID supported on the motherboard of the 
+computer can only support RAID 0, which does not conserve storage but instead
+expands the two drives as only one recognized drive on the computer.
+
+\tab The GEM team seemed to be suffering from some issues with productivity, as
+they were running a program that would output a text file showing exactly how
+many hits a detector would make based on particle tracks. The problem is the
+team needed to gather all the hits of each different type (there are 5 types of
+possible hits a particle could do) and averages the amount of hits. They were
+doing this manually, due to their lack of knowledge of programming and the
+complexity of the text file (which was written very poorly, and quite difficult
+to work with) they were working with they figured doing it manually was best. 
+Creating a script improved productivity, and provided more accurate results. 
+
+\section{Parts Worked On}
+
+\subsection{Josef Bostik}
+
+\begin{itemize}
+\item building AMORE on the MTS Development Machine
+\end{itemize}
+
+\subsection{Eric Pereira}
+
+\begin{itemize}
+\item building scripts for gem team
+\item finding effective backup solutions for GEM computers
+\end{itemize}
+
+\subsection{Ryan Wojtyla}
+
+\begin{itemize}
+\item integrating cluster components
+\item building AMORE on the MTS Development Machine
+\end{itemize}
+
+\section{Task Matrix - Next Milestone}
+
+\begin{center}
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    Task & Josef & Eric & Ryan \\
+    \hline
+    Polish Cluster Documentation & 10\% & 10\% & 80\% \\
+    Polish MTS Documentation & 40\% & 20\% & 40\% \\
+    Create MTS Automation Script & 60\% & 10\% & 20\% \\
+    Integrate Remainder of Cluster Components & 10\% & 10\% & 80\% \\
+    Run Jobs on Cluster & 10\% & 10\% & 80\% \\
+    Create GEM conputer Backups & 10\% & 80\% & 10\% \\
+    Assist Researchers & 10\% & 80\% & 10\% \\
+    \hline
+  \end{tabular}
+\end{center}
+
+\section{Discussion - Next Milestone}
+
+\subsection{Existing MTS}
+
+\tab The future for the existing MTS looks to be quite grim. Our continuing
+inability to repair its vital data collection hardware means we may not be able
+to repair the machine in time. Despite this, however, we should be able to make
+strides in developing the software to run it once it is eventually repaired.
+
+\subsection{Development MTS Computer}
+
+\tab As it stands we are somewhat stuck with the development MTS. We may be able
+to find a way to create the makefile for the source of root, or we may need to
+find another method of building AMORE. Since AMORE may not be fixed in time,
+while working on AMORE, we will begin creating the MTS usage script using
+operation instructions provided to us by the researchers using the MTS.
+
+\tab In addition to working on the machine itself, we will be compiling a
+detailed document detailing our work on the MTS Development Machine. This
+document will enable future research teams to understand how the machine is put
+together so that they may more effectively build upon our work.
+
+\subsection{Computing Cluster}
+
+\tab Once the issues surrounding NAS-0's incorporation are solved and the SE is
+brought into the cluster, we will create the cluster's job submission
+environment by configuring HTCondor and any other software we need along the
+way. Additionally, we will be compiling a document detailing our journey
+rebuilding the cluster. Not only will such a document better prepare future
+system administrators for cluster work, but they will have a detailed reference
+manual for performing future system updates.
+
+\subsection{GEM Machines}
+
+\tab The GEM Machines need more effective backups, it is known that their RAID
+systems are not effective. The plan is to get a large amount of drives and use
+a drive as an effective backup, loading the image of the current PC on the
+backup. This is a temporary solution, until we are able to utilize more
+storage on the cluster, or get RAID cards to use on these PC's. \\
+\tab It also seems that there are many more issues with productivity that the
+ GEM team is having, although the GEM team does not necessarily view them as
+ issues. The group has been conducting many tasks similarly to their previous
+ problems, manually looking through text files or running a sequence of programs
+ that take quite a while instead of running a script to conduct the same task
+ multiple times. In order to increase productivity more scripts need to be
+ written that will conduct the more menial tasks. 
+
+\section{Sponsor Feedback}
+
+\subsection{Existing MTS}
+
+\vspace{1in}
+
+\subsection{Development MTS Machine}
+
+\vspace{1in}
+
+\subsection{Computing Cluster}
+
+\vspace{1in}
+
+\subsection{GEM Computers}
+
+\vspace{1in}
+
+\newpage
+
+\subsection{Sponsor Signature}
+\vspace{.5in}
+ \titledate{Sponsor Signature}
+ 
+\section{Sponsor Evaluation}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+	\hline
+	Josef Bostik & 0 & 1 & 2 & 3 & 4 & 5 & 5.5 & 6 & 6.5 & 7 & 7.5 & 8 & 8.5 & 9 & 9.5 & 10\\
+	\hline
+	Eric Pereira & 0 & 1 & 2 & 3 & 4 & 5 & 5.5 & 6 & 6.5 & 7 & 7.5 & 8 & 8.5 & 9 & 9.5 & 10\\
+	\hline
+	Ryan Wojtyla & 0 & 1 & 2 & 3 & 4 & 5 & 5.5 & 6 & 6.5 & 7 & 7.5 & 8 & 8.5 & 9 & 9.5 & 10\\
+	\hline
+\end{tabular}
+
+\end{document}

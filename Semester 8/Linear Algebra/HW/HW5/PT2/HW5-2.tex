@@ -1,0 +1,371 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{relsize}
+\usepackage{textcomp}
+\usepackage{soul}
+
+\usetikzlibrary{automata,positioning}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass\ (\hmwkClassInstructor\ \hmwkClassTime): \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\def\doubleunderline#1{\underline{\underline{#1}}}
+\newcommand{\minus}{\scalebox{0.5}[1.0]{$-$}}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+\renewcommand{\theenumi}{\Alph{enumi}}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Homework\ \#5-2}
+\newcommand{\hmwkDueDate}{April 14, 2019}
+\newcommand{\hmwkClass}{Linear Algebra}
+\newcommand{\hmwkClassTime}{Section 01}
+\newcommand{\hmwkClassInstructor}{Dr. Subasi}
+\newcommand{\hmwkAuthorName}{\textbf{Eric Pereira}}
+
+%
+% Title Page
+%
+\pagenumbering{gobble}
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ at 11:59pm}\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+    \vspace{3in}
+}
+
+\author{\hmwkAuthorName}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+\pagenumbering{arabic}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 1                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	Consider the following $3\times 3$ matrix:
+	\begin{align*}
+		A=\left({\begin{array}{ccc} 1&\minus 2&2 \\ \minus 2&4&\minus 4 \\ 2&\minus 4&4
+		\end{array}}\right)
+	\end{align*}
+	\begin{enumerate}[label=(\alph*)]
+		\item (10pts) Find eigenvalues of $A$. \\
+		\textbf{Solution:} \\
+		\begin{align*}
+			det(A-\lambda I)=0 
+		\end{align*}
+		\begin{align*}
+			A-\lambda I=\left({\begin{array}{ccc} 1&\minus 2&2 \\ \minus 2&4&\minus 4 \\ 2&\minus 4&4
+			\end{array}}\right)-
+			\left({\begin{array}{ccc} \lambda&0&0 \\ 0&\lambda&0 \\ 0&0&\lambda \end{array}}\right)=
+			\left({\begin{array}{ccc} 1-\lambda&\minus 2&2 \\ \minus 2&4-\lambda&\minus 4 \\
+			 2&\minus 4&4-\lambda \end{array}}\right) \\
+			 det(A-\lambda I)=(1-\lambda)
+			 \left({\begin{array}{cc} 4-\lambda&\minus 4 \\ \minus 4&4-\lambda \end{array}}\right)-
+			 (\minus 2)\left({\begin{array}{cc} \minus 2&\minus 4 \\ 2&4-\lambda \end{array}}\right)+
+			 (2)\left({\begin{array}{cc} \minus 2&4-\lambda \\ 2&\minus 4 \end{array}}\right) \\
+			 =(1-\lambda)[(4-\lambda)(4-\lambda)-(\minus 4)(\minus4)]+
+			 (2)[(\minus 2)(4-\lambda)-(\minus 4)(2)]+
+			 (2)[(\minus 2)(\minus 4)-(4-\lambda)(2)] \\
+			 =(1-\lambda)(16-8\lambda+\lambda^2-16)+
+			 (2)(\minus 8+2\lambda+ 8)+
+			 (2)(8-(8-2\lambda))\\
+			 =(1-\lambda)(\lambda^2-8\lambda)+
+			 (2)(2\lambda)+
+			 (2)(2\lambda)\\
+			 =(\minus \lambda^3+9\lambda^2-8\lambda)+(4\lambda)+(4\lambda) \\
+			 =\minus \lambda^3+9\lambda^2-8\lambda+8\lambda \\
+			 =\minus \lambda^3+9\lambda^2 \\
+			 =-\lambda^2(\lambda-9)
+		\end{align*}	
+		When solving for the determinant the solutions are the eigenvalues. This means any case where
+		$-\lambda^2(\lambda-9)$ is equal to 0 is the solution. Therefore, the eigenvalues must be 9 and
+		0.			
+			
+		\item (10pts) Find the eigenspaces of $A$ corresponding to the eigenvalues found in
+		Part (a). \ul{Justify your answer.} \\
+		\textbf{Solution:} \\
+	
+		\item (5pts) Determine whether $A$ is diagonalizable. \ul{Justify your answer.} \\
+		\textbf{Solution:} \\
+		
+		\item (10pts) Find an invertible matrix $P$ and a diagonal matrix $D$ such that
+		$P^{\minus1AP=D}.$ \ul{No need to verify the equation holds true.}\\
+		\textbf{Solution:} \\
+		
+		\item (10pts) Find a matrix $S$ whose columns form an orthonormal basis for $\mathbb{R}^3$
+		obtained from the columns of matrix $P$ found in part (d). \\
+		\textbf{Solution:} \\
+		
+		\item (5pts) Is $S$ invertible? If yes, find $S^{\minus1}$.
+		\textbf{Solution:} \\
+		
+		\item (5pts) Show that $S^{\minus1}AS=D$, where $D$ is the diagonal matrix found in Part
+		(d), that is, $A$ is orthogonally diagonlizable. \\
+		\textbf{Solution:} \\
+		
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 2                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	Let $A$ and $B$ be two $n \times n$ orthogonal matrices. Answer the following questions:
+	\begin{enumerate}[label=(\alph*)]
+		\item (5pts) Is $\minus 3A$ orthogonal? \ul{Justify your answer.} \\
+		\textbf{Solution:} \\
+		Yes, orthogonal matrices remain orthogonal under scalar multiplication
+		\item (5pts) Is $\minus B$ orthogonal? \ul{Justify your answer.} \\
+		\textbf{Solution:} \\
+		Yes, orthogonal matrices remain orthogonal under scalar multiplication
+		\item (5pts) Is $B^{\minus 1}AB$ orthogonal? \ul{Justify your answer.} \\
+		\textbf{Solution:} \\
+		Yes, orthogonal matrices are closed under multiplication. 
+		\item (5pts) Is $A^T$ invertible? If yes, find its inverse. \\
+		\textbf{Solution:} \\
+		Yes, to explain further, the transpose of an orthogonal matrix is the original matrix's
+		inverse. This means that $A^T=A^{\minus 1}$, and the inverse of $A^{\minus 1}$ is just $A$. 
+		\item (5pts) Is $AB$ orthogonal? \ul{Justify your answer.} \\
+		\textbf{Solution:} \\
+		Yes, orthogonal matrices are closed under multiplication. 
+	\end{enumerate}
+	
+\end{homeworkProblem}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 3                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	Suppose that $A$ is an $n\times n$ orthogonal matrix.
+	\begin{enumerate}[label=(\alph*)]
+		\item (10pts) Show that the matrix operator $T:\mathbb{R}^n \rightarrow \mathbb{R}^n,T(x)=Ax$
+		is an orthogonal operator. \\
+		\textbf{Solution:} \\
+		
+		\item (10pts) Prove that the only eigenvalues of $A$ are 1 and $\minus$1 \\
+		\textbf{Solution:} \\
+		
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 4                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	(15pts) Let $V$ be a subspace of $\mathbb{R}^n$. The orthogonal complement of 
+	$V$ in $\mathbb{R}^n$ is defined as
+	\begin{align*}
+		V^\bot=\{x\in \mathbb{R}^n|x\cdot v=0\;\forall \; v\in V \}
+	\end{align*}
+	Prove that $V^\bot$ is also a subspace of $\mathbb{R}^n$.
+\end{homeworkProblem}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 5                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	Let $u_1=\left({\begin{array}{c} 0 \\ 1 \\ 0 \end{array}}\right)$ and
+	$u_2=\left({\begin{array}{c} 1 \\ 1 \\ 0 \end{array}}\right)$
+	\begin{enumerate}[label=(\alph*)]
+		\item (5pts) Determine whether the set $S=\{u_1,u_2\}$ is orthogonal. \\
+		\textbf{Solution:} \\
+		
+		\item (5pts) Transform $S$ into an orthonormal set of vectors $B$. \\
+		\textbf{Solution:} \\
+		
+		\item (5pts) Find the orthogonal projection of $u=\left({\begin{array}{c} 1 \\ 2 \\ 3
+		\end{array}}\right)$ on the subspace $W=SpanB$, where $B$ is the orthornormal basis
+		obtained in part (b). \\
+		
+		%gram schmidt process explanation 
+		\noindent\rule{16cm}{0.4pt} 
+		\doubleunderline{Gram-Schmidt Process:} if $\{u_1,u_2,...,u_k\}$ is a basis for
+		a subspace $W$, then $\{v_1,v_2,...,v_k\}$ is an orthogonal basis for $W$, where
+		\begin{align*}
+		v_1=u_1, \; v_2=u_2-\frac{u_2\cdot v_1}{||v_1||^2}v_1,\;...,\;v_k=u_k-
+		\frac{u_k\cdot v_1}{||v_1||^2}v_1-\;...\;-\frac{u_k\cdot v_{k-1}}{||v_{k-1}||^2}v_{k-1}
+		\end{align*}
+		Also, if $\{w_1,w_2,...w_k \}$ is an orthornormal basis, then the orthogonal projection
+		, $w$, of a vector $u$ on a subspace $W$ is given by
+		\begin{align*}
+			w=(u\cdot w_1)w_1+(u\cdot w_2)w_2+...+(u\cdot w_k)w_k
+		\end{align*}
+		\noindent\rule{16cm}{0.4pt} \\
+		%%%%%%%%%%%%%%%%%%%%
+		
+		\textbf{Solution:} \\
+		
+	\end{enumerate}
+\end{homeworkProblem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 6                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	(20pts) Classify each of the following statements as True or False. \ul{Justify your answers}.
+	\begin{enumerate}[label=(\alph*)]
+		\item The determinant of an orthogonal matrix $A$ is equal to 1. \\
+		\textbf{Solution:} \\
+		
+		\item The projection matrix $P$ defined as $P=A(A^TA)^{\minus1}A^T$ is
+		symmetric for all A. \\
+		\textbf{Solution:} \\
+		
+		\item Every non-zero subspace $W$ of $\mathbb{R}^n$ has an orthonormal basis. \\
+		\textbf{Solution:} \\
+		
+		\item Any two bases in a fininte-dimensional vector space $V$ have the same number of
+		elements. \\
+		\textbf{Solution:} \\
+		
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+\end{document}0

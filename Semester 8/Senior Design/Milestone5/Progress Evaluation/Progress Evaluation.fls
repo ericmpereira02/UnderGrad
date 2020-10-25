@@ -1,0 +1,112 @@
+PWD /Users/Voytella/Documents/SeniorDesign/Milestone5/Progress Evaluation
+INPUT /opt/local/etc/texmf/texmf.cnf
+INPUT /opt/local/var/db/texmf/web2c/pdftex/pdflatex.fmt
+INPUT Progress Evaluation.tex
+OUTPUT Progress Evaluation.log
+INPUT /opt/local/share/texmf-texlive/tex/latex/base/article.cls
+INPUT /opt/local/share/texmf-texlive/tex/latex/base/article.cls
+INPUT /opt/local/share/texmf-texlive/tex/latex/base/size12.clo
+INPUT /opt/local/share/texmf-texlive/tex/latex/base/size12.clo
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmr12.tfm
+INPUT /opt/local/share/texmf-texlive/tex/latex/base/inputenc.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/base/inputenc.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/base/utf8.def
+INPUT /opt/local/share/texmf-texlive/tex/latex/base/utf8.def
+INPUT /opt/local/share/texmf-texlive/tex/latex/base/t1enc.dfu
+INPUT /opt/local/share/texmf-texlive/tex/latex/base/t1enc.dfu
+INPUT /opt/local/share/texmf-texlive/tex/latex/base/ot1enc.dfu
+INPUT /opt/local/share/texmf-texlive/tex/latex/base/ot1enc.dfu
+INPUT /opt/local/share/texmf-texlive/tex/latex/base/omsenc.dfu
+INPUT /opt/local/share/texmf-texlive/tex/latex/base/omsenc.dfu
+INPUT /opt/local/share/texmf-texlive/tex/latex/listings/listings.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/listings/listings.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/graphics/keyval.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/graphics/keyval.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/listings/lstmisc.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/listings/lstmisc.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/listings/listings.cfg
+INPUT /opt/local/share/texmf-texlive/tex/latex/listings/listings.cfg
+INPUT /opt/local/share/texmf-texlive/tex/latex/hyperref/hyperref.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/hyperref/hyperref.sty
+INPUT /opt/local/share/texmf-texlive/tex/generic/oberdiek/hobsub-hyperref.sty
+INPUT /opt/local/share/texmf-texlive/tex/generic/oberdiek/hobsub-hyperref.sty
+INPUT /opt/local/share/texmf-texlive/tex/generic/oberdiek/hobsub-hyperref.sty
+INPUT /opt/local/share/texmf-texlive/tex/generic/oberdiek/hobsub-generic.sty
+INPUT /opt/local/share/texmf-texlive/tex/generic/oberdiek/hobsub-generic.sty
+INPUT /opt/local/share/texmf-texlive/tex/generic/ifxetex/ifxetex.sty
+INPUT /opt/local/share/texmf-texlive/tex/generic/ifxetex/ifxetex.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/oberdiek/auxhook.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/oberdiek/auxhook.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/oberdiek/kvoptions.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/oberdiek/kvoptions.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/hyperref/pd1enc.def
+INPUT /opt/local/share/texmf-texlive/tex/latex/hyperref/pd1enc.def
+INPUT /opt/local/share/texmf-texlive/tex/latex/latexconfig/hyperref.cfg
+INPUT /opt/local/share/texmf-texlive/tex/latex/latexconfig/hyperref.cfg
+INPUT /opt/local/share/texmf-texlive/tex/latex/url/url.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/url/url.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/hyperref/hpdftex.def
+INPUT /opt/local/share/texmf-texlive/tex/latex/hyperref/hpdftex.def
+INPUT /opt/local/share/texmf-texlive/tex/latex/oberdiek/rerunfilecheck.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/oberdiek/rerunfilecheck.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/graphics/color.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/graphics/color.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/graphics-cfg/color.cfg
+INPUT /opt/local/share/texmf-texlive/tex/latex/graphics-cfg/color.cfg
+INPUT /opt/local/share/texmf-texlive/tex/latex/graphics-def/pdftex.def
+INPUT /opt/local/share/texmf-texlive/tex/latex/graphics-def/pdftex.def
+INPUT /opt/local/share/texmf-texlive/tex/latex/changepage/changepage.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/changepage/changepage.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/makecell/makecell.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/makecell/makecell.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/tools/array.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/tools/array.sty
+INPUT Progress Evaluation.aux
+INPUT Progress Evaluation.aux
+OUTPUT Progress Evaluation.aux
+INPUT /opt/local/share/texmf-texlive/tex/latex/hyperref/nameref.sty
+INPUT /opt/local/share/texmf-texlive/tex/latex/hyperref/nameref.sty
+INPUT /opt/local/share/texmf-texlive/tex/generic/oberdiek/gettitlestring.sty
+INPUT /opt/local/share/texmf-texlive/tex/generic/oberdiek/gettitlestring.sty
+INPUT Progress Evaluation.out
+INPUT Progress Evaluation.out
+INPUT Progress Evaluation.out
+INPUT Progress Evaluation.out
+OUTPUT Progress Evaluation.pdf
+INPUT ./Progress Evaluation.out
+INPUT ./Progress Evaluation.out
+OUTPUT Progress Evaluation.out
+INPUT /opt/local/share/texmf-texlive/tex/context/base/mkii/supp-pdf.mkii
+INPUT /opt/local/share/texmf-texlive/tex/context/base/mkii/supp-pdf.mkii
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmr17.tfm
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmr12.tfm
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmmi12.tfm
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmsy10.tfm
+INPUT /opt/local/var/db/texmf/fonts/map/pdftex/updmap/pdftex.map
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmr17.tfm
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmbx12.tfm
+INPUT Progress Evaluation.toc
+INPUT Progress Evaluation.toc
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmbx12.tfm
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmr8.tfm
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmr6.tfm
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmmi12.tfm
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmmi8.tfm
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmmi6.tfm
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmsy10.tfm
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmsy8.tfm
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmsy6.tfm
+OUTPUT Progress Evaluation.toc
+INPUT /opt/local/share/texmf-texlive/tex/latex/base/omscmr.fd
+INPUT /opt/local/share/texmf-texlive/tex/latex/base/omscmr.fd
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmbx12.tfm
+INPUT /opt/local/share/texmf-texlive/fonts/tfm/public/cm/cmtt12.tfm
+INPUT Progress Evaluation.aux
+INPUT ./Progress Evaluation.out
+INPUT ./Progress Evaluation.out
+INPUT /opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb
+INPUT /opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb
+INPUT /opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb
+INPUT /opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr17.pfb
+INPUT /opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb
+INPUT /opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmtt12.pfb

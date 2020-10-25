@@ -1,0 +1,445 @@
+\documentclass{article}
+
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amssymb}
+\usepackage{enumitem}
+
+\usetikzlibrary{automata,positioning}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass\ (\hmwkClassInstructor\ \hmwkClassTime): \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+\renewcommand{\theenumi}{\Alph{enumi}}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Homework\ \#2}
+\newcommand{\hmwkDueDate}{March 24, 2019}
+\newcommand{\hmwkClass}{Linear Algebra}
+\newcommand{\hmwkClassTime}{Section 01}
+\newcommand{\hmwkClassInstructor}{Dr. Subasi}
+\newcommand{\hmwkAuthorName}{\textbf{Eric Pereira}}
+
+%
+% Title Page
+%
+\pagenumbering{gobble}
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ at 11:59pm}\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+    \vspace{3in}
+}
+
+\author{\hmwkAuthorName}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+\pagenumbering{arabic}
+
+%
+%	Problem 1
+%
+\begin{homeworkProblem}
+	\tab Determine whether the given system of linear equations is consistent, and if so find its general solution.
+	\begin{enumerate}[label=\alph*]
+		\item System 1:
+		\begin{align*}
+			x_1+3x_2+x_3+x_4=-1 \\
+			-2x_1-6x_2-x_3=5 \\
+		x_1+3x_2+2x_3+3x_4=2
+		\end{align*}
+		\textbf{Solution} \\
+		\begin{align*}
+			\left({\begin{array}{cccc|c} 1&3&1&1&-1 \\ -2&-6&-1&0&5
+			\\ 1&3&2&3&2 \end{array}}\right)\\
+			R_2-(-2R_1)\rightarrow R_2
+			\left({\begin{array}{cccc|c} 1&3&1&1&-1 \\ 0&0&1&2&3
+			\\ 1&3&2&3&2 \end{array}}\right)\\
+			(R_3)-(R_1)\rightarrow R_3	
+			\left({\begin{array}{cccc|c} 1&3&1&1&-1 \\ 0&0&1&2&3
+			\\ 0&0&1&2&3 \end{array}}\right)\\
+			(R_3)-(R_2)\rightarrow R_3
+			\left({\begin{array}{cccc|c} 1&3&1&1&-1 \\ 0&0&1&2&3
+			\\ 0&0&0&0&0 \end{array}}\right)\\
+			(R_1)-(R_2)\rightarrow R_1
+			\left({\begin{array}{cccc|c} 1&3&0&-1&-4 \\ 0&0&1&2&3
+			\\ 0&0&0&0&0 \end{array}}\right)\\ \\
+			x_1+3x_2-x_4=-4\\
+			x_3+2x_4=3\\
+			x_3=-2x_4+3\\
+			x_1=-3x_2+x_4-4\\ \\
+			X=\left({\begin{array}{c} -3x_2+x_4-4 \\ x_2
+			\\ -2x_4+3 \\ x_4 \end{array}}\right)
+		\end{align*}
+		
+		
+		
+		\item System 2:
+		\begin{align*}
+		x_1-2x_2-5x_3=4 \\
+		x_2+3x_3=-2 \\
+		-x_2-3x_3=3		
+		\end{align*}
+		\textbf{Solution} \\
+		\begin{align*}
+			\left({\begin{array}{ccc|c} 1&-2&-5&4 \\ 0&1&3&-2 \\
+			0&-1&-3&3 \end{array}}\right) \\
+			R_2+R_3\rightarrow R_2 \left({\begin{array}{ccc|c}
+			1&-2&-5&4 \\ 0&0&0&1 \\ 0&-1&-3&3 
+			\end{array}}\right) \\
+		\end{align*}
+		\tab This is not consistent after this operation, as 
+		$0x_1+0x_2+0x_3=-1$ is not possible. 
+	\end{enumerate}
+	
+\end{homeworkProblem}
+\newpage
+
+%
+%	Problem 2
+%
+\begin{homeworkProblem}
+\tab Consider the following system of linear equations:
+	\begin{align*}
+		x_1+3x_2=1+s \\
+		x_1+rx_2=5
+	\end{align*}
+	\begin{enumerate}[label=\alph*]
+		\item (5 points) For what values of $r$ and $s$ is the system
+			inconsistent? \\
+			\textbf{Solution} \\
+			\begin{align*}
+			\left({\begin{array}{cc|c} 1&3&1+s \\ 1&r&5 \end{array}}\right) \\
+			R2-R1\rightarrow R2
+			\left({\begin{array}{cc|c} 1&3&1+s \\ 0&r-3&4+s \end{array}}\right)
+			\end{align*} \\ 
+			\tab From here we can start to find use the equation $(r-3)x_2=4+s$
+			to find some answers. \\
+			\begin{align*}
+				(r-3)x_2=4+s \\
+				x_2=\frac{4+s}{r-3}
+			\end{align*}
+			\tab Now from here we can see that the system is inconsistent if
+			$r=3$ and $s\neq-4$.
+
+			
+		\item 
+			(5 points) For what values of $r$ and $s$ does the system have
+			infinitely many solutions? \\
+			\textbf{Solution} \\
+			\tab Using the same equation in 2a we know that $x_2=\frac{4+s}{r-3}
+			$. Utilizing this we can determine at what point the system has
+			infinitely many solutions. The case in which it has infinitely many
+			solutions is when $r=3$  and $s=-4$.
+		\item 
+			(5 points) For what values of $r$ and $s$ does the system have
+			unique solution? \\
+			\textbf{Solution} \\
+			\tab There is a unique solution when $r\neq3$. 
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+
+%
+%	Problem 3
+%
+\begin{homeworkProblem}
+	\tab Given the system of linear equations
+	\begin{align*}
+		x_1+rx_2=5 \\
+		-3x_1+6x_2=s
+	\end{align*}
+	\begin{enumerate}[label=\alph*]
+		\item (5 points) Determine the values of $r$ and $s$ so that the system
+			is consistent. \\
+			\textbf{Solution} \\
+			\tab To start lets put the equations in a matrix: \\
+			\begin{align*}
+			\left({\begin{array}{cc|c} 1&r&5 \\ -3&6&s \end{array}}\right) \\
+			R2+3R1\rightarrow R2
+			\left({\begin{array}{cc|c} 1&r&5 \\ 0&6+3r&s+15 \end{array}}\right) 
+			\end{align*}
+			\tab In this case the equation produced will come out to be:
+			\begin{align*}
+				(6+3r)x_2=s+15 \\
+				x_2=\frac{s+15}{6+3r}
+			\end{align*}
+			\tab The system is consistent for any instance where $r\neq -2$
+		\item (5 points) Determine the values of $r$ and $s$ so that the system
+			is inconsistent. \\
+			\textbf{Solution} \\
+			\tab The solution is nearly the opposite of that in 3a. The system 
+			is inconsistent for any instance $r=-2$ and $s\neq -15$
+		\item (5 points) Determine the values of $r$ and $s$ so that the system
+			has infinitely many solutions. \\
+			\textbf{Solution} \\
+			\tab The system has infinitely many solutions in any case where 
+			$r=-2$ and $s=-15$
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+
+%
+%	Problem 4
+%
+\begin{homeworkProblem}
+	\tab Let A= 
+	$\left({\begin{array}{ccc} 1&2&3 \\ 0&1&0 \\ 0&0&-3 \end{array}}\right)$
+	\begin{enumerate}[label=\alph*]
+		\item (5 points) Find $A^{-1}$, if it exists.\\
+			\textbf{Solution}\\
+			\begin{align*}
+				 \left({\begin{array}{ccc|ccc} 1&2&3&1&0&0 \\ 0&1&0&0&1&0 \\ 
+				 0&0&-3&0&0&1 \end{array}}\right) \\
+				 R_1+R_3\rightarrow R_1\left({\begin{array}{ccc|ccc} 1&2&0&1&0&1
+				 \\ 0&1&0&0&1&0 \\ 0&0&-3&0&0&1 \end{array}}\right)  \\
+				 R_1-2R_2\rightarrow R_1 \left({\begin{array}{ccc|ccc} 
+				 1&0&0&1&-2&1 \\ 0&1&0&0&1&0 \\ 0&0&-3&0&0&1 \end{array}}\right) 
+				 \\
+				 -\frac{1}{3}R_3\rightarrow R_3\left({\begin{array}{ccc|ccc} 
+				 1&0&0&1&-2&1 \\ 0&1&0&0&1&0 \\ 0&0&1&0&0&-\frac{1}{3} 
+				 \end{array}}\right) \\
+				 A^{-1}=\left({\begin{array}{ccc} 1&-2&1 \\ 0&1&0 \\ 0&0&
+				 \frac{1}{3} \end{array}}\right)
+			\end{align*}
+		\item (5 points) Determine whether the equation $Ax=b$ is consistent 
+			for every $b$ in $\mathbb{R}^3$. If so, what is the solution of the
+			system?\\
+			\textbf{Solution}\\
+			\begin{align*}
+				b = \left({\begin{array}{c} b_1 \\ b_2 \\ b_3 \end{array}}
+				\right)\\
+				\left({\begin{array}{ccc|c} 1&2&3&b_1 \\ 0&1&0&b_2 \\ 
+				0&0&-3&b_3 \end{array}}\right) \\
+			\end{align*}
+			\tab Now, following the steps of 4a we can see that the Reduced
+			row echelon form of the equation is the identity matrix. When 
+			looking with my matrix for $b$ I put in free variable, where b
+			can be anything. Due to it reducing to identity it allows it any
+			$x$ because any value will satisfy the b matrix. There are no
+			inconsistencies. 
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+
+%
+%	Problem 5
+%
+\begin{homeworkProblem}
+	\tab Let $A$ be a $3\times4$ matrix whose reduce row echelon form is
+	\begin{equation*}
+		\hat{A} = 
+		\left({\begin{array}{cccc} 1&-2&0&3 \\ 0&0&1&-5 \\ 0&0&0&0
+		\end{array}}\right)
+	\end{equation*}
+	\begin{enumerate}[label=\alph*]
+		\item (5 points) Find the general solution $x\in\mathbb{R}^4$ to the 
+			system $Ax=0$ \\
+			\textbf{Solution}\\
+			\begin{align*}
+				\left({\begin{array}{cccc|c} 1&-2&0&3&0 \\ 0&0&1&-5&0 \\ 
+				0&0&0&0&0 \end{array}}\right) \\
+				x_1 - 2x_2 + 3x_4 = 0 \\
+				x_3-5x_4=0 \\
+				x_3=5x_4 \\
+				x_1=2x_2 \\
+				x=\left({\begin{array}{c} 2x_2-3x_4 \\ x_2 \\ 5x_4 \\ 
+				x_4\end{array}}\right)
+			\end{align*}
+		\item (5 points) Find the set of all the solutions to $Ax=0$ and write
+			it as the span of the linearly independent vectors.\\
+			\textbf{Solution}\\
+			\begin{align*}
+				span\left\{
+				\left({\begin{array}{c} 2 \\ 1 \\ 0 \\ 0 \end{array}}\right),
+				\left({\begin{array}{c} -3 \\ 0 \\ 5 \\ 1 \end{array}}\right)
+				\right\} \\
+			\end{align*}
+		\item (5 points) True or False: The equation $Ax=b$ has a solution $x\in 
+			\mathbb{R}^4$ for every vector $b\in\mathbb{R}^3$. Justify your
+			answer.\\
+			\textbf{Solution}\\
+			\tab False. The reason is because the fourth row is entirely 0's, 
+			so in this case if the last element of b is non-zero then it is
+			inconsistent.  
+		\item (5 points) True or False: If the equation $Ax=b$ has a solution $
+			x^*\in\mathbb{R}^4$ for a particular vector $b\in\mathbb{R}^3$, then
+			$x^*$ is the unique. Justify your answer.\\
+			\textbf{Solution}\\
+			\tab False, because the solution for b has a free variable. 
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+
+%
+%	Problem 6
+%
+
+\begin{homeworkProblem}
+	\begin{enumerate}[label=\alph*]
+		\item (5 points) True or False: If $A$ and $B$ are $2\times2$ matrices
+			such that $AB=0$ and $A\neq0$, then $B=0$. Give an argument valid
+			for every such A and B if the statement is true, or give a 
+			counterexample if false.\\
+			\textbf{Solution}\\
+			False. A counterexample is:
+			\begin{align*}
+				A=\left({\begin{array}{cc} 0&1 \\ 0&0  \end{array}}\right) \\
+				B=\left({\begin{array}{cc} 1&0 \\ 0&0  \end{array}}\right) \\
+				AB=\left({\begin{array}{cc} (0\times1)+(1\times0)&
+				(0\times0)+(1\times0) \\ 
+				(0\times1)+(0\times0)&(0\times0)+(0\times0) 
+				\end{array}}\right) =
+				\left({\begin{array}{cc} 0&0 \\ 0&0 \end{array}}\right)
+			\end{align*}
+			\tab This is a 0 matrix, but both $A$ and $B$ are not 0 matrices.
+			Therefore I can conclude this is false. 
+		\item (5 points) True or False: There exists a $4\times3$ matrix $A$ so
+			that the equation $Ax=b$ is consistent for every vector 
+			$b\in\mathbb{R}^4$. Justify your answer.\\
+			\textbf{Solution}\\
+			\tab False. The only way that this can be true if you can have some
+			sort of identity matrix, with an identity matrix you can have all
+			free variables in b, however that is impossible to have in a 
+			$4\times3$ matrix, making this impossible. 
+		\item (5 points) True or False: if $A$ is a $4\times3$ matrix and the
+			equation $Ax=b$ is consistent for a particular vector 
+			$b\in\mathbb{R}^4$, then the equation $Ax=cb$ is consistent for
+			every scalar c. Justify your answer.\\
+			\textbf{Solution}\\
+			\tab True, if you manipulate a vector with a scalar you can use that
+			scalar on the other side of the equation and manipulate it in 
+			exactly the same way. 
+		\item (5 points) True or False: If $A$ and $B$ are invertible
+			$3\times3$ matrices and $C=A^3B^2$, then $C$ is invertible and 
+			$C^{-1}=(B^{-1})^2(A^{-1})^3$. Justify your answer.\\
+			\textbf{Solution}\\
+			\tab True. The solution seems to look a bit strange but right.Let's
+			say that $A^3$ = $X$ and $B^2=Y$ so that $C=XY$. In this case the
+			inverse would look like:
+			\begin{align*}
+				C^{-1}=(Y)^{-1}(X)^{-1})
+			\end{align*}
+			\tab Which, when swapping X and Y with their counterpart values
+			would look like:
+			\begin{align*}
+				C^{-1}=(B^2)^{-1}(A^3)^{-1} \\
+				C^{-1}=(B^{-1})^2(A^{-1})^3
+			\end{align*}
+			\tab which can be shown to be exactly identical. 
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+
+\end{document}

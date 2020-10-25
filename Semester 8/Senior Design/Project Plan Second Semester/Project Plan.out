@@ -1,0 +1,65 @@
+\BOOKMARK [1][-]{section.1}{Project Title}{}% 1
+\BOOKMARK [1][-]{section.2}{Names and Email Addresses of Team Members}{}% 2
+\BOOKMARK [1][-]{section.3}{Faculty Sponsor}{}% 3
+\BOOKMARK [1][-]{section.4}{Client}{}% 4
+\BOOKMARK [1][-]{section.5}{Meeting\(s\) with the client for developing this plan}{}% 5
+\BOOKMARK [1][-]{section.6}{Goal and Motivation}{}% 6
+\BOOKMARK [1][-]{section.7}{Approach}{}% 7
+\BOOKMARK [2][-]{subsection.7.1}{Compute Cluster}{section.7}% 8
+\BOOKMARK [2][-]{subsection.7.2}{Computer Systems}{section.7}% 9
+\BOOKMARK [2][-]{subsection.7.3}{Muon Tomography Station \(MTS\)}{section.7}% 10
+<<<<<<< HEAD
+\BOOKMARK [1][-]{section.8}{Novel Features/Functionalities}{}% 11
+\BOOKMARK [2][-]{subsection.8.1}{Compute Cluster}{section.8}% 12
+\BOOKMARK [2][-]{subsection.8.2}{Computer Systems}{section.8}% 13
+\BOOKMARK [2][-]{subsection.8.3}{MTS}{section.8}% 14
+\BOOKMARK [3][-]{subsubsection.8.3.1}{Development MTS}{subsection.8.3}% 15
+\BOOKMARK [3][-]{subsubsection.8.3.2}{Current MTS}{subsection.8.3}% 16
+=======
+\BOOKMARK [3][-]{subsubsection.7.3.1}{Current MTS}{subsection.7.3}% 11
+\BOOKMARK [3][-]{subsubsection.7.3.2}{Development MTS}{subsection.7.3}% 12
+\BOOKMARK [1][-]{section.8}{Novel Features/Functionalities}{}% 13
+\BOOKMARK [2][-]{subsection.8.1}{Compute Cluster}{section.8}% 14
+\BOOKMARK [2][-]{subsection.8.2}{Computer Systems}{section.8}% 15
+\BOOKMARK [2][-]{subsection.8.3}{MTS}{section.8}% 16
+>>>>>>> 5ee1e0b4f345f7e0bfaed17b7ebdccdfd222fc61
+\BOOKMARK [1][-]{section.9}{Technical Challenges}{}% 17
+\BOOKMARK [2][-]{subsection.9.1}{Compute Cluster}{section.9}% 18
+\BOOKMARK [2][-]{subsection.9.2}{Computer Systems}{section.9}% 19
+\BOOKMARK [2][-]{subsection.9.3}{MTS}{section.9}% 20
+<<<<<<< HEAD
+\BOOKMARK [3][-]{subsubsection.9.3.1}{Development MTS}{subsection.9.3}% 21
+\BOOKMARK [3][-]{subsubsection.9.3.2}{Current MTS}{subsection.9.3}% 22
+\BOOKMARK [1][-]{section.10}{Design}{}% 23
+\BOOKMARK [1][-]{section.11}{Progress Summary}{}% 24
+\BOOKMARK [1][-]{section.12}{Milestone 4 \(Feb 11\)}{}% 25
+\BOOKMARK [1][-]{section.13}{Milestone 5 \(Mar 18\)}{}% 26
+\BOOKMARK [1][-]{section.14}{Milestone 6 \(April 15\)}{}% 27
+\BOOKMARK [1][-]{section.15}{Task Matrix for Milestone 4}{}% 28
+\BOOKMARK [1][-]{section.16}{Description of each planned task for Milestone 4}{}% 29
+\BOOKMARK [1][-]{section.17}{Approval from Faculty Sponsor}{}% 30
+=======
+\BOOKMARK [3][-]{subsubsection.9.3.1}{Current MTS}{subsection.9.3}% 21
+\BOOKMARK [3][-]{subsubsection.9.3.2}{Development MTS}{subsection.9.3}% 22
+\BOOKMARK [1][-]{section.10}{Design}{}% 23
+\BOOKMARK [2][-]{subsection.10.1}{Compute Cluster}{section.10}% 24
+\BOOKMARK [2][-]{subsection.10.2}{MTS}{section.10}% 25
+\BOOKMARK [1][-]{section.11}{Progress Summary}{}% 26
+\BOOKMARK [1][-]{section.12}{Table of Major Goals}{}% 27
+\BOOKMARK [2][-]{subsection.12.1}{Compute Cluster}{section.12}% 28
+\BOOKMARK [2][-]{subsection.12.2}{Computer Systems}{section.12}% 29
+\BOOKMARK [2][-]{subsection.12.3}{MTS}{section.12}% 30
+\BOOKMARK [3][-]{subsubsection.12.3.1}{Current MTS}{subsection.12.3}% 31
+\BOOKMARK [3][-]{subsubsection.12.3.2}{Development MTS}{subsection.12.3}% 32
+\BOOKMARK [1][-]{section.13}{Milestone 4 \(Feb 11\)}{}% 33
+\BOOKMARK [1][-]{section.14}{Milestone 5 \(Mar 18\)}{}% 34
+\BOOKMARK [1][-]{section.15}{Milestone 6 \(April 15\)}{}% 35
+\BOOKMARK [1][-]{section.16}{Task Matrix for Milestone 4}{}% 36
+\BOOKMARK [1][-]{section.17}{Description of each planned task for Milestone 4}{}% 37
+\BOOKMARK [2][-]{subsection.17.1}{Compute Cluster}{section.17}% 38
+\BOOKMARK [2][-]{subsection.17.2}{Computer Systems}{section.17}% 39
+\BOOKMARK [2][-]{subsection.17.3}{MTS}{section.17}% 40
+\BOOKMARK [3][-]{subsubsection.17.3.1}{Current MTS}{subsection.17.3}% 41
+\BOOKMARK [3][-]{subsubsection.17.3.2}{Development MTS}{subsection.17.3}% 42
+\BOOKMARK [1][-]{section.18}{Approval from Faculty Sponsor}{}% 43
+>>>>>>> 5ee1e0b4f345f7e0bfaed17b7ebdccdfd222fc61

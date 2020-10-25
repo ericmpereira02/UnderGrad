@@ -1,0 +1,87 @@
+\documentclass[12pt]{article}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage{titlesec}
+\pagenumbering{gobble}
+\usepackage{changepage}
+\usepackage{setspace}
+\linespread{1.5}
+
+\usepackage{makecell}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\hypersetup{
+	colorlinks,
+	citecolor=black,
+	filecolor=black,
+	linkcolor=black,
+	urlcolor=black
+}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\titleformat{\section}
+{\normalfont\normalsize\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}
+{\normalfont\normalsize\bfseries}{\thesection}{1em}{}
+
+% for forcing tables to fit
+\usepackage{changepage}
+
+\begin{document}
+	
+
+\begin{titlepage}
+	
+\author{Christopher Heath, Eric Pereira}
+\date{December 7\textsuperscript{th}, 2018}
+\title{Database Systems Project}
+
+\maketitle
+
+\end{titlepage}
+
+
+\newpage \pagenumbering{arabic}
+
+\tab Our database contains a total of 7 tables. The main tables are Product, Individual\_Product, Customer, and Order. The remaining tables are Products\_Ordered, Membership, and Addresses. We chose this design to best support the required queries and to simplify the design. \\
+\tab The Individual\_Product table is a member of Product. When a product is first created, say for instance an XBOX, an instance of Product is called upon to create that type of product with an associated name, price, type, and most importantly ID. When we need to make multiple instances of an XBOX product we create an Individual\_Product, with the XBOX id in this case, and give it a unique serial number. We chose this design so that specific items could be found, and so that creating an individual item would be as simple as creating something with the correct id and a new serial number. \\
+\tab The customer table is where emails, passwords, usernames, phone numbers, and names are stored. If the customer does decide to become a member their data will be stored into the Members table with their start\_date and end\_date. The customer table has another associated table, Addresses, that stores contact information including main address, email, and main city. \\
+\tab The final tables are Order and Products\_Ordered. Products\_Ordered contains multiple
+ instances of Individual\_Products. This table contains the tracking\_number foreign key from
+  the Order table, and the serial\_number foreign key from individual\_product. The
+   tracking\_number and the serial\_number together are the primary key for this table. We
+    chose this design to support finding tracking information for specific items quick and
+     efficiently. The Order table contains the attributes date\_ordered, the primary key
+      tracking\_number, and the foreign key email of the Customer table. This design allows us to
+       look at all the Orders from a specific Customer. \\
+\tab To answer question number 6 in task\_4 there is the question of giving two decompositions and proving they are lossless join and functional preserving. For example, with the customer and order tables it is lossles because if customer and order were to intersect they would only match at email, thus preserving data. There is an instance of this also with the product table and individual\_product table where the only things that intersect are the product\_id's. This is lossless as it preserves data and it is functionally preserving only necessary data.
+
+
+\end{document}

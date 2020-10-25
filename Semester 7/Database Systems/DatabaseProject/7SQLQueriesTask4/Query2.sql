@@ -1,0 +1,3 @@
+SELECT videogamestore.order.tracking_number, videogamestore.order.address, videogamestore.order.city FROM videogamestore.order
+join videogamestore.products_ordered ON videogamestore.products_ordered.Tracking_No=videogamestore.order.tracking_number
+WHERE videogamestore.products_ordered.Serial_No=5589

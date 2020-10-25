@@ -1,0 +1,95 @@
+* Abstract
+Dr. Hohlmann's High Energy Physics (HEP) research group at Florida Tech
+contributes to micropattern gas detector research with the CMS experiment at
+CERN and R&D for a future Electron-Ion Collider to be built in the United
+States. In order to conduct this research, the group makes extensive use of
+several computer systems. These systems can be split into three main sections:
+the high throughput computing cluster, the muon tomography station (MTS), and
+general use machines.
+  
+The high throughput computing cluster is primarily used by the group's
+researchers to store data and run calculations. It is also affiliated with the
+Open Science Grid, where researchers from across the globe can submit jobs to be
+run. The MTS is an experimental device that makes use of micropattern gas
+detectors to track the paths of muons in order to image an object placed within
+it. Our project focuses on the computer system used to interface with the
+device. The research group uses general purpose Linux machines to interface with
+miscellaneous detectors and electronics, process and store data, and run
+simulations. The researchers using these machines often run into technical
+trouble and benefit from technical assistance provided both within and without
+the group.
+
+* Initial Situation
+** Cluster
+*** cluster had been down under maintenance for quite some time
+*** current software was soon to be outdated
+*** complete, from-scratch rebuild recommended
+** MTS
+*** software very much out of date
+*** data-taking workflow convoluted and inefficient
+*** aging software was often slow and unreliable
+** Lab Computers
+*** although new equipment had been acquired over time, no reallocation of resources had been done in some time
+**** newer machines could be better used as replacements for aging ones
+**** reorganizing IT infrastructure
+***** ethernet wiring
+***** optimizing intra-system communication
+*** much room for optimizing the researchers' workflows
+**** plentiful opportunities for automation
+*** researchers often run into technical issues
+* What we aimed to do
+** rebuild the cluster in its entirety
+** construct a new, up-to-date machine for interfacing with the MTS
+** create an interface through which researchers may more conveniently interact with the MTS
+** optimize the distribution and utilization of the lab's resources
+* Key problems we've faced
+** cluster
+*** issues surrounding the installation of the new operating system
+** MTS
+*** required software is poorly integrated
+*** software packages are no longer maintained
+*** required software does not work
+**** substantial system modifications must be made in order for the software to function
+** lab computers
+*** researchers have problems similar to our issues with the MTS's software
+**** similar problems => similar roadblocks
+*** hardware issues
+* What we've done
+** Cluster
+*** new OS all (but one) cluster components
+*** all (but one) cluster components integrated into the cluster
+*** documentation
+**** all steps up to current point documented
+**** errors encountered and their resolutions are documented
+** MTS
+*** all required software (but one) has been installed
+**** AMORE (data processing) is no longer supported
+***** must be built from source
+***** repeatedly encountering miscellaneous issues 
+*** documentation
+**** all steps up to current point documented
+**** errors encountered and their resolutions are documented
+** Lab Computers
+*** optimized resource allocation
+*** improved researcher workflow
+**** automation scripts
+**** methodology improvements
+*** miscellaneous technical support provided
+* What still needs to be done
+** Cluster
+*** final component (NAS-0) needs to be integrated
+*** job submission software must be configured
+*** cluster must be reintegrated with the Open Science Grid
+** MTS
+*** final piece of software (AMORE) must be built
+*** interfacing software must be completed
+** Lab Computers
+*** miscellaneous technical support ought to be continually provided
+* Acknowledgments
+** Samantha Wohlstadter: cluster assistant
+*** helped perform miscellaneous cluster research and duties
+** Daniel Campos: cluster consultant
+*** helped us overcome hurdles we had encountered
+** ROCKS User's Guide
+*** http://central-7-0-x86-64.rocksclusters.org/roll-documentation/base/7.0/
+*** provided guidance with the ROCKS installation process

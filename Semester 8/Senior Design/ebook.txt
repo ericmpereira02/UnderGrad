@@ -1,0 +1,71 @@
+Dr. Hohlmann's High Energy Physics (HEP) research group at Florida Tech
+contributes to micropattern gas detector research for both the CMS experiment at
+CERN and the future Electron-Ion Collider (EIC) to be built in the United
+States. In order to conduct this research, the group makes extensive use of
+several computer systems. These systems can be split into three main sections:
+the high throughput computing cluster, the muon tomography station (MTS), and
+general use machines.
+
+The high throughput computing cluster is primarily used by the group's
+researchers to store data and run calculations. It is also affiliated with the
+Open Science Grid, where researchers from across the globe can submit jobs to be
+run. The MTS is an experimental device that makes use of micropattern gas
+detectors to track the paths of muons in order to image an object placed within
+it. Our project focuses on the computer system used to interface with the
+device. The research group uses general purpose Linux machines to interface with
+miscellaneous detectors and electronics, process and store data, and run
+simulations. The researchers using these machines often run into technical
+trouble and benefit from technical assistance provided both within and without
+the group.
+
+At the outset of the project, the situation was quite dire. The computing
+cluster had been under severe maintenance for a good deal of time, and its
+software would soon be outdated. After attempting to help solve its many issues,
+the OSG support staff finally recommended a full rebuild of the entire
+system. The computer system for the MTS was running grossly outdated software,
+had grown unreliable, and had an inefficient and convoluted data-taking
+workflow. The lab’s general purpose machines, while largely usable, had much
+room for optimization in terms of resource allocation and workflow automation. 
+
+Faced with these challenges, we compiled a list of tasks to be completed for
+each section of computing systems. 
+
+[make nice graphic detailing bullet-pointed list of tasks for each section]
+
+Throughout the pursuit of these goals, however, we were plagued by problems at
+nearly every turn. We had substantial difficulty installing the latest version
+of the cluster-building ROCKS Linux distribution on first the head node, then
+the subsequent cluster components. We were able to overcome these obstacles with
+the help of both James Cicak from Florida Tech's IT department and Daniel
+Campos, a server technician. Building and configuring the software for the MTS's
+new computer system was a heartache all its own; the installation procedure
+requires very specific versions of all the pieces of software, which all require
+VERY specific, undocumented configurations in order to run. While we have been
+unable to get the final piece operational, we received substantial guidance from
+the researchers working on the MTS, Miguel Gutierrez and Tommy Walker. Although
+the servicing of the general computer systems was not without hiccup, it was far
+less catastrophically burdensome than the other two sections of computing.
+
+Although the issues we encountered prevented us from attaining all our goals, we
+have made significant progress towards them and created extensive documentation
+detailing our journey. All but one of the cluster components have been
+incorporated together, and the groundwork is being lain for job submission and
+integration with OSG. We have received a good deal of support from the assistant
+cluster administrator, Samantha Wohlstadter, in building the system anew, and we
+have received guidance from the ROCKS user's guide
+(http://central-7-0-x86-64.rocksclusters.org/roll-documentation/base/7.0/). All
+but one of the software packages have been installed and built on the new MTS
+computer system, and the scaffolding of the new user interface has been put in
+place. The lab’s computing resources have been optimally reallocated and the
+researchers’ computational efficiency has been significantly enhanced.
+
+There still remains a considerable amount of work to be done in order to bring
+the lab’s systems to full working order. For the computing cluster, the final
+component, a network accessible storage unit, needs to be incorporated, the job
+submission software needs to be fully configured, and the whole system must be
+reintegrated with OSG by installing and configuring OSG's software. AMORE, data
+processing software, still needs to be built on the MTS’s new computer system,
+and the interfacing software must be completed alongside. Details of these
+advancements must also be appended to the existing documentation. 
+
+[maybe include that class diagram from our proposal]

@@ -1,0 +1,508 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{relsize}
+\usepackage{textcomp}
+
+\usetikzlibrary{automata,positioning}
+
+%
+% Basic Document Settings
+%
+
+\newcommand{\minus}{\scalebox{0.5}[1.0]{$-$}}
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass\ (\hmwkClassInstructor\ \hmwkClassTime): \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+\renewcommand{\theenumi}{\Alph{enumi}}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Homework\ \#3}
+\newcommand{\hmwkDueDate}{February 18, 2019}
+\newcommand{\hmwkClass}{Linear Algebra}
+\newcommand{\hmwkClassTime}{Section 01}
+\newcommand{\hmwkClassInstructor}{Dr. Subasi}
+\newcommand{\hmwkAuthorName}{\textbf{Eric Pereira}}
+
+%
+% Title Page
+%
+\pagenumbering{gobble}
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ at 11:59pm}\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+    \vspace{3in}
+}
+
+\author{\hmwkAuthorName}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+\pagenumbering{arabic}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 1                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+Let $S=\left\{
+\left({\begin{array}{c} 1 \\ 0 \end{array}}\right)_\mathlarger{,}
+\left({\begin{array}{c} \minus3 \\ 3 \end{array}}\right)_\mathlarger{,}
+\left({\begin{array}{c} 0 \\ 1 \end{array}}\right)
+\right\}$ be a set of vectors in $\mathbb{R}^2$.
+%\left({\begin{array}{c} 1 \\ 0 \end{array}}\right)$
+	\begin{enumerate}[label=(\alph*)]
+		\item (10 points) find $span$ $S$ and determine whether the vector $
+		\left({\begin{array}{c} 4 \\ \minus5 \end{array}}\right)$ is in $span$ $S$. 
+		\\
+		\textbf{Solution:} \\
+		The span $S$ is equal to:
+		\begin{align*}
+			S=\left\{
+			\left({\begin{array}{c} 1 \\ 0 \end{array}}\right)_\mathlarger{,}
+			\left({\begin{array}{c} \minus3 \\ 3 \end{array}}\right)
+			\right\}
+		\end{align*}
+		It is possible to get rid of the $\left({\begin{array}{c} 0 \\ 1
+		\end{array}}\right)$ vector because you can get that vector by:
+		\begin{align*}
+			\left({\begin{array}{c} 1 \\ 0 \end{array}}\right)+
+			\frac{1}{3} \left({\begin{array}{c} \minus3 \\ 3 \end{array}}\right)=
+			\left({\begin{array}{c} 0 \\ 1 \end{array}}\right)
+		\end{align*}
+		and the vector $\left({\begin{array}{c} 4 \\ \minus5 \end{array}}\right)$ is
+		a part of the span, this can be proven by:
+		\begin{align*}
+			-\left({\begin{array}{c} 1 \\ 0 \end{array}}\right)+
+			\frac{\minus5}{3} \left({\begin{array}{c} \minus3 \\ 3 \end{array}}\right)=
+			\left({\begin{array}{c} 4 \\ \minus5 \end{array}}\right)
+		\end{align*}
+		\item (5 points) Find a subset of $S$ with the same span as $S$ that is as small as possible. 
+		\\
+		\textbf{Solution:} \\
+		A subset $S$ with the same span as $S$ would be:
+		\begin{align*}
+			span=\left\{
+			\left({\begin{array}{c} 1 \\ 0 \end{array}}\right)_\mathlarger{,}
+			\left({\begin{array}{c} 0 \\ 1 \end{array}}\right)
+			\right\}
+		\end{align*}
+		We can get this value by reducing $\left({\begin{array}{c} \minus3 \\ 3 \end{array}}\right)$
+		\begin{align*}
+			\left({\begin{array}{c} 1 \\ 0 \end{array}}\right)+
+			\frac{1}{3} \left({\begin{array}{c} \minus3 \\ 3 \end{array}}\right)=
+			\left({\begin{array}{c} 0 \\ 1 \end{array}}\right)
+		\end{align*}
+
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 2                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+Let $S=\left\{
+\left({\begin{array}{c} 1 \\ \minus1 \\ 1 \end{array}}\right)_\mathlarger{,}
+\left({\begin{array}{c} 0 \\ 1 \\ 0 \end{array}}\right)_\mathlarger{,}
+\left({\begin{array}{c} \minus3 \\ 3 \\ 3 \end{array}}\right)
+\right\}$ be a set of vectors in $\mathbb{R}^2$.
+	\begin{enumerate}[label=(\alph*)]
+	\item (5 points) Determine whether $S$ is linearly independent or linearly dependent. \\
+	\textbf{Solution:} \\
+	$S$ is linearly independent because no two vectors in the set can create another vector,
+	thus making each one linearly independent. 
+	\item (5 points) find a subset of $S'$ with the same span as $S$ that is as small as possible. \\
+	\textbf{Solution:} \\
+	A subset $S'$ with the same span as $S$ that is as small as possible is:
+	\begin{align*}
+		S=\left\{
+		\left({\begin{array}{c} 1 \\ 0 \\ 0 \end{array}}\right)_\mathlarger{,}
+		\left({\begin{array}{c} 0 \\ 1 \\ 0 \end{array}}\right)_\mathlarger{,}
+		\left({\begin{array}{c} 0 \\ 0 \\ 1 \end{array}}\right)
+		\right\}
+	\end{align*}
+	It is possible to get reduce to this by:
+	\begin{align*}
+		\left({\begin{array}{c} 1 \\ \minus1 \\ 1 \end{array}}\right)+
+		\frac{1}{3}\left({\begin{array}{c} \minus3 \\ 3 \\ 3 \end{array}}\right)=
+		\left({\begin{array}{c} 0 \\ 0 \\ 1 \end{array}}\right) \\
+		\left({\begin{array}{c} 1 \\ \minus1 \\ 1 \end{array}}\right)+
+		\left({\begin{array}{c} 0 \\ 1 \\ 0 \end{array}}\right)+
+		-1\left({\begin{array}{c} 0 \\ 0 \\ 1 \end{array}}\right)=
+		\left({\begin{array}{c} 1 \\ 0 \\ 0 \end{array}}\right)
+	\end{align*}
+	
+	\item (10 points) Determine whether the vector $\left({\begin{array}{c} 1 \\ 0 \\ 1 \end{array}}\right)$ belongs to $SpanS'$. \\
+	\textbf{Solution:} \\
+	\tab The vector does belong to $Span S$. This can be calculated by:
+	\begin{align*}
+		\left({\begin{array}{c} 1 \\ 0 \\ 0 \end{array}}\right) + 
+		\left({\begin{array}{c} 0 \\ 0 \\ 1 \end{array}}\right) = 
+		\left({\begin{array}{c} 1 \\ 0 \\ 1 \end{array}}\right)
+	\end{align*}
+	Because we are able to get the value from other values in the span it belongs to Span S. 
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 3                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+Determine whether the following sets are linearly dependent or linearly independent.
+	\begin{enumerate}[label=(\alph*)]
+		\item (5 points) $S_1=\left\{\left({\begin{array}{c} \minus2 \\ 3 \\ 0 \\ 7 \end{array}}\right)\right\}$ \\
+		\textbf{Solution:} \\
+		This is linearly independent because being that it is the only vector
+		in the set it cannot express linear dependence. 
+		\item (5 points) $S_2=\left\{
+		\left({\begin{array}{c} \minus1 \\ 3 \\ \minus8 \end{array}}\right)_\mathlarger{,}
+		\left({\begin{array}{c} 0 \\ 0 \\ 0 \end{array}}\right)_\mathlarger{,}
+		\left({\begin{array}{c} 4 \\ \minus5 \\ 6 \end{array}}\right)
+		\right\}$ \\
+		\textbf{Solution:} \\
+		This is linearly dependent because I can use scalar multiplication to get the
+		0 vector from one of the vectors in the set. 
+		\item (10 points) $S_3=\left\{
+		\left({\begin{array}{c} \minus3 \\ 7 \\ 2 \end{array}}\right)_\mathlarger{,}
+		\left({\begin{array}{c} 0 \\ 0 \\ \minus1 \end{array}}\right)_\mathlarger{,}
+		\left({\begin{array}{c} 0 \\ 2 \\ 1 \end{array}}\right)
+		\right\}$ \\
+		\textbf{Solution:} \\
+		This set of vectors is linearly independent as no one vector can be created
+		from the linear combination of the other vectors.  
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 4                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	Consider the following subset of $\mathbb{R}^4$: 
+	\begin{align*}
+		V=\left\{
+		\left({\begin{array}{c} x_1 \\ x_2 \\ x_3 \\ x_4 \end{array}}\right)
+		\in \mathbb{R}^4:x_1+11x_3+4x_4=0\text{ and }x_2+9x_3+3x_4=0
+		\right\}.
+	\end{align*}
+	
+	\begin{enumerate}[label=(\alph*)]
+		\item (10 pts) Show that $V$ is a subspace of $\mathbb{R}^4$. \\
+			\textbf{Solution:} \\
+			Take an arbitrary $X$ in $V$, we want to show $cX$ is also in $V$.
+			\begin{align*}
+				cx_1+11cx_3+4cx_4=0\\
+				c(x_1+11x_3+4x_4)=0\\
+			\end{align*}
+			Because $X$ is in $V$,
+			\begin{align*}
+				c(0)=0
+			\end{align*}
+			The same is true for the second equation given:
+			\begin{align*}
+				cx_2+9cx_3+3cx_4=0 \\
+				c(x_2+9x_3+3x_4)=0 \\
+				c(0)=0
+			\end{align*}
+			Therefore our new vector $cX$ satisfies both equations. Next is to prove that the
+			set is closed under vector addition. This can be shown by:
+			\begin{align*}
+				x_1+y_1+11x_3+11y_3+4x_4+4y_4=0 \\
+				(x_1+11x_3+4x_4)+(y_1+11x_3+4x_4)=0 \\
+			\end{align*}
+			Because $x$ and $y$ are in the set:
+			\begin{align*}
+				(0)+(0)=0
+			\end{align*}
+			This is also true for the next equation:
+			\begin{align*}
+				x_2+y_2+9x_3+9y_3+3x_4+3y_4=0 \\
+				(x_2+9x_3+3x_4)+(y_2+9y_3+3y_4)=0 \\
+				(0)+(0)=0
+			\end{align*}
+			
+		\item (5 pts) Find the dimension of $V$. \\
+			\textbf{Solution:} 
+			\begin{align*}
+				x_3 = s,\text{ }
+				x_4 = t \\
+				x_1+11s+4t=0\\
+				x_1=\minus11s-4t\\
+				x_2+9s+3t=0 \\
+				x_2=\minus9s-3t \\
+				\left({\begin{array}{c} \minus11s-4t \\ \minus9s-3t \\ s \\
+				t \end{array}}\right) \\
+				= s\left({\begin{array}{c} \minus11 \\ \minus9 \\ 1 \\
+				0 \end{array}}\right) + t\left({\begin{array}{c} \minus4 \\ \minus3 \\ 0 \\
+				1 \end{array}}\right) \\
+				=\left\{
+				\left({\begin{array}{c} \minus11 \\ \minus9 \\ 1 \\
+				0 \end{array}}\right)_\mathlarger{,}
+				\left({\begin{array}{c} \minus4 \\ \minus3 \\ 0 \\
+				1 \end{array}}\right)
+				\right\}
+			\end{align*}
+		\item (10 pts) Determine whether the set $B= \left\{
+			\left({\begin{array}{c} 1 \\ 0 \\ 1 \\ \minus3 \end{array}}\right)_\mathlarger{,}
+			\left({\begin{array}{c} 2 \\ 3 \\ \minus2 \\ 5 \end{array}}\right)_\mathlarger{,}
+			\right\}$ is a basis for the subspace $V$. \\
+			\textbf{Solution:} \\
+			Yes, the set $B$ is a basis for the subspace $V$. This can be proven by:
+			\begin{align*}
+				\left({\begin{array}{c} \minus 11 \\ \minus 9 \\ 1 \\ 0 \end{array}}\right) -
+				3\left({\begin{array}{c} \minus 4 \\ \minus 3 \\ 0 \\ 1 \end{array}}\right) =
+				\left({\begin{array}{c} 1 \\ 0 \\ 1 \\ \minus 3 \end{array}}\right) \\
+				\minus \left({\begin{array}{c} \minus 4 \\ \minus 3 \\ 0 \\ 1 \end{array}}\right)-
+				2\left({\begin{array}{c} 1 \\ 0 \\ 1 \\ \minus 3 \end{array}}\right)=
+				\left({\begin{array}{c} 2 \\ 3 \\ \minus2 \\ 5 \end{array}}\right)				
+			\end{align*}
+			
+		\item (5 pts) Can the set $S= \left\{
+			\left({\begin{array}{c} 1 \\ 0 \\ 1 \\ \minus3 \end{array}}\right)_\mathlarger{,}
+			\left({\begin{array}{c} 2 \\ 3 \\ \minus2 \\ 5 \end{array}}\right)_\mathlarger{,}
+			\left({\begin{array}{c} 1 \\ \minus1 \\ 2 \\ 4 \end{array}}\right)
+			\right\}$ is a basis for the subspace $V$? \\
+			\textbf{Solution:} \\
+			No, it is not a basis. It is impossible for the last vector in $S$ to exist within the
+			set, it can not be created by the other vectors and describes values that you are not
+			supposed to be able to attain from the original description of $V$.
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 5                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	Consider the following subset of $\mathbb{R}^4$: 
+	\begin{align*}
+		W=\left\{
+		\left({\begin{array}{c} x_1 \\ x_2 \\ x_3 \\ x_4 \end{array}}\right)
+		\in \mathbb{R}^4:x_1+x_3+2x_4=0\text{ and }x_2-x_3-x_4=0
+		\right\}
+	\end{align*}
+	
+	\begin{enumerate}[label=(\alph*)]
+		\item (10 pts) Show that $W$ is a subspace of $\mathbb{R}^4$. \\
+			\textbf{Solution:} \\
+			\textbf{Solution:} \\
+			Take an arbitrary $X$ in $V$, we want to show $cX$ is also in $V$.
+			\begin{align*}
+			cx_1+cx_3+2cx_4=0\\
+			c(x_1+x_3+2x_4=0)=0\\
+			\end{align*}
+			Because $X$ is in $V$,
+			\begin{align*}
+			c(0)=0
+			\end{align*}
+			The same is true for the second equation given:
+			\begin{align*}
+			cx_2-cx_3-cx_4=0 \\
+			c(x_2-x_3-x_4)=0 \\
+			c(0)=0
+			\end{align*}
+			Therefore our new vector $cX$ satisfies both equations. Next is to prove that the
+			set is closed under vector addition. This can be shown by:
+			\begin{align*}
+			x_1+y_1+x_3+y_3+2x_4+2y_4=0 \\
+			(x_1+x_3+2x_4)+(y_1+x_3+2x_4)=0 \\
+			\end{align*}
+			Because $x$ and $y$ are in the set:
+			\begin{align*}
+			(0)+(0)=0
+			\end{align*}
+			This is also true for the next equation:
+			\begin{align*}
+			x_2-y_2-x_3-y_3-x_4-y_4=0 \\
+			(x_2-x_3-x_4)+(y_2-y_3-y_4)=0 \\
+			(0)+(0)=0
+			\end{align*}
+			
+		\item (5 pts) Find a basis for $W$. What is the dimension of $W$?\\
+			\textbf{Solution:} \\
+			\begin{align*}
+				x_3 = s,\text{ }
+				x_4 = t \\
+				x_1+s+2t=0\\
+				x_1=\minus s-2t\\
+				x_2-s-t=0 \\
+				x_2=+s+t \\
+				\left({\begin{array}{c} \minus s-2t \\ s+t \\ s \\
+				t \end{array}}\right) \\
+				= s\left({\begin{array}{c} \minus 1 \\ 1 \\ 1 \\
+				0 \end{array}}\right) + t\left({\begin{array}{c} \minus2 \\ 1 \\ 0 \\
+				1 \end{array}}\right) \\
+				=\left\{
+				\left({\begin{array}{c} \minus 1 \\ 1 \\ 1 \\
+				0 \end{array}}\right)_\mathlarger{,}
+				\left({\begin{array}{c} \minus 2 \\ 1 \\ 0 \\
+				1 \end{array}}\right)
+				\right\}				
+			\end{align*}
+		\item (5 pts) Determine whether the set $B= \left\{
+			\left({\begin{array}{c} \minus 3 \\ 2 \\ 1 \\ 1 \end{array}}\right)_\mathlarger{,}
+			\left({\begin{array}{c} \minus 2 \\ 1 \\ 0 \\ 1 \end{array}}\right)
+			\right\}$ is a basis for the subspace $W$. \\
+			\textbf{Solution:} \\
+			Yes it is. It is a basis because you can get the set $B$ from:
+			\begin{align*}
+				\left({\begin{array}{c} \minus 2 \\ 1 \\ 0 \\ 1 \end{array}}\right)+
+				\left({\begin{array}{c} \minus 1 \\ 1 \\ 1 \\ 0 \end{array}}\right)=
+				\left({\begin{array}{c} \minus 3 \\ 2 \\ 1 \\ 1 \end{array}}\right)
+			\end{align*}
+			Because it is a set of linearly independent vectors that can describe the same set.
+			
+		\item (5 pts) Determine whether the set $S= \left\{
+			\left({\begin{array}{c} \minus 1 \\ 1 \\ 1 \\ 0 \end{array}}\right)_\mathlarger{,}
+			\left({\begin{array}{c} \minus 6 \\ 4 \\ 2 \\ 2 \end{array}}\right)_\mathlarger{,}
+			\left({\begin{array}{c} \minus 2 \\ 1 \\ 0 \\ 1 \end{array}}\right)
+			\right\}$ is a basis for the subspace $W$. \\
+			\textbf{Solution:} \\
+			No, although the entire set can describe the same set the vectors
+			linearly dependent.
+			\begin{align*}
+				\left({\begin{array}{c} \minus 2 \\ 1 \\ 0 \\ 1 \end{array}}\right)+
+				\left({\begin{array}{c} \minus 1 \\ 1 \\ 1 \\ 0 \end{array}}\right)=
+				\left({\begin{array}{c} \minus 3 \\ 2 \\ 1 \\ 1 \end{array}}\right) \\
+				2\left({\begin{array}{c} \minus 3 \\ 2 \\ 1 \\ 1 \end{array}}\right)=
+				\left({\begin{array}{c} \minus 6 \\ 4 \\ 2 \\ 2 \end{array}}\right)
+			\end{align*}
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+
+\end{document}

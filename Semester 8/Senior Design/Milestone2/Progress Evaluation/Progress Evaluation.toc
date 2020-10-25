@@ -1,0 +1,28 @@
+\contentsline {section}{\numberline {1}HEP Senior Design}{1}{section.1}
+\contentsline {section}{\numberline {2}Faculty Sponsor}{1}{section.2}
+\contentsline {section}{\numberline {3}Client}{1}{section.3}
+\contentsline {section}{\numberline {4}Meeting with Faculty Sponsor}{1}{section.4}
+\contentsline {section}{\numberline {5}Meeting with Client}{1}{section.5}
+\contentsline {section}{\numberline {6}Progress of current Milestone}{2}{section.6}
+\contentsline {section}{\numberline {7}Discussion - Current Milestone}{2}{section.7}
+\contentsline {subsection}{\numberline {7.1}Existing MTS Progress}{2}{subsection.7.1}
+\contentsline {subsection}{\numberline {7.2}Development MTS Computer Progress}{2}{subsection.7.2}
+\contentsline {subsection}{\numberline {7.3}Computing Cluster}{3}{subsection.7.3}
+\contentsline {subsection}{\numberline {7.4}GEM Machines}{3}{subsection.7.4}
+\contentsline {section}{\numberline {8}Parts Worked On}{3}{section.8}
+\contentsline {subsection}{\numberline {8.1}Josef Bostik}{3}{subsection.8.1}
+\contentsline {subsection}{\numberline {8.2}Eric Pereira}{3}{subsection.8.2}
+\contentsline {subsection}{\numberline {8.3}Ryan Wojtyla}{4}{subsection.8.3}
+\contentsline {section}{\numberline {9}Task Matrix - Next Milestone}{4}{section.9}
+\contentsline {section}{\numberline {10}Discussion - Next Milestone}{4}{section.10}
+\contentsline {subsection}{\numberline {10.1}Existing MTS}{4}{subsection.10.1}
+\contentsline {subsection}{\numberline {10.2}Development MTS Computer}{4}{subsection.10.2}
+\contentsline {subsection}{\numberline {10.3}Computing Cluster}{5}{subsection.10.3}
+\contentsline {subsection}{\numberline {10.4}GEM Machines}{5}{subsection.10.4}
+\contentsline {section}{\numberline {11}Sponsor Feedback}{6}{section.11}
+\contentsline {subsection}{\numberline {11.1}Existing MTS}{6}{subsection.11.1}
+\contentsline {subsection}{\numberline {11.2}Development MTS Machine}{6}{subsection.11.2}
+\contentsline {subsection}{\numberline {11.3}Computing Cluster}{6}{subsection.11.3}
+\contentsline {subsection}{\numberline {11.4}GEM Computers}{6}{subsection.11.4}
+\contentsline {subsection}{\numberline {11.5}Sponsor Signature}{6}{subsection.11.5}
+\contentsline {section}{\numberline {12}Sponsor Evaluation}{7}{section.12}

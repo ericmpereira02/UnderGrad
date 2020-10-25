@@ -1,0 +1,336 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{relsize}
+\usepackage{textcomp}
+
+\usetikzlibrary{automata,positioning}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass\ (\hmwkClassInstructor\ \hmwkClassTime): \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\newcommand{\minus}{\scalebox{0.5}[1.0]{$-$}}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+\renewcommand{\theenumi}{\Alph{enumi}}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Homework\ \#4}
+\newcommand{\hmwkDueDate}{February 24, 2019}
+\newcommand{\hmwkClass}{Linear Algebra}
+\newcommand{\hmwkClassTime}{Section 01}
+\newcommand{\hmwkClassInstructor}{Dr. Subasi}
+\newcommand{\hmwkAuthorName}{\textbf{Eric Pereira}}
+
+%
+% Title Page
+%
+\pagenumbering{gobble}
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ at 11:59pm}\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+    \vspace{3in}
+}
+
+\author{\hmwkAuthorName}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+\pagenumbering{arabic}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                                %
+%                              Problem 1                                         %
+%                                                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	Consider the $4 \times 4$ matrix $A=\left({\begin{array}{cccc}
+	1&1&0&1 \\ \minus 1&\minus 1&2&1 \\ 2&2&\minus 1&1 \\ \minus 1&\minus 1&\minus 1&0
+	 \end{array}}\right)$.
+	\begin{enumerate}[label=(\alph*)]
+		\item (10pts) Find the reduced row echelon form of $A$. \\
+		\textbf{Solution:} \\
+		\begin{align*}
+			R2+R1\rightarrow R2 \left({\begin{array}{cccc}
+				1&1&0&1 \\ 0&0&2&2 \\ 2&2&\minus 1&1 \\ \minus 1&\minus 1&\minus 1&0
+				\end{array}}\right) \\
+			R3-2R1\rightarrow R3 \left({\begin{array}{cccc}
+				1&1&0&1 \\ 0&0&2&2 \\ 0&0&\minus 1&\minus 1 \\ \minus 1&\minus 1&\minus 1&0
+				\end{array}}\right) \\
+			R4+R1\rightarrow R4 \left({\begin{array}{cccc}
+				1&1&0&1 \\ 0&0&2&2 \\ 0&0&\minus 1&\minus 1 \\ 0&0&\minus 1& 1 \end{array}}\right) \\
+			\frac{1}{2}R2\rightarrow R2 \left({\begin{array}{cccc}
+				1&1&0&1 \\ 0&0&1&1 \\ 0&0&\minus 1&\minus 1 \\ 0&0&\minus 1& 1 \end{array}}\right) \\
+			R3+R2\rightarrow R3 \left({\begin{array}{cccc}
+				1&1&0&1 \\ 0&0&1&1 \\ 0&0&0&0 \\ 0&0&\minus 1& 1 \end{array}}\right) \\
+			R4+R2\rightarrow R4 \left({\begin{array}{cccc}
+				1&1&0&1 \\ 0&0&1&1 \\ 0&0&0&0 \\ 0&0&0&2 \end{array}}\right) \\ 
+			R3\leftrightarrow R4\left({\begin{array}{cccc}
+				1&1&0&1 \\ 0&0&1&1 \\ 0&0&0&2 \\  0&0&0&0 \end{array}}\right) \\
+			\frac{1}{2}R3\rightarrow R3\left({\begin{array}{cccc}
+				1&1&0&1 \\ 0&0&1&1 \\ 0&0&0&1 \\  0&0&0&0 \end{array}}\right) \\
+		\end{align*}
+		\begin{align*} 
+			R2-R3\rightarrow R2\left({\begin{array}{cccc}
+				1&1&0&1 \\ 0&0&1&0 \\ 0&0&0&1 \\  0&0&0&0 \end{array}}\right) \\ 
+			R1-R3\rightarrow R1\left({\begin{array}{cccc}
+				1&1&0&0 \\ 0&0&1&0 \\ 0&0&0&1 \\  0&0&0&0 \end{array}}\right) \\
+		\end{align*}
+	
+		\item (5pts) Is the system $Ax=b$ consistent for every $b\in\mathbb{R}^n$.
+		Justify your answer. \\
+		\textbf{Solution:} \\
+		No, this can be proven in:
+		\begin{align*}
+			b=\left({\begin{array}{c} b_1 \\ b_2 \\ b_3 \\ b_4 \end{array}}\right)
+		\end{align*}
+		\begin{align*}
+			\left({\begin{array}{cccc|c}
+				1&1&0&0&b_1 \\ 0&0&1&0&b_2 \\ 0&0&0&1&b_3 \\  0&0&0&0&b_4 \end{array}}\right)
+		\end{align*}
+		As we can see, in the last row if $b_4$ is a value that is non-zero then it does not 
+		work; therefore we can see that $Ax=b$ is inconsistent.
+	
+		\item (10pts) Find a basis for null-space $Null\text{ }A$. What is the
+		dimension of $Null\text{ }A$?\\
+		\textbf{Solution:} \\
+		\begin{align*}
+			\left({\begin{array}{cccc|c}
+				1&1&0&0&0 \\ 0&0&1&0&0 \\ 0&0&0&1&0 \\  0&0&0&0&0 \end{array}}\right) \\
+			x_3=0,\; x_4=0,\; x_2=s,\; x_1=-s \\
+			Null\;A=\left({\begin{array}{c} \minus 1 \\ 1 \\ 0 \\ 0 \end{array}}\right)
+		\end{align*}
+	
+		\item (5pts) Determine whether the set $S=\left\{
+		\left({\begin{array}{c} \minus 1 \\ 1 \\ 1 \\ 0 \end{array}}\right)_\mathlarger{,}
+		\left({\begin{array}{c} \minus 6 \\ 4 \\ 2 \\ 2 \end{array}}\right)_\mathlarger{,}
+		\left({\begin{array}{c} \minus 2 \\ 1 \\ 0 \\ 1 \end{array}}\right)
+		\right\}$ is a basis for $Null\;A$. \\
+		\textbf{Solution:} \\
+		No, it is impossible for the set $S$ to be a basis for $Null\;A$ because all that
+		can be done on $Null\;A$ is scalar multiplication, and using scalar multiplication it
+		is impossible to get any values in the the third and fourth rows as they are 0, making
+		this basis impossible.
+		
+		\item (10pts) Find a basis for column-space $Col\;A$. What is the
+		dimension of $Col\;A$? \\
+		\textbf{Solution:} \\
+		\begin{align*}
+			\left\{
+			\left({\begin{array}{c} 1 \\ 0 \\ 0 \\ 0 \end{array}}\right)_\mathlarger{,}
+			\left({\begin{array}{c} 0 \\ 1 \\ 0 \\ 0 \end{array}}\right)_\mathlarger{,}
+			\left({\begin{array}{c} 1 \\ 0 \\ 1 \\ 0 \end{array}}\right)
+			\right\}
+		\end{align*}
+		
+		\item (5pts) Determine whether the set $S=\left\{
+		\left({\begin{array}{c} \minus 1 \\ 1 \\ 1 \\ 0 \end{array}}\right)_\mathlarger{,}
+		\left({\begin{array}{c} \minus 6 \\ 4 \\ 2 \\ 2 \end{array}}\right)_\mathlarger{,}
+		\left({\begin{array}{c} \minus 2 \\ 1 \\ 0 \\ 1 \end{array}}\right)
+		\right\}$ is a basis for $Col\;A$. \\
+		\textbf{Solution:} \\
+		No, it is impossible for $S$ to be a basis in $Col\;A$ because $Col\;A$ has no values
+		in the fourth row, therefore it is impossible for $S$ to exist as a basis because it does
+		have values in the fourth row. 
+		
+		
+		\item (5pts) Determine whether the vector $u=
+		\left({\begin{array}{c} \minus 1 \\ 0 \\ 1 \\ \minus 2 \end{array}}\right)$ belongs
+		to $Null\;A$. \\
+		\textbf{Solution:} \\
+		This vector does not belong in $Null\;A$ because using only scalar multiplication and
+		vector addition it is impossible to get values in the third and fourth rows as the 
+		third and fourth row in $Null\;A$ are 0. This makes it impossible to hold the values
+		that $u$ has. 
+		
+		\item (5pts)Determine whether the vector $u=
+		\left({\begin{array}{c} \minus 1 \\ 0 \\ 1 \\ \minus 2 \end{array}}\right)$ belongs
+		to $Col\text{ }A$. \\
+		\textbf{Solution:} \\ 
+		It does not exist in $Col\;A$ because none of the vectors in $Col\;A$ have a value in
+		the fourth row, meaning that it is impossible for $u$ to exist at all in $Col\;A$
+	
+	
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                                %
+%                              Problem 2                                         %
+%                                                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	(20pts) Let $A$ be an $m\times n$ matrix. Prove that the null-space of 
+	$A^TA$ is a subspace of $\mathbb{R}^n$ \\
+	\textbf{Solution:} \\
+	If $A$ is an $m\times n$ matrix, that means that $A^T$ is an $n\times m$ matrix. This
+	means that $A^TA$ will be an $n\times n$ matrix. Now, the $null(A^TA)$ is a set of vectors, these
+	vectors show that $A^TAx=0$. let's say that there is some $y$ where $A^TAy=0$. then, using vector
+	addition we can say:
+	\begin{align*}
+		A^TAx=A^TAy=0 
+	\end{align*}
+	\begin{align*}
+		A^TA(x+y)=A^TAx+A^TAy=0+0=0
+	\end{align*}
+	Therefore we can prove it under vector addition, next is to prove it under scalar multiplication.
+	This can be shown by:
+	\begin{align*}
+		A^TA(cx)=c(A^TAx)=c(0)=0
+	\end{align*} 
+	
+\end{homeworkProblem}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                                %
+%                              Problem 3                                         %
+%                                                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	(25pts)Let $A$ be an $m\times n$ matrix. Prove that the null-space of $A$ and
+	null-space of $A^TA$ are equal, i.e.,
+	\begin{align*}
+		Null\text{ }A=Null\text{ }A^TA
+	\end{align*}
+	\textbf{Hint:} You must prove a vector $x\in$ \textit{Null} $A$ also
+	belongs to \textit{Null} $A^TA$ and any vector $x\in$ \textit{Null} $A^TA$ 
+	also belongs to \textit{Null} $A$. \\
+	\textbf{Solution:} \\
+	Let say $x$ is a vector in $null(A)$. We know that $Ax=0$. Let's multiply $x$ with $A^TA$, so that
+	we get $A^TAx$. We know $Ax=0$ so we can alter the equation such that:
+	\begin{align*}
+		A^TAx \\
+		A^T(Ax)\\
+		A^T(0)=0
+	\end{align*}
+	This means $x$ also exists in $null(A^TA)$. At this point we know any $x\in null(A)$ exists in 
+	$null(A^TA)$, now we have to prove that $null(A^TA)$ exists in $null(A)$. This is a bit more
+	complicated, but can be shown by:
+	\begin{align*}
+		A^TAx=0 \\
+		(A^T)^{\minus 1}(A^TAx)=(A^T)^{\minus 1}(0) \\
+		Ax=0
+	\end{align*}
+	Therefore proving anything in $null(A^TA)$ exists within $null(A)$.
+\end{homeworkProblem}
+\newpage
+
+
+
+\end{document}

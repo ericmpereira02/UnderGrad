@@ -1,0 +1,9 @@
+# Fdb version 3
+["pdflatex"] 1550259420 "presentationPream.tex" "presentationPream.pdf" "presentationPream" 1550259420
+  "/opt/local/etc/texmf/texmf.cnf" 1526053094 30503 9a61e6893861ec0a56455c8e9c9c514e ""
+  "/opt/local/var/db/texmf/web2c/pdftex/pdflatex.fmt" 1526053119 723151 13059fc6e2f6e9a067c035a039dadbdb ""
+  "presentationPream.aux" 1550257972 8 a94a2480d3289e625eea47cd1b285758 ""
+  "presentationPream.tex" 1550259242 275 7d89cac250e0397950d652b02a5751fc ""
+  (generated)
+  "presentationPream.log"
+  "presentationPream.pdf"

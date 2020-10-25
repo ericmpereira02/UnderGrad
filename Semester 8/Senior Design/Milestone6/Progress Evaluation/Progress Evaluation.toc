@@ -1,0 +1,25 @@
+\contentsline {section}{\numberline {1}High Energy Physics (HEP) Senior Design}{1}{section.1}% 
+\contentsline {section}{\numberline {2}Faculty Sponsor}{1}{section.2}% 
+\contentsline {section}{\numberline {3}Client}{1}{section.3}% 
+\contentsline {section}{\numberline {4}Meeting with Faculty Sponsor}{1}{section.4}% 
+\contentsline {section}{\numberline {5}Meeting with Client}{1}{section.5}% 
+\contentsline {section}{\numberline {6}Progress of current Milestone}{2}{section.6}% 
+\contentsline {section}{\numberline {7}Discussion - Current Milestone}{2}{section.7}% 
+\contentsline {subsection}{\numberline {7.1}Development MTS Computer Progress}{2}{subsection.7.1}% 
+\contentsline {subsection}{\numberline {7.2}Computing Cluster}{2}{subsection.7.2}% 
+\contentsline {subsection}{\numberline {7.3}GEM Machines}{2}{subsection.7.3}% 
+\contentsline {section}{\numberline {8}Parts Worked On}{3}{section.8}% 
+\contentsline {subsection}{\numberline {8.1}Josef Bostik}{3}{subsection.8.1}% 
+\contentsline {subsection}{\numberline {8.2}Eric Pereira}{3}{subsection.8.2}% 
+\contentsline {subsection}{\numberline {8.3}Ryan Wojtyla}{3}{subsection.8.3}% 
+\contentsline {section}{\numberline {9}Discussion - Future Work}{4}{section.9}% 
+\contentsline {subsection}{\numberline {9.1}Development MTS Computer}{4}{subsection.9.1}% 
+\contentsline {subsection}{\numberline {9.2}Computing Cluster}{4}{subsection.9.2}% 
+\contentsline {subsection}{\numberline {9.3}GEM Machines}{4}{subsection.9.3}% 
+\contentsline {section}{\numberline {10}Sponsor Feedback}{5}{section.10}% 
+\contentsline {subsection}{\numberline {10.1}Existing MTS}{5}{subsection.10.1}% 
+\contentsline {subsection}{\numberline {10.2}Development MTS Machine}{5}{subsection.10.2}% 
+\contentsline {subsection}{\numberline {10.3}Computing Cluster}{5}{subsection.10.3}% 
+\contentsline {subsection}{\numberline {10.4}GEM Computers}{5}{subsection.10.4}% 
+\contentsline {subsection}{\numberline {10.5}Sponsor Signature}{6}{subsection.10.5}% 
+\contentsline {section}{\numberline {11}Sponsor Evaluation}{6}{section.11}% 

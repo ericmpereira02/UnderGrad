@@ -1,0 +1,133 @@
+\documentclass{article}
+
+\input{defaultPream}
+
+\usepackage{outlines}
+
+\begin{document}
+
+%----------BEGIN TITLEPAGE----------
+
+\begin{titlepage}
+
+  \title{[name]}
+  \date{\today}
+  \author{Joseph Bostik\\
+    Thomas van Haastrecht\\
+    Eric Pereira\\
+    Ryan Wojtyla\\}
+
+  \maketitle
+
+\end{titlepage}
+
+%-----------END TITLEPAGE-----------
+
+%----------BEGIN NOTES----------
+
+\section{Notes}
+
+\subsection{What is the premise of our game?}
+
+\begin{outline}[enumerate]
+  \1 The player is in charge of preparing a city for nuclear war; the goal is to
+  ensure the survival of as much of the population as possible.
+  \1 Resources must be managed and relocated, infrastructure must be prepared,
+  and the population must be prepared and controlled.
+  \1 The player does not know exactly when the bombs will drop, but news
+  bulletins will be delivered that indicate the likelihood of imminent war.
+  \1 The player must balance preparation with civil unrest.
+    \2 If the player institutes provocative measures without suitably
+    dark news, the population may resist or become frightened.
+    \2 Civil unrest significantly hinders the players ability to adequately prepare.
+\end{outline}
+
+\subsection{What kind of game are we making?}
+
+\begin{outline}[enumerate]
+  \1 turn-based
+  \1 grid-based
+    \2 2D
+  \1 rogue-like
+    \2 the game is short and once it's done, it's done
+  \1 procedurally generated 
+    \2 random game-end time
+    \2 random city layout
+      \3 random resource placement
+      \3 random buildings
+\end{outline}
+
+\subsection{What is the gameplay?}
+
+\begin{outline}[enumerate]
+  \1 moving resources
+    \2 infrastructure health determines the speed and efficiency of shipping
+    \2 resources can be moved from less secure locations to more secure locations
+    \2 resources can be more strategically located across the city
+    \2 hastily moving resources can cause civil unrest
+      \3 the population may take exception to emptying the grocery stores
+  \1 modify infrastructure
+    \2 roads can be blocked or designated for limited use
+    \2 buildings can be fortified
+    \2 manage water and power
+      \3 being too hasty can cause civil unrest
+      \3 may impact ability to prepare
+  \1 interact with population
+    \2 broadcast PSAs
+    \2 institute directives
+      \3 rationing
+      \3 limited movement
+    \2 censorship
+      \3 protect population from troubling information
+        \4 maintain current level of happiness
+      \3 civilian discovery of censorship dramatically decreases happiness
+    \2 manage happiness
+      \3 maintaining normalcy stabilizes happiness
+      \3 directives decrease happiness
+      
+\end{outline}
+
+\subsection{How is score calculated?}
+
+\begin{outline}[enumerate]
+  \1 The player's score is the number of survivors after several time
+  intervals. The later intervals will have a score multiplier to incentivize
+  survival longevity. 
+    \2 how many survived immediately after the blast? 
+    \2 a week after? 
+    \2 a month after? 
+    \2 a year after?
+  \1 per tile calculations
+    \2 To determine how many people survive the initial blast, each tile will
+    undergo a survivability check to determine what percentage of the people
+    within it survive.
+      \3 A building's structural integrity will determine how likely it is to be
+      destroyed.
+      \3 If a building is destroyed, all its resources and population are lost.
+    \2 The remaining population is used as the starting point for the subsequent
+    calculations.
+  \1 city-wide calculations
+    \2 NOTE: all calculations will be compared to the surviving population; a
+    larger survivor rate means more resources will be needed to keep those
+    people alive
+    \2 the sum of the city's food stores
+      \3 How long can the population be fed?
+      \3 More people require more food. 
+    \2 the state of farms
+      \3 Is the land undamaged enough to be usable?
+      \3 Is there sufficient tooling and fuel to farm more food?
+    \2 the state of medical buildings
+      \3 Is there medical equipment available?
+        \4 Medical equipment can slightly increase survival rate.
+      \3 Medical buildings provide an increase in survival rate; that bonus is
+      lost if the buildings are destroyed.
+    \2 the number of livable buildings
+      \3 People crammed into shelters during the war need someplace to live
+      afterward.
+      \3 If there is not enough housing, the survival rate decreases.
+\end{outline}
+
+%-----------END NOTES-----------
+
+
+\end{document}

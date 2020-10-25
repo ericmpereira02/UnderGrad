@@ -1,0 +1,350 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{relsize}
+\usepackage{textcomp}
+
+\usetikzlibrary{automata,positioning}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass\ (\hmwkClassInstructor\ \hmwkClassTime): \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\renewcommand\headrulewidth{0.4pt}
+
+
+\renewcommand\footrulewidth{0.4pt}
+\renewcommand{\theenumi}{\Alph{enumi}}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Take Home Test}
+\newcommand{\hmwkDueDate}{April 17, 2019}
+\newcommand{\hmwkClass}{Linear Algebra}
+\newcommand{\hmwkClassTime}{Section 01}
+\newcommand{\hmwkClassInstructor}{Dr. Munevver Subasi}
+\newcommand{\hmwkAuthorName}{\textbf{Eric Pereira}}
+
+%
+% Title Page
+%
+\pagenumbering{gobble}
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ at 11:59pm}\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+    \vspace{3in}
+}
+
+\author{\hmwkAuthorName}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+\pagenumbering{arabic}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 1                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	Let $A$ be an $n\times n$ matrix. 
+	\begin{enumerate}[label=(\alph*)]
+		\item (5 points) if $\lambda$ is an eigenvalue of $A$, find an eigenvalue $A^k$
+		where $k$ is a positive integer. \\
+		\textbf{Solution:} \\
+		\begin{align*}
+			Ax=\lambda x \\
+			AAX=A\lambda x\\	
+			A^2x=\lambda Ax \\
+			A^2x=\lambda (\lambda x) = \lambda^2 x
+		\end{align*}
+		Now to introduce $A^k$...
+		\begin{align*}
+			A^{k-1}Ax=A^{k-1}\lambda x \\
+			A^kx=\lambda(\lambda^{k-1}x) \\
+			A^kx=\lambda^kx
+		\end{align*}
+		The eigenvalue of $A^k$ is $\lambda^k$
+		\item (5 points) if $v$ is an eigenvector of $A$ corresponding to an eigenvalue $\lambda$,
+		find an eigenvector of $A^k$ where $k$ is a positive integer. \\
+		\textbf{Solution:} \\
+		As shown in problem 1(a), where $v$ and $x$ are eigenvectors you can see that when finding the
+		eigenvalues of $A^k$ the vectors are never changed, therefore the eigenvector of $A^k$ where $k$
+		is a positive integer is $v$.
+		
+	\end{enumerate}
+	\vspace*{\fill}
+	\textbf{Used Class notes to answer 1(a) and 1(b)}
+\end{homeworkProblem}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 2                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	Let $A$ and $B$ be two $n \times n$ matrices. Assume that $B$ is similar to $A$, i.e, there
+	exists an $n \times n$ nonsingular matrix $S$ such that $B=S^{-1}AS$. Let $x\neq 0$ be an 
+	eigenvector of $B$ corresponding to eigenvalue $\lambda$.
+	\begin{enumerate}[label=(\alph*)]
+		\item (5 points) Prove that $A$ and $B$ have some eigenvalues, i.e, $\lambda$ is also an
+		eigenvalue of A. \\
+		\textbf{Solution:} \\
+		\begin{align*}
+			det|\lambda I-A|=det|\lambda I-S^{-1}BS| \\	
+			det|\lambda I-A|=det|\lambda S^{-1}IS-S^{-1}BS| \\
+			det|\lambda I-A|=det|S^{-1}(\lambda I-B)S| \\
+			det|\lambda I-A|=det|\frac{1}{S}(\lambda I-B)S| \\
+			det|\lambda I-A|=det|\lambda I-B| \\
+		\end{align*}
+		If this is true then A and B must have the same eigenvalues.\\
+		\item (5 points) Find the eigenvector of A corresponding to eigenvalue $\lambda$. \\
+		\textbf{Solution:} \\
+		\begin{align*}
+			B=S^{-1}AS \\
+			Bx=\lambda x \\
+			S^{-1}ASx=\lambda x \\
+			ASx=\lambda Sx \\
+		\end{align*}
+		We are able to move lambda because it is an integer and commutative.
+		
+		\vspace*{\fill}
+		\textbf{Used Class notes to answer question 2(a) and 2(b)}
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 3                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	Let $V$ be a subspace of $\mathbb{R}^n$. The orthogonal complement of $V$ in $\mathbb{R}^n$ is
+	defined as
+	\begin{align*}
+		V^\bot = \{x\in \mathbb{R}^n | x \cdot v = 0 \; \forall \; v\in V\}
+	\end{align*}
+	Prove that $V^\bot$ is also a subspace of $\mathbb{R}^n$. \\
+	\textbf{Solution:} \\
+	Expanding the vectors out we get:
+	\begin{align*}
+		V^\bot=\{(x_1,x_2,...,x_n)\in \mathbb{R}^n | (x_1,x_2,...,x_n) \cdot (v_1,v_2,...,v_n) = 0
+		\; \forall \; (v_1,v_2,...,v_n)\in V\} 
+	\end{align*}
+	Doing the dot product out it will look like:
+	\begin{align*}
+		V^\bot=\{(x_1,x_2,...,x_n)\in \mathbb{R}^n | (x_1v_1+x_2v_2+...+x_nv_n) = 0
+		\; \forall \; (v_1,v_2,...,v_n)\in V\} \\
+	\end{align*}
+	$v$ is 0 vector, because $x\cdot v=0$, which means that either the $x$ or $v$ is the zero vector
+	and because $x$ is all reals that means $v$ is the 0 vector. 
+	\begin{align*}
+		V^\bot=\{(x_1,x_2,...,x_n)\in \mathbb{R}^n | (x_1+x_2+...+x_n)\cdot(0+0+...+0) = 0\} \\
+		V^\bot \in \mathbb{R}^n
+	\end{align*}
+	
+	\vspace*{\fill}
+	\textbf{Worked with Jacquelyne Miksanek, and Karly Lorenzini on this problem}
+\end{homeworkProblem}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 4                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	Let $A$ and $B$ be two $n\times n$ orthogonal matrices. Answer the following questions. \\
+	\begin{enumerate}[label=(\alph*)]
+		\item (2 points) Is $-3A$ orthogonal? \underline{Justify your answer.} \\
+		\textbf{Solution:} \\
+		Yes, the orthogonality of a set is closed under scalar multiplication
+		\item (2 points) Is $-B$ orthogonal? \underline{Justify your answer.} \\
+		\textbf{Solution:} \\
+		Yes, for the same reason as A, the orthogonality of a set is closed under
+		scalar multiplication.
+		\item (2 points) Is $A+B$ orthogonal? \underline{Justify your answer.} \\
+		\textbf{Solution} \\
+		Yes, because the orthogonality of a set is closed under addition. 
+		\item (2 points) Is $B^{-1}AB$ orthogonal? \underline{Justify your answer.} \\
+		\textbf{Solution:} \\
+		Yes, because the set is closed under multiplication.
+		\item (2 points) Is $A^T$ invertible? if yes, find its inverse. \\
+		\textbf{Solution:} \\
+		Yes, because the transpose of an orthogonal matrix is its inverse (i.e
+		$A^T=A^{-1}$). This means that the inverse of the transpose the original
+		matrix itself. 
+		\item (2 points) Is $AB$ orthogonal? \underline{Justify your answer.} \\
+		\textbf{Solution:} \\
+		Yes, because the set is closed under multiplication. 
+		\item (2 points) Is $A^2B^2$ orthogonal? \underline{Justify your answer.} \\
+		\textbf{Solution:} \\
+		Yes, because the set is closed under multiplication.
+	\end{enumerate}
+	\vspace*{\fill}
+	\textbf{Worked with Jacquelyne Miksanek on this problem}
+\end{homeworkProblem}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 5                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	
+	\begin{enumerate}[label=(\alph*)]
+		\item (5 points) Let $A$ be an $n \times n$ orthogonal matrix. Prove that $det(A)=
+		\pm 1$. \\
+		\textbf{Solution:} \\
+		\begin{align*}
+			A^{-1}=A^T \\
+			det(AA^T) = det(AA^{-1}) \\
+			[det(A)]^2=1 \\
+			\sqrt{[det(A)]^2}=\sqrt{1} \\
+			det(A)=\pm1
+		\end{align*}
+		\item (5 points) Let $A$ be an $n \times n$ orthogonal matrix. Prove that only eigenvalues
+		of A are 1 and -1. \\
+		\textbf{Solution:} \\
+		\begin{align*}
+			det(A)=\pm1 \\
+			det(A-\lambda I)=0 \\
+			det(A)-\lambda det(I)=0 \\
+			det(A)=\lambda det(I) \\
+			det(I)=1 \\
+			det(A)= \lambda\\
+			\pm1=\lambda
+		\end{align*}
+	\end{enumerate}
+	\vspace*{\fill}
+	\textbf{Used class notes to answer question 5(a) and 5(b)}
+\end{homeworkProblem}
+\newpage
+\end{document}

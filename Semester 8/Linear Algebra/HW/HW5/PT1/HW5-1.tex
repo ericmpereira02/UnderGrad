@@ -1,0 +1,305 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{relsize}
+\usepackage{textcomp}
+
+\usetikzlibrary{automata,positioning}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass\ (\hmwkClassInstructor\ \hmwkClassTime): \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\def\doubleunderline#1{\underline{\underline{#1}}}
+\newcommand{\minus}{\scalebox{0.5}[1.0]{$-$}}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+\renewcommand{\theenumi}{\Alph{enumi}}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Homework\ \#5-1}
+\newcommand{\hmwkDueDate}{March 28, 2019}
+\newcommand{\hmwkClass}{Linear Algebra}
+\newcommand{\hmwkClassTime}{Section 01}
+\newcommand{\hmwkClassInstructor}{Dr. Subasi}
+\newcommand{\hmwkAuthorName}{\textbf{Eric Pereira}}
+
+%
+% Title Page
+%
+\pagenumbering{gobble}
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ at 11:59pm}\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+    \vspace{3in}
+}
+
+\author{\hmwkAuthorName}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+\pagenumbering{arabic}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 1                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	Consider the following $3\times 3$ matrix:
+	\begin{align*}
+		A=\left({\begin{array}{ccc} 1&\minus 1&2 \\ \minus 1&4&\minus 3 \\ 2&\minus 3&4
+		\end{array}}\right)
+	\end{align*}
+	\begin{enumerate}[label=(\alph*)]
+		\item (10pts) Find eigenvalues of $A$. \\
+		\textbf{Solution:} \\
+	
+		\item (10pts) Find the eigenspaces of $A$ corresponding to the eigenvalues found in
+		Part (a). \underline{Justify your answer.} \\
+		\textbf{Solution:} \\
+	
+		\item (5pts) Determine whether $A$ is diagonalizable. \underline{Justify your answer.} \\
+		\textbf{Solution:} \\
+		
+		\item (10pts) Find an invertible matrix $P$ and a diagonal matrix $D$ such that
+		$P^{\minus1AP=D}.$ \\
+		\textbf{Solution:} \\
+		
+		\item (10pts) Find a matrix $S$ whose columns form an orthonormal basis for $\mathbb{R}^3$
+		obtained from the columns of matrix $P$ found in part (d). \\
+		\noindent\rule{16cm}{0.4pt} 
+		
+		%gram schmidt process explanation 
+		\doubleunderline{Gram-Schmidt Process:} if $\{u_1,u_2,...,u_k\}$ is a basis for
+		a subspace $W$, then $\{v_1,v_2,...,v_k\}$ is an orthogonal basis for $W$, where
+		\begin{align*}
+			v_1=u_1, \; v_2=u_2-\frac{u_2\cdot v_1}{||v_1||^2}v_1,\;...,\;v_k=u_k-
+			\frac{u_k\cdot v_1}{||v_1||^2}v_1-\;...\;-\frac{u_k\cdot v_{k-1}}{||v_{k-1}||^2}v_{k-1}
+		\end{align*}
+		\noindent\rule{16cm}{0.4pt} \\
+		%%%%%%%%%%%%%%%%%%%%
+		\textbf{Solution:} \\
+		
+		\item (5pts) Is $S$ invertible? If yes, find $S^{\minus1}$.
+		\textbf{Solution:} \\
+		
+		\item (5pts) Show that $S^{\minus1}AS=D$, where $D$ is the diagonal matrix found in Part
+		(d), that is, $A$ is orthogonally diagonlizable. \\
+		\textbf{Solution:} \\
+		
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 2                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	Consider the transformation $ T:\mathbb{R}^4\rightarrow \mathbb{R}^2$,
+	\begin{align*}
+		T(x_1,x_2,x_3,x_4)=(x_2-x_3-x_4,x_1+x_3+2x_4)
+	\end{align*}
+	\begin{enumerate}[label=(\alph*)]
+		\item (10pts) Show that $T$ is a linear transformation. \\
+		\textbf{Solution:} \\
+		
+		\item (5pts) Find the standard matrix of $T$. \\
+		\textbf{Solution:} \\
+		
+		\item (10pts) Find a basis for the Kernel of $T$. \\
+		\textbf{Solution:} \\
+		
+		\item (10pts) Find a basis for the orthogonal complement of the kernel of $T$. \\
+		\textbf{Hint:} The orthogonal complement of $kernel\; T$ is the set of all vectors that
+		are orthogonal (perpendicular) to $kernel\; T$:
+		\begin{align*}
+			V^{\bot}=\{x\in \mathbb{R}^4|x\cdot v=0\; \forall \; v\in kernel\; T \}
+		\end{align*}
+		\textbf{Solution:} \\
+		
+		\item (5pts) Determine whether the set
+		\begin{align*}
+			B=\left\{
+			\left({\begin{array}{c} \minus 1 \\ 2 \\ 0 \\ 1 \end{array}}\right)_\mathlarger{,}
+			\left({\begin{array}{c} \minus 3 \\ 1 \\ 2 \\ 1 \end{array}}\right)
+			\right\}
+		\end{align*}
+		is a basis for the kernel of $T$. \\
+		\textbf{Solution:} \\
+		
+		\item (5pts) Find a basis for the range of $T$. \\
+		\textbf{Solution:} \\
+	\end{enumerate}
+	
+\end{homeworkProblem}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 3                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	(20pts) Classify each of the following statements as True or False. 
+	\underline{Justify your answers.}
+	\begin{enumerate}[label=(\alph*)]
+		\item The determinant of an orthognal matrix $A$ is equal to 1. \\
+		\textbf{Solution:} \\
+		
+		\item The projection matrix $P$ defined as $P=A(A^TA)^{-1}A^T$ is symmetric
+		for all $A$. \\
+		\textbf{Solution:} \\
+		
+		\item Every non-zero subspace $W$ of $\mathbb{R}^n$ has an orthonormal basis. \\
+		\textbf{Solution:} \\
+		
+		\item Let $A$ and $B$ be two $n \times n$ orthogonal matrices. Then $B^{-1}AB$
+		is orthogonal. \\
+		\textbf{Solution:} \\
+		
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																				%
+%																			    %
+%							  PROBLEM 4                                         %
+%                                                                               %
+%																				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{homeworkProblem}
+	Suppose that $A$ is an $n \times n$ orthogonal matrix.
+	\begin{enumerate}[label=(\alph*)]
+		\item (10pts) Show that the matrix operator $T:\mathbb{R}^n \rightarrow \mathbb{R}^n
+		,T(x)=Ax$ is an orthogonal operator. \\
+		\textbf{Solution:} \\
+		
+		\item (10pts) Prove that the only eigenvalues of $A$ are 1 and $\minus$1.
+	\end{enumerate}
+\end{homeworkProblem}
+\newpage
+\end{document}0

@@ -1,0 +1,8 @@
+\beamer@sectionintoc {1}{Milestone 4 Goals}{2}{0}{1}
+\beamer@sectionintoc {2}{GEM Computers}{3}{0}{2}
+\beamer@sectionintoc {3}{Compute Cluster}{4}{0}{3}
+\beamer@sectionintoc {4}{Muon Tomography Station}{5}{0}{4}
+\beamer@subsectionintoc {4}{1}{Existing MTS}{5}{0}{4}
+\beamer@subsectionintoc {4}{2}{Development MTS}{6}{0}{4}
+\beamer@sectionintoc {5}{Milestone 5 Goals}{7}{0}{5}
+\beamer@sectionintoc {6}{Questions}{8}{0}{6}

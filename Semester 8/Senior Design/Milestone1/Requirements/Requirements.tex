@@ -1,0 +1,186 @@
+\documentclass[12pt]{article}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{color}
+\pagenumbering{gobble}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\hypersetup{
+	colorlinks,
+	citecolor=black,
+	filecolor=black,
+	linkcolor=black,
+	urlcolor=black
+}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\begin{document}
+\begin{titlepage}
+	
+
+\author{Josef Bostik\\
+	Eric Pereira\\
+	Ryan Wojtyla\\}
+\date{October 1\textsuperscript{st}, 2018}
+\title{Software Requirements For HEP Senior Design}
+\maketitle
+\end{titlepage}
+\tableofcontents
+\newpage \pagenumbering{arabic}
+\section*{Overview}
+\addcontentsline{toc}{section}{\protect\numberline{}Overview}% \tab The computer
+managing the muon tomography station (MTS) is encumbered by heavily outdated
+software that dramatically hinders its basic operation. Additionally, the
+workflow for taking data from the MTS is comprised of several loosely connected
+programs and scripts that are difficult to manage and do not provide diagnostic
+information about the data taking process. The management computer’s software
+must be brought up to date, and the data taking workflow must be rewritten to
+allow for troubleshooting capabilities. \\ 
+\tab The job of a computing cluster
+is to process both local jobs submitted by researchers at FIT and jobs submitted
+via the Open Science Grid, a platform through which researchers from around the
+world may submit jobs to be processed. Before the cluster can process jobs,
+however, it must be built. We will be installing ROCKS, a distribution of CentOS
+specifically designed to easily integrate all the components of a cluster. Once
+the cluster is built, HTCondor must be installed and configured to run jobs,
+then the cluster must be reintegrated into the Open Science Grid to allow for
+global job submissions. Scripts will also be written that ease the process of
+locally submitting jobs. \\ 
+\tab The GEM team makes use of several different
+computers to both control hardware and take data. Some of the computers have
+been in service for some time,while others were added as needed. This haphazard
+placement of outdated equipment has resulted in a poorly integrated ecosystem of
+unreliable machines. The group has since acquired other computers that would be
+far more suitable than the existing machines. These new computers are to be
+integrated with some of the existing machines while replacing others, and all of
+the machines are to be configured to allow for easy data transfer between
+them.\\
+
+
+\section*{Scope} \addcontentsline{toc}{section}{\protect\numberline{}Scope}% The
+main focuses of this project are:
+\begin{itemize}
+	\item To diagnose the current problems preventing the MTS from operating
+at its current state.
+	\item Find a solution to fix any problems that are currently preventing
+the MTS from operating.
+	\item Re-create an operating MTS with updated software using ROOT, DATE,
+AMORE, and possibly SCRIBE
+	\item Set up the physics lab cluster as an open science grid (OSG) with
+global job submission using scripts.
+	\item Assist with the reallocation of resources in the GEM team’s lab. 
+\end{itemize}
+
+\section*{Definitions}
+\addcontentsline{toc}{section}{\protect\numberline{}Definition}%
+\tab Below are the definitions of a number of terms that will be used throughout the document. Many of these definitions are used to describe software applications that will be used when setting up a new cluster in the GEM lab, or when setting up a machine to run the MTS.
+\paragraph{CERN CentOS 7 -}A special flavor of CentOS 7 that is designed to be easily integrated into the CERN environment.
+\paragraph{ROOT -}A CERN developed particle physics visualization tool for plotting collected data.
+\paragraph{DATE -}The tool used by some particle detectors, namely the MTS, to collect data.
+\paragraph{AMORE -} Software used to monitor the collection of data by the detector in real time.
+\paragraph{SCRIBE -} Software that configures detector hardware
+\paragraph{ROCKS -} Linux distribution built upon CentOS designed specifically for constructing computing clusters.
+\paragraph{HTCondor -} A tool to manage compute-intensive jobs. HTCondor has its own job 
+queuing mechanism, scheduling policy, priority scheme, resource monitoring, and resource management.
+\paragraph{OSG -} Open Science Grid; administrators of grid computing resources
+\paragraph{GEM -} Gas electron multiplier
+\paragraph{HEP -} High energy physics
+
+\section*{MTS}
+\addcontentsline{toc}{section}{\protect\numberline{}MTS}%
+\tab The Muon Tomography Station (MTS) is used in a wide variety of cosmic particle research. One of the primary applications of the MTS at FIT is to research the application of muons for locating radioactive materials. The main goals of our project for the MTS is to design scripts to handle new information provided by the cern applications, as well as those to troubleshoot issues preventing the MTS from running, allowing for easy repair of the station in the future.
+\subsection*{Current MTS}
+\addcontentsline{toc}{subsection}{\protect\numberline{}Current MTS}%
+\tab Currently there are a number of issues with the MTS that are preventing it from functioning correctly. Our first priority when dealing with the MTS is to diagnose the issues present with the MTS and provide a reasonable solution to fix the software that is preventing it from being used.
+\subsubsection*{Diagnose}
+\addcontentsline{toc}{subsubsection}{\protect\numberline{}Diagnose}%
+\tab The main issue that is preventing the MTS from working correctly is outdated software and dysfunctional scripts that run the MTS.  There are a few approaches we can take when diagnosing the issues with the MTS:
+\begin{itemize}
+	\item First we are going to recreate all of the software on a new machine which will eventually become the new MTS (this process will be discussed in more detail in the ‘Update MTS’ section).
+	\item We will be tracing the scripts that are running the software on the MTS to gain familiarity with the programs running the MTS, and identify possible errors in code. 
+	\item If the MTS still isn’t functioning at this point, we will be fixing issues with the MTS alongside the creation and design of the troubleshooting script.
+	
+\end{itemize}
+\subsubsection*{Repair}
+\addcontentsline{toc}{subsubsection}{\protect\numberline{}Repair}%
+\tab As we identify issues, we will be progressively modifying this section of our requirements to fix problems that arise that prevent the MTS from functioning. The focus of our team in this section is to fix software problems that arise, however this may also include basic hardware repair.
+
+\subsection*{Update MTS}
+\addcontentsline{toc}{subsection}{\protect\numberline{}Update MTS}%
+\subsubsection*{Software Updates}
+\addcontentsline{toc}{subsubsection}{\protect\numberline{}Software Updates}%
+\tab Below is a list of required software for the new MTS. The functionality of this software is explained in the definitions section.
+\begin{itemize}
+	\item CERN CentOS 7
+	\item ROOT
+	\item DATE
+	\item AMORE
+	\item SCRIBE
+	
+\end{itemize}
+\subsubsection*{Script Updates}
+\addcontentsline{toc}{subsubsection}{\protect\numberline{}Script Updates}%
+\tab Design a unit of software for the MTS that:
+\begin{itemize}
+	\item Incorporates all of the existing functionality of the scripts designed by previous physicists that have worked in the lab.
+	\item Has the capability of troubleshooting issues while running these scripts on the MTS alongside being able to troubleshoot issues with DATE
+	\begin{itemize}
+		\item Ideally, these troubleshooting scripts would also present the user with a possible fix.
+	\end{itemize}	
+\end{itemize}
+
+\section*{Cluster}
+\addcontentsline{toc}{section}{\protect\numberline{}Cluster}%
+\subsection*{Repair}
+\addcontentsline{toc}{subsection}{\protect\numberline{}Repair}%
+\subsubsection*{Hardware}
+\addcontentsline{toc}{subsubsection}{\protect\numberline{}Hardware}%
+\tab One of the cluster’s uninterruptible power supplies (UPS) has suffered a catastrophic failure. The batteries have all become very swollen and corroded, which has dirtied the inside of the UPS container and damaged one of the UPS’s battery terminals. The batteries need to be replaced, and the battery cable needs to be repaired. 
+\subsubsection*{Software}
+\addcontentsline{toc}{subsubsection}{\protect\numberline{}Software}%
+\tab The cluster has been in a state of disarray for some time, and it has been determined that the best way to fix it is to overhaul the entire system; to rebuild it from scratch. We will be installing the ROCKS operating system, a specially modified version of CentOS that is specifically designed to integrate the individual components that make up a computing cluster. Once the head node, the compute element (CE), has an operating system, the storage element (SE) and the network accessible storage unit that holds the users’ home directories will be integrated into the new system. The nodes will be unable to be added until the UPS is repaired and filled with new batteries. \\
+\tab Once the SE is up and running, it can be configured. The primary operation of the SE is to ensure the cluster has access to the latest data from CERN so that physicists submitting jobs may refer to it within their jobs. Not only do the appropriate certificates for data propagation need to be acquired, some different data management software needs to be installed. XrootD gets and distributes files from CERN specifically, while Phedex (PHysics Experiment Data EXport) is used to facilitate the transfer of these files. \\
+\tab With the cluster once again in one piece, we can begin work on building the infrastructure for job submission and computation. There are several layers to the job submission system. The most base layer of simply submitting and running local jobs must first be created by installing and configuring HTCondor. The next layer is integrating the cluster with the Open Science Grid (OSG) so that it can receive computing jobs from the grid. This is an involved process that requires the installation of certificates to validate the cluster, the installation and configuration of GUMS (Grid User Management Service) and Tomcat to authenticate grid users when they submit jobs, and the installation and configuration of job routing software, CRAB to receive jobs from the grid and HTCondor-CE to manage the execution of jobs by HTCondor. \\
+\tab After the cluster is fully operational, we will simplify the job submission process for local researchers here at FIT. We will create a special user for local job submissions and a script that will collect pertinent information regarding the users’ jobs to automatically generate a condor submission file, submit and run the job, and return the job’s results.
+
+\section*{GEM Team}
+\addcontentsline{toc}{section}{\protect\numberline{}GEM Team}%
+\subsection*{Allocation of Resources}
+\addcontentsline{toc}{subsection}{\protect\numberline{}Allocation of Resources}%
+\tab The GEM group has to maintain and equip a multitude of computers with specific resources for their case needs. Due to the large quantity of computers it proved difficult for the team to properly maintain their machines, and put specific parts where necessary. As a result, it became necessary to reallocate such resources and put them into better use. \\
+\tab One part of this is breaking down machines that are not working and testing out parts. The GEM Team seems to have lots of computers that are not working, however they may still have good parts that can be used by other computers, such as; RAM, hard/solid state drives, cd/dvd readers, video cards, etc. Reallocating these resources and placing them in the right place will likely allow for better performance from the machines in the lab.
+\subsection*{Data Transfer}
+\addcontentsline{toc}{subsection}{\protect\numberline{}Data Transfer}%
+\tab Transferring data to the compute cluster has been problematic as of late. In the past it was possible to communicate with the cluster, and tranfer backups to and from the cluster. The GEM Team has been having trouble with this task, and fixing it would allow for a backup of data on each computer.
+\subsection*{X-Ray Machine}
+\addcontentsline{toc}{subsection}{\protect\numberline{}X-Ray Machine}%
+\tab The current X-Ray Machine is run on an outdated laptop. This laptop is running Windows 2000. The laptop was also made in 2001, and lacks support for certain features that can be useful to the user. Such features include, an updated internet browser, security features, and better drivers for the X-Ray software. \\
+\tab The ideal solution to this is to allocate available resources, and use a new PC from all the parts available to us and connect it to the X-Ray system. The GEM Team has already stated their preference for Windows 10. A more modern machine, with a more modern operating system, would accomplish this task. 
+
+\end{document}

@@ -1,0 +1,10 @@
+\beamer@sectionintoc {1}{Origins}{2}{0}{1}
+\beamer@sectionintoc {2}{Game Engine}{4}{0}{2}
+\beamer@sectionintoc {3}{Foundations}{6}{0}{3}
+\beamer@sectionintoc {4}{Pieces}{7}{0}{4}
+\beamer@subsectionintoc {4}{1}{Population}{7}{0}{4}
+\beamer@subsectionintoc {4}{2}{Resources}{8}{0}{4}
+\beamer@subsectionintoc {4}{3}{Buildings}{9}{0}{4}
+\beamer@sectionintoc {5}{Score}{10}{0}{5}
+\beamer@sectionintoc {6}{Implementation}{12}{0}{6}
+\beamer@sectionintoc {7}{Demo}{13}{0}{7}

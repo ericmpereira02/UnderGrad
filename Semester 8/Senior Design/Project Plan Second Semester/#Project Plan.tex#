@@ -1,0 +1,147 @@
+\documentclass[12pt]{article}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{color}
+\usepackage{graphicx}
+\pagenumbering{gobble}
+
+
+\newcommand{\doubleSignature}[2]{
+	\begin{center}
+		
+	\end{center}
+	\vspace{2cm}
+	
+	\noindent
+	\begin{tabular}{lcl}
+		\rule{7cm}{1pt} & \hspace{2cm} & \rule{3cm}{1pt} \\
+		#1 & & #2
+	\end{tabular}
+	\vspace{1cm}
+}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\hypersetup{
+	colorlinks,
+	citecolor=black,
+	filecolor=black,
+	linkcolor=black,
+	urlcolor=black
+}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\begin{document}
+\begin{titlepage}
+	
+
+\author{Josef Bostik\\
+	Eric Pereira\\
+	Ryan Wojtlya\\}
+\date{January 14\textsuperscript{th}, 2019}
+\title{Project Plan}
+\maketitle
+\end{titlepage}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+\section{Project Title}
+\tab Upgrade and Update of Computer Systems within Dr. Hohlmann's High Energy Physics (HEP) Research Groups
+\section{Names and Email Addresses of Team Members}
+\tab
+\begin{tabular}{| c | c |}
+	\hline
+	Joseph Bostik & jbostik2015@my.fit.edu \\
+	\hline
+	Eric Pereira & epereira2015@my.fit.edu \\
+	\hline
+	Ryan Wojtyla & rwojtyla2015@my.fit.edu \\
+	\hline
+\end{tabular}
+
+\section{Faculty Sponsor}
+Dr. Eraldo Ribeiro, eribeiro@fit.edu
+
+\section{Client}
+Dr. Marcus Hohlmann, mhohlmann@fit.edu
+
+\section{Meeting(s) with the client for developing this plan}
+\tab Weekly Monday meetings
+
+\section{Goal and Motivation}
+\tab The computer systems of the group have been in disarray for
+some time, and these issues have been hindering the progress of
+the group. The goal of the project is to repair and improve the
+group’s resources to reduce the number of unnecessary obstacles
+the group must overcome in order to conduct their research.
+\section{Approach}
+\subsection{Compute Cluster}
+\tab 
+\subsection{Computer Systems}
+\subsection{Muon Tomography Station (MTS)}
+
+\section{Novel Features/Functionalities}
+\subsection{Compute Cluster}
+\subsection{Computer Systems}
+\tab The computer systems in the HEP lab store important data locally on their systems that are crucial to their 
+\subsection{MTS}
+\subsubsection{Development MTS}
+\subsubsection{Current MTS}
+
+
+\section{Technical Challenges}
+\subsection{Compute Cluster}
+\subsection{Computer Systems}
+\tab The computer systems in the lab hold major data that is only stored locally on very specific computers. The issue here is that a lot of these computers do not have a backup of their data somewhere else which means that if there is a major hard drive failure lots of data will be lost. The ideal solution to this is to run all machines in RAID 1 with two hard drives in each machine, which will striped all data on one hard drive to another creating a backup. 
+\subsection{MTS}
+\subsubsection{Development MTS}
+\tab The development MTS currently has a major issue with the installation of AMORE
+\subsubsection{Current MTS}
+\tab The current MTS currently has a major issue where one of the FEC's is unusable due to bad firmware. Having one bad FEC renders the entire MTS useless due to how the software on the MTS computer currently works. \\
+\tab Another technical challenge with the current MTS is hardware wiring. The wiring of the MTS is disasterous, and makes it very difficult to unplug and and plug in other ports without losing track of cables, or putting cables in the wrong spot. This is because many cables are not labelled, and some cables are as long as 30 feet even when they are only connecting things roughly three to six feet away. 
+\section{Design}
+
+\section{Progress Summary}
+
+\section{Milestone 4 (Feb 11)}
+
+\section{Milestone 5 (Mar 18)}
+
+\section{Milestone 6 (April 15)}
+
+\section{Task Matrix for Milestone 4}
+
+\section{Description of each planned task for Milestone 4}
+
+\section{Approval from Faculty Sponsor}
+\paragraph{\tab "I have discussed with the team and approve this project plan. I will evaluate the progress and assign a grade fo reach of the three milestones"}
+\doubleSignature{Signature}{Date}
+
+\end{document}

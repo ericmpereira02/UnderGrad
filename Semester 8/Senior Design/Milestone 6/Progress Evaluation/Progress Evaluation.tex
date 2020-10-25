@@ -1,0 +1,274 @@
+\documentclass[12pt]{article}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{color}
+\pagenumbering{gobble}
+\usepackage{changepage}
+
+\usepackage{makecell}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\hypersetup{
+	colorlinks,
+	citecolor=black,
+	filecolor=black,
+	linkcolor=black,
+	urlcolor=black
+}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\newcommand{\titledate}[2][2.5in]{%
+	\noindent%
+	\begin{tabular}{@{}p{#1}@{}}
+		\\ \hline \\[-.75\normalbaselineskip]
+		#2
+	\end{tabular} \hspace{1in}
+	\begin{tabular}{@{}p{#1}@{}}
+		\\ \hline \\[-.75\normalbaselineskip]
+		Date
+	\end{tabular}
+}
+
+% for forcing tables to fit
+\usepackage{changepage}
+
+\begin{document}
+	
+
+\begin{titlepage}
+	
+\author{Josef Bostik\\
+	Eric Pereira\\
+	Ryan Wojtyla\\}
+\date{April 15\textsuperscript{th}, 2019}
+\title{Revamp of High Energy Physics Laboratory's Computer Systems: Milestone 6}
+
+\maketitle
+
+\end{titlepage}
+
+\tableofcontents
+
+\newpage \pagenumbering{arabic}
+
+\section{High Energy Physics (HEP) Senior Design}
+
+\begin{itemize}
+	\item Josef Bostik - \href{mailto:jbostik2015@my.fit.edu}{jbostik2015@my.fit.edu}
+	\item Eric Pereira - \href{mailto:epereira2015@my.fit.edu}{epereira2015@my.fit.edu}
+	\item Ryan Wojtyla - \href{mailto:rwojtyla2015@my.fit.edu}{rwojtyla2015@my.fit.edu}
+\end{itemize}
+
+\section{Faculty Sponsor}
+
+\tab Eraldo Ribeiro - \href{mailto:eribeiro@fit.edu}{eribeiro@fit.edu}
+
+\section{Client}
+
+\tab Marcus Hohlmann - \href{mailto:hohlmann@fit.edu}{hohlmann@fit.edu} \\ 
+\tab Head of the Florida Institute of Technology HEP group
+
+\section{Meeting with Faculty Sponsor}
+
+\begin{itemize}
+	\item 12 April 2019
+\end{itemize}
+\section{Meeting with Client}
+
+\begin{itemize}
+	\item 15 March 2019
+	\item 22 March 2019
+	\item 29 March 2019
+	\item 1 April 2019
+	\item 8 April 2019
+\end{itemize}
+
+\section{Progress of current Milestone}
+
+\begin{adjustwidth}{-2.5cm}{}
+  \begin{center}
+      \begin{tabular}{|c|c|c|c|}
+    	\hline
+    	Task & Progress & Notes\\
+    	\hline
+    	Polish Cluster Documentation & 100\% & \\
+    	Polish MTS Documentation & 100\% &  MTS documentation fully completed/edited\\
+    	Create MTS Automation Script & 70\% &  \\
+    	Integrate Remainder of Cluster Components & 50\% & NAS-0 still must be
+                                               included \\
+    	Assist Researchers & 100\% & helping out with general problems as they
+                                     arise \\
+        Create GEM computer Backups & 50\% & issues with
+        									hardware requirements \\
+        
+    	\hline
+    \end{tabular}
+  \end{center}
+\end{adjustwidth}
+
+
+
+\section{Discussion - Current Milestone}
+
+\subsection{Existing MTS Progress}
+
+\tab 
+
+\subsection{Development MTS Computer Progress}
+
+\tab Documentation detailing all progress done this milestone has been completed, formatted, and edited. The documentation for the MTS has been divided into sections providing information about all progress done DATE, ROOT, and AMORE. User instructions for how to access and run all working functionalities of the three applications have been added. A section detailing future work has also been added.
+
+\subsection{Computing Cluster}
+
+\tab The compute cluster is under way! 
+
+\subsection{GEM Machines}
+
+\tab A few of the GEM machines are picking up a new purpose, and are having some software
+installed on them. These newfound machines are having quite a bit of trouble installing the 
+right packages and using the proper software. These issues have been delaying the progress of
+the team, but with some assistance from us they are getting all the packages they need and the 
+software necessary to help them out. \\
+
+\tab The GEM machines also need stable backups as most of the machines are running on hardware
+RAID 0. The problem is, however, that most of the storage on these machines is used up, which 
+makes creating a ZFS software RAID quite difficult. In order to create a software RAID 1 on a system with 1Tb of storage I would be able to only use 500Gb of it in RAID 1 because exactly half
+of the disk is uses to mirror original storage. The problem is that if, for example, one of the
+machines in the lab has 1Tb of storage 800Gb of that will be in use, which then makes it
+impossible to run RAID 1 on it. The solution to this is to get more hard drives, but without more
+hard drives it is impossible to do unless you delete a large portion of data on each of the drives. 
+
+\section{Parts Worked On}
+
+\subsection{Josef Bostik}
+
+\begin{itemize}
+\item MTS Documentation
+\item Investigated issues with AMORE
+\end{itemize}
+
+\subsection{Eric Pereira}
+
+\begin{itemize}
+\item Assisting researchers with general issues
+\item Fixing storage issues
+\end{itemize}
+
+\subsection{Ryan Wojtyla}
+
+\begin{itemize}
+\item MTS Documentation
+\item Cluster Documentation 
+\end{itemize}
+
+%\section{Task Matrix - Next Milestone}
+
+%\begin{center}
+%  \begin{tabular}{|c|c|c|c|}
+%    \hline
+%    Task & Josef & Eric & Ryan \\
+%    \hline
+%    Polish Cluster Documentation & 10\% & 10\% & 80\% \\
+%    Polish MTS Documentation & 40\% & 20\% & 40\% \\
+%    Create MTS Automation Script & 60\% & 10\% & 20\% \\
+%    Integrate Remainder of Cluster Components & 10\% & 10\% & 80\% \\
+%    Run Jobs on Cluster & 10\% & 10\% & 80\% \\
+%    Create GEM conputer Backups & 10\% & 80\% & 10\% \\
+%    Assist Researchers & 10\% & 80\% & 10\% \\
+%    \hline
+%  \end{tabular}
+%\end{center}
+
+\section{Discussion - Future Work}
+
+\subsection{Existing MTS}
+
+\tab The existing MTS interface needs to continually be maintained until the development MTS can be integrated into the system. 
+
+\subsection{Development MTS Computer}
+
+\tab The development MTS needs more to have to final installation of AMORE be put in place, and 
+needs to be modified in a way where the GEM team is able to update the system without having to
+worry about potentially damaging AMORE or ROOT based software on the system (the inability to
+update the system is a major issue with the existing MTS). 
+
+\tab Once this is finalized all that is needed is to completely connect it to the MTS, which 
+in theory will not be too hard, we planned on simply switching the hard drive from one machine
+to another instead of moving and replacing the entire machine as a whole. 
+
+\subsection{Computing Cluster}
+
+\tab 
+
+\subsection{GEM Machines}
+
+\tab The GEM computers are absolutely going to need more maintanence in the future, There is very
+little documentation on the lab computers as a whole so the creation of some sort of documentation
+(most likely some sort of documentation stating the hardware they have, and if they have a backup
+system in place) might be able to help any administrators in the future. \\
+\tab Moreover, it seems the lab, as a whole, lacks someone with CS experience that is able to
+support and assist researchers in creating scripts that can more efficiently help them do work,
+as well as maintain and fix old pieces of software that they may have trouble working with. Targeting more CS students may be in the best interest of the lab. 
+
+\section{Sponsor Feedback}
+
+\subsection{Existing MTS}
+
+\vspace{1in}
+
+\subsection{Development MTS Machine}
+
+\vspace{1in}
+
+\subsection{Computing Cluster}
+
+\vspace{1in}
+
+\subsection{GEM Computers}
+
+\vspace{1in}
+
+\newpage
+
+\subsection{Sponsor Signature}
+\vspace{.5in}
+ \titledate{Sponsor Signature}
+ 
+\section{Sponsor Evaluation}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+	\hline
+	Josef Bostik & 0 & 1 & 2 & 3 & 4 & 5 & 5.5 & 6 & 6.5 & 7 & 7.5 & 8 & 8.5 & 9 & 9.5 & 10\\
+	\hline
+	Eric Pereira & 0 & 1 & 2 & 3 & 4 & 5 & 5.5 & 6 & 6.5 & 7 & 7.5 & 8 & 8.5 & 9 & 9.5 & 10\\
+	\hline
+	Ryan Wojtyla & 0 & 1 & 2 & 3 & 4 & 5 & 5.5 & 6 & 6.5 & 7 & 7.5 & 8 & 8.5 & 9 & 9.5 & 10\\
+	\hline
+\end{tabular}
+
+\end{document}
