@@ -1,0 +1,812 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{relsize}
+\usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage{textcomp}
+
+\usetikzlibrary{automata,positioning}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass\ (\hmwkClassInstructor\ \hmwkClassTime): \hmwkTitle}
+\rhead{\hmwkDueDate}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\newcommand{\minus}{\scalebox{0.5}[1.0]{$-$}}
+\newcommand\tab[1][0.5cm]{\hspace*{#1}}
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+\renewcommand{\theenumi}{\Alph{enumi}}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+	\nobreak\extramarks{}{{#1} continued on next page\ldots}\nobreak{}
+	\nobreak\extramarks{{#1} (continued)}{{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+	\nobreak\extramarks{{#1} (continued)}{{#1} continued on next page\ldots}\nobreak{}
+	\stepcounter{homeworkProblemCounter}
+	\nobreak\extramarks{{#1}}{}\nobreak{}
+}
+
+\newcounter{homeworkProblemCounter}
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+	\subsection*{{#1}:}
+	\enterProblemHeader{{#1}}
+	\exitProblemHeader{{#1}}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Homework \#2}
+\newcommand{\hmwkDueDate}{September 23, 2019}
+\newcommand{\hmwkClass}{MTH 5051}
+\newcommand{\hmwkClassTime}{Section 01}
+\newcommand{\hmwkClassInstructor}{Dr. Jim Jones}
+\newcommand{\hmwkAuthorName}{\textbf{Eric Pereira}}
+
+%
+% Title Page
+%
+\pagenumbering{gobble}
+\title{
+	\vspace{2in}
+	\textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+	\normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ at 07:00pm}\\
+	\vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+	\vspace{3in}
+}
+
+\author{\hmwkAuthorName}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+\begin{document}
+	\maketitle
+	
+	\pagebreak
+	\pagenumbering{arabic}
+	
+	
+	\section*{Pigeonhole Problems Sheet:}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%               Sections Pigenhole Problems Set Problem 1                        %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{homeworkProblem}[Problem 1]
+		A lottery will select 3 balls from a bin containing numbered balls 1,2,...36. Players buy a ticket with 3 of these numbers
+		selected. To win the grand prize, the ticket must match the selected balls. A smaller prize is offered if the sum of numbers on the
+		ticket match the sum of the selected balls.
+		\begin{enumerate}[label=(\alph*)]
+			\item How many players must play to guarantee that there is at least one duplicate ticket sold?
+			\item How many players must play to guarantee there are at least two tickets sold with the same sum?
+			\item How many players must play to guarantee that there are at least three tickets sold with the same sum?
+		\end{enumerate}
+	
+		\textbf{Solution:}
+		\begin{enumerate}[label=(\alph*)]
+			\item So, to absolutely guarantee you have to sell every ticket possible, and
+				add one to it. This means you have sold every 
+				possible combination, and one more means that you have every combination,\
+				and the next one is repeated from one of the previous combinations. 
+				\begin{align*}
+					\binom{36}{3} + 1 = \bm{7,141}
+				\end{align*}
+			\item To determine the total possible sums we can get we have to determine all
+			 	possible sums. We can determine all possible sums
+				by finding the range of numbers between the lowest and highest sum. We can
+				do this by:
+				\begin{align*}
+					\text{Lowest sum: } 1+2+3=6 \\
+					\text{Highest sum: } 36+35+34=105
+				\end{align*}
+				The range of numbers between 6 and 105 is 100 numbers. If this is every
+				possible sum, if we add 1 to this value that means 
+				that a pigeonhole will have a second value. So:
+				\begin{align*}
+					100+1=\bm{101}
+				\end{align*}
+			\item In order to determine whether 3 tickets are sold we can use some of the 
+				information we got from (b). If there are 100 
+				pigeonholes (possible sums), lets double it so that there are at least 2 
+				in each pigeonhole. In order to get a third we just
+				have to add one.
+				\begin{align*}
+					100 \text{ pigeonholes }\times 2 + 1 = \bm{201}
+				\end{align*}
+		\end{enumerate}
+	\end{homeworkProblem}
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%               Sections Pigenhole Problems Set Problem 2                        %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%		
+			
+	
+	%\newpage
+
+	\begin{homeworkProblem}[Problem 2]
+		(Exercise 7)
+		\begin{enumerate}[label=(\alph*)]
+			\item Show that if 14 numbers are selected from the set {1, 2, ..., 25}, there are at least two whose sum is 26.
+			\item Generalize the results from part (a) and example 5.44
+		\end{enumerate}
+	
+	
+		\textbf{Solution:}
+		\begin{enumerate}[label=(\alph*)]
+			\item There are a total of 12 pairs of numbers within the range of 1-25 that add up to 26. They are:
+				\begin{align*}
+					[(1,25), (2,24),(3,23),(4,22),(5,21),(6,20),(7,19),(8,18),(9,17),(10,16),(11,15),(12,14),(13)]
+				\end{align*}
+			
+				13 is not in this list, 13 doubled is 26 and we can not choose 13 twice. This means that the absolute maximum
+				amount of numbers we could choose that don't add up to 26 is 13, because we can take 1 number from the list of
+				pairs and the number 13. Any number number chosen after will correspond to another number that has already been
+				picked and that will create a pair of numbers that add up to 26.
+			
+			\item To generalize, similar to the results in example 5.44 if you have an $n$ size
+				list of numbers and I am trying to add up 2 numbers to a value that is $n+1$ 
+				a list of numbers equal to $\dfrac{n}{2}$ can make up this list if $n$ is even, and 
+				the ceiling of $\dfrac{n}{2}$ if it is odd. As a result you need a minimum of 
+				$\dfrac{n}{2} + 1$. 
+		\end{enumerate}
+	
+	
+	\end{homeworkProblem}
+	%\newpage
+	
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%               Sections Pigenhole Problems Set Problem 3                        %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{homeworkProblem}[Problem 3]
+		\tab Let ABCD be a square with AB=1. Show that if we select 5 points in the interior, then there are at least two points
+		whose distance apart is less than $\dfrac{1}{\sqrt{2}}$\\
+	
+		\textbf{Solution:}\\
+		
+		\tab So if we have a square, let us select the 4 furthest possible points from each other, the corners.
+		now, from here, the furthest possible point, from any of the other that we can choose within the square
+		is the direct center of the square. If each side of the square is 1, then by using pythagorean theorom
+		the distance to the center from any point is $\sqrt{\dfrac{1}{2}^2+\dfrac{1}{2}^2}=\dfrac{1}{\sqrt{2}}$.
+		Now, because this is the absolute largest possible distance if we are at the exact corners, if we have to
+		choose an arbitrary point on the interior of the square it will have to be less than$\dfrac{1}{\sqrt{2}}$, 
+		Thus proving that there are at least two points whose distance is less than $\dfrac{1}{\sqrt{2}}$
+		
+	
+	\end{homeworkProblem}
+	%\newpage
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%               Sections Pigeonhole Problems Set Problem 4                        %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 4]
+		\tab A lossless compression algorithm takes an input file of bits and produces an output 
+		file of bits. For the algorithm to be lossless, the input file must be able to be exactly 
+		reconstructed from the output file. Show that if the algorithm produces an
+		output file of size less than N bits for some specific input file of size N, 
+		then there must be some other specific input file
+		whose output file is actually larger than its input file.\\
+		
+		
+		\textbf{Solution:}
+		
+		\tab lets say that the piece of data itself is a one to one pigeonhole situation, where
+		n pieces of data in input (pigeons) map to n pieces of data in output (pigeonholes). 
+		If there is a  compression algorithm the pigeons have to map to less pigeonholes. In order
+		to have data be lossless you need an input file that is larger in order to map n pieces
+		of data to n data in output in order to have truly lossless data.  
+	\end{homeworkProblem}
+	%\newpage
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%               Sections Pigeonhole Problems Set Challenge                       %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Classic Challenge Problem]
+		\tab Each point in the x-y plane colored red, blue or green. Prove that there exists a
+		 rectangle where the corners have the same color. \\ 
+		
+		\textbf{Solution:} 
+		
+		\tab So, let's say we have a single row. In this single row a color has to be repeated
+		once at least every 4 cells. There are 6 possible combinations where the colors match
+		in this case, lets say (1,2), (1,3), (1,4), (2,3), (2,4), (3,4). Because there are 6 possible
+		repeat patterns, and 3 colors a pattern has to repeat every $(6\cdot 3)+1$ times, so every
+		4 by 19 rows something has to repeat. Because the x-y plane is infinite there are no restrictions
+		to size, so it has to repeat. 
+		
+	\end{homeworkProblem}
+	
+	%%%%%%%%%%%%%%%%%%%      
+	%	NEW SECTION   %
+	%%%%%%%%%%%%%%%%%%%
+	\section*{Chapter 4.1}
+		
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                           Section 4.1 Problem 1                                %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 1]
+		\tab Prove each of the following for all $n \ge 1$ by the Principle of Mathematical Induction.
+		\begin{enumerate}[label=(\alph*)]
+			\item $1^2+3^2+5^2+...+(2n-1)^2=\dfrac{n(2n-1)(2n+1)}{3}$
+			\item $1\cdot{3}+2\cdot{4}+3\cdot{5}+...+n(n+2)=\dfrac{n(n+1)(2n+7)}{6}$
+		\end{enumerate}
+	
+		\textbf{Solution:}
+		
+		\begin{enumerate}[label=(\alph*)]
+			
+			\item The first step to induction is to provide an basis case, the example case can be 1,
+				that can be seen here:
+				\begin{align*}
+					1^2 = \dfrac{1(1)(3)}{3}
+				\end{align*}
+				\tab This is true. So now we can move on. Now let\textquotesingle s make an assumption, 
+				let\textquotesingle s assume:
+				\begin{align*}
+					S(k):1^2+3^2+5^2+...+(2k-1)^2=\dfrac{k(2k-1)(2k+1)}{3} \text{ for some } k \ge 1
+				\end{align*}
+				\tab From here lets do the inductive step and trying to prove this for $k+1$. We are trying to prove:
+				\begin{align*}
+					S(k+1):1^2+3^2+5^2+...+(2k-1)^2+(2k+1)^2&=\dfrac{(k+1)(2(k+1)-1)(2(k+1)+1)}{3} \\
+															&=\dfrac{(k+1)(2k+1)(2k+3)}{3}
+				\end{align*}
+				\tab So from our assumption:
+				\begin{align*}
+					S(k+1):\qquad &[1^2+3^2+5^2+...+(2k-1)^2] + (2k+1)^2 \\
+					&\dfrac{k(2k-1)(2k+1)}{3} + (2k+1)^2 \\
+					&\dfrac{k(2k-1)(2k+1)}{3} + \dfrac{3(2k+1)^2}{3} \\
+					&\dfrac{(2k+1)[k(2k-1)+3(2k+1)]}{3} \\
+					&\dfrac{(2k+1)(2k^2+5k+3)}{3} \\
+					&\dfrac{(k+1)(2k+1)(2k+3)}{3}
+				\end{align*}
+				\tab Since $k$ is an arbitrary value its true for any case $k\ge{1}$, proving
+				\begin{align*}
+					1^2+3^2+5^2+...+(2n-1)^2=\dfrac{n(2n-1)(2n+1)}{3}
+				\end{align*}
+			
+			\item The first step to induction is to provide an basis case, lets try 1 in this case. 
+				\begin{align*}
+					1\cdot 3=\dfrac{1(2)(9)}{6}
+				\end{align*}
+				\tab This is true, so now we can move on. Now let\textquotesingle s make an assumption, 
+				let\textquotesingle s assume:
+				\begin{align*}
+					S(k):1\cdot{3}+2\cdot{4}+3\cdot{5}+...+k(k+2)=\dfrac{k(k+1)(2k+7)}{6} \text{ for some } k\ge 1
+				\end{align*}
+				\tab From here lets do the inductive step and trying to prove this for $k+1$. We are trying to prove:
+				\begin{align*}
+					S(k+1): 1\cdot{3}+2\cdot{4}+3\cdot{5}+...+k(k+2)+(k+1)((k+1)+2)&=\dfrac{(k+1)((k+1)+1)(2(k+1)+7)}{6} \\
+					                                                               &=\dfrac{(k+1)((k+2)(2k+9)}{6}
+				\end{align*}
+				\tab So from our assumption:
+				\begin{align*}
+					S(k+1):\qquad &[1\cdot{3}+2\cdot{4}+3\cdot{5}+...+k(k+2)]+(k+1)((k+1)+2) \\
+					&\dfrac{k(k+1)(2k+7)}{6}+(k+1)(k+3) \\
+					&\dfrac{k(k+1)(2k+7)}{6}+\dfrac{6(k+1)(k+3)}{6} \\
+					&\dfrac{(k+1)[k(2k+7)+6(k+3)]}{6} \\
+					&\dfrac{(k+1)[2k^2+13k+18]}{6} \\
+					&\dfrac{(k+1)((k+2)(2k+9)}{6}
+				\end{align*}
+				\tab Since $k$ is an arbitrary value its true for any case $k\ge{1}$, proving
+				\begin{align*}
+					1\cdot{3}+2\cdot{4}+3\cdot{5}+...+n(n+2)=\dfrac{n(n+1)(2n+7)}{6}
+				\end{align*}
+				
+		\end{enumerate}
+	\end{homeworkProblem}
+	%\newpage
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                           Section 4.1 Problem 2                                %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 2]
+		\tab Prove each of the following for all $n \ge 1$ by the Principle of Mathematical Induction.
+		\begin{enumerate}[label=(\alph*)]
+			\setcounter{enumi}{1}
+			\item 
+			$$\sum_{i=1}^{n} i(2^i)=2+(n-1)2^{n+1}$$
+			\item 
+			$$\sum_{i=1}^{n} (i)(i!)=(n+1)!-1$$
+		\end{enumerate} 
+	
+		\textbf{Solution:}
+		
+		\begin{enumerate}[label=(\alph*)]
+			\setcounter{enumi}{1}
+			\item The first step to induction is the basis case. let\textquotesingle s use 1 in this case. 
+				\begin{align*}
+					(1)(2^1)=2+(0)2^{1+1}
+				\end{align*}
+				\tab This is true, so now we can move on. Now let\textquotesingle s make an assumption, 
+				let\textquotesingle s assume:
+				\begin{align*}
+					S(k):\sum_{i=1}^{k} i(2^i)=2+(k-1)2^{k+1} \text{ for some } k\ge{1}
+				\end{align*}
+				\tab From here lets do the inductive step and trying to prove this for $k+1$. We are trying to prove:
+				\begin{align*}
+					S(k+1):\sum_{i=1}^{k+1} i(2^i)&=2+((k+1)-1)2^{(k+1)+1} \\
+				                            &=2+(k)2^{k+2}
+				\end{align*}
+				\tab So from our assumption:
+				\begin{align*}
+					S(k+1):\qquad & \sum_{i=1}^{k+1} i(2^i) \\
+					&\sum_{i=1}^{k} i(2^i) + (k+1)2^{k+1} \\
+					&[2+(k-1)2^{k+1}] + (k+1)2^{k+1} \\
+					&2+(2^{k+1})[(k-1)+(k+1)] \\
+					&2+(2^{k+1})(2k) \\
+					&2+(k)(2^{k+2}) 
+				\end{align*}
+				\tab Since $k$ is an arbitrary value its true for any case $k\ge{1}$, proving
+				\begin{align*}
+					\sum_{i=1}^{n} i(2^i)=2+(n-1)2^{n+1}
+				\end{align*}
+			\item The first step to induction is the basis case. let\textquotesingle s use 1 in this case. 
+				\begin{align*}
+					(1)(1!)=(1+1)!-1
+				\end{align*}
+				\tab This is true, so now we can move on. Now let\textquotesingle s make an assumption, let\textquotesingle s assume:
+				\begin{align*}
+					S(k): \sum_{i=1}^{k} (i)(i!)=(k+1)!-1 \text{ for some } k\ge 1
+				\end{align*}
+				\tab From here lets do the inductive step and trying to prove this for $k+1$. We are trying to prove:
+				\begin{align*}
+					S(k+1):\sum_{i=1}^{k+1} (i)(i!)&=((k+1)+1)!-1 \\
+					                               &=(k+2)!-1
+				\end{align*}
+				\tab So from our assumption:
+				\begin{align*}
+					S(k+1):\qquad & \sum_{i=1}^{k+1} (i)(i!) \\
+					              &= \sum_{i=1}^{k} (i)(i!) + (k+1)((k+1)!) \\  
+					              &= (k+1)!-1 + (k+1)((k+1)!) \\
+					              &= (k+1)!(1+(k+1))-1 \\
+					              &= (k+1)!(k+2)-1 \\
+					              &= (k+2)!-1
+				\end{align*}
+				\tab Since $k$ is an arbitrary value its true for any case $k\ge{1}$, proving
+				\begin{align*}
+					\sum_{i=1}^{n} i(2^i)=2+(n-1)2^{n+1}
+				\end{align*}
+		\end{enumerate}
+	\end{homeworkProblem}
+	%\newpage
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                           Section 4.1 Problem 4                                %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 4]
+		\tab A wheel of fortune has the integers from 1 to 25 placed on it in a random manner. Show that regardless of how the numbers are 
+		positioned on the wheel, there are three adjacent numbers whose sum is at least 39. \\
+		
+		\textbf{Solution:} 
+		
+		\tab Let\textquotesingle s assume that: $x_1+x_2+x_3<39,x_2+x_3+x_4,...,x_{24}+x_{25}+x_1<39$ for all possible
+		combinations of possible numbers on the wheel. For this to be true that would mean:
+		\begin{align*}
+			\sum_{i=1}^{25}3x_i < 25(39)
+		\end{align*}
+		\tab But the problem is if you do the math:
+		\begin{align*}
+			\sum_{i=1}^{25}3x_i &= 975 \\
+			25\cdot 39 &= 975
+		\end{align*}
+		\tab So because of this, there is at least one combination of three adjacent numbers that has a value that adds up to at least 39.
+	\end{homeworkProblem}
+	%\newpage
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                           Section 4.1 Problem 7                                %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 7]
+		\tab A lumberjack has $4n + 110$ logs in a pile consisting of $n$ layers. Each layer has two more logs than the layer directly above
+		it. If the top layer has six logs, how many layers are there? \\
+		
+		\textbf{Solution:} 
+		
+		\tab If the top layer has 6 logs, and each layer below has exactly 2 more then we can create an equation for this.
+		We essentially have 2 equations, and if we set them equal to each other we will be able to find out how many $n$ 
+		layers there are. This can be described by:
+		\begin{align*}
+			4n+110&=6+8+10+...+(6 + 2(n-1)) \\
+			&=6n + 2\left((n-1)\left(\dfrac{n}{2}\right)\right)\\
+			&=6n+n^2-n\\
+			&=n^2+5n\\
+		\end{align*}
+		\tab From here we are able to actually simply solve for n. 
+		\begin{align*}
+			n^2+5n&=4n+110 \\
+			n^2+n&=110 \\
+			n&=\bm{10}
+		\end{align*}
+		
+		
+		
+		
+	\end{homeworkProblem}
+	%\newpage
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                          Section 4.1 Problem 14                                %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 14]
+		\tab Prove that for all $n \in \mathbb{Z}^+, n > 3 \implies 2^n < n!$ \\
+		
+		\textbf{Solution:}
+		
+		\tab The first step to induction is the basis case. let\textquotesingle s use 4 in
+		this case. 
+		\begin{align*}
+			2^4 < 4!
+		\end{align*}
+		\tab This is true, so now we can move on. Now let\textquotesingle s make an
+		assumption, let\textquotesingle s assume:
+		\begin{align*}
+			S(k): 2^k < k! \text{ for } k > 3
+		\end{align*}
+		\tab From here lets do the inductive step and trying to prove this for 
+		$k+1$. We are trying to prove:
+		\begin{align*}
+			S(k+1): 2^{k+1} <(k+1)! 
+		\end{align*}
+		\tab So from our assumption:
+		\begin{align*}
+			S(k+1)&= 2^{k+1} < (k+1)!\\
+			&=2^k \cdot 2 < k! \cdot (k+1)\\
+			&=k! \cdot 2 < k! \cdot (k+1)\\
+			&= 2 < k+1
+		\end{align*}
+		\tab Since $k$ is an arbitrary value its true for any case $k>{3}$,
+		proving
+		\begin{align*}
+			n \in \mathbb{Z}^+, n > 3 \implies 2^n < n!
+		\end{align*}
+	\end{homeworkProblem} 
+	%\newpage
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                          Section 4.1 Problem 15                                %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 15]
+		\tab Prove that for all $n \in \mathbb{Z}^+, n > 4 \implies n^2 < 2^n$ \\
+		
+		\textbf{Solution:}
+		
+		\tab The first step to induction is the basis case. let\textquotesingle s use 4 in
+		this case. 
+		\begin{align*}
+			2^4 < 4!
+		\end{align*}
+		\tab This is true, so now we can move on. Now let\textquotesingle s make an
+		assumption, let\textquotesingle s assume:
+		\begin{align*}
+			S(k): 2^k < k! \text{ for } k > 3
+		\end{align*}
+		\tab From here lets do the inductive step and trying to prove this for 
+		$k+1$. We are trying to prove:
+		\begin{align*}
+			S(k+1): 2^{k+1} <(k+1)! 
+		\end{align*}
+		\tab So from our assumption:
+		\begin{align*}
+			S(k+1)&= 2^{k+1} < (k+1)!\\
+			&=2^k \cdot 2 < k! \cdot (k+1)\\
+			&=k! \cdot 2 < k! \cdot (k+1) \\
+			&= 2 < k+1
+		\end{align*}
+		\tab Since $k$ is an arbitrary value its true for any case $k>{3}$,
+		proving
+		\begin{align*}
+			n \in \mathbb{Z}^+, n > 3 \implies 2^n < n!
+		\end{align*}
+	\end{homeworkProblem} 
+	%\newpage
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                          Section 4.1 Problem 19                                %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 19]
+		\tab For $n \in \mathbb{Z}^+$ let $S(n)$ be the open statement
+		\begin{align*}
+			\sum_{i=1}^{n}i=\dfrac{\left(n+\left(\frac{1}{2}\right)\right)^2}{2}
+		\end{align*}
+		\tab Show the truth of $S(k)$ implies the truth of $S(k+1)$ for all $k \in \mathbb{Z}^+$.
+		Is $S(n)$ true for all $n \in \mathbb{Z}^+$? \\
+		
+		\textbf{Solution:}
+		
+		\tab The first step to induction is the basis case. let\textquotesingle s use 1
+		\begin{align*}
+			&n=0:\quad 1=\frac{\left(1+\frac{1}{2}\right)^2}{2}
+		\end{align*}
+		\tab This is false, which proves the statement false for any $k\ge{1}$, however I would
+		like to see if I can show that it is true inductively with $k$ and $k+1$
+		\begin{align*}
+			S(k): \sum_{i=1}^{k}i=\frac{\left(k+\left(\frac{1}{2}\right)\right)^2}{2} 
+				\text{ for all } k\in \mathbb{Z}^+
+		\end{align*}
+		\tab From here lets do the inductive step and trying to prove this for 
+			$k+1$. We are trying to prove:
+		\begin{align*}
+			S(k+1):  \sum_{i=1}^{k+1}i=\frac{\left((k+1)+\left(\frac{1}{2}\right)\right)^2}{2} 
+		\end{align*}
+		\tab So from our assumption:
+		\begin{align*}
+			S(k+1)&=\sum_{i=1}^{k+1}i \\
+			      &=\sum_{i=1}^{k}i + (k+1) \\
+			      &=\frac{\left(k+\left(\frac{1}{2}\right)\right)^2}{2}  + (k+1) \\
+			      &=\frac{\left(k+\left(\frac{1}{2}\right)\right)^2+2k+2}{2} \\
+			      &=\frac{k^2+k+\frac{1}{4}+2k+2}{2} \\
+			      &=\frac{k^2+k+\frac{1}{4}+2k+2}{2} \\
+			      &=\frac{(k+1)^2+(k+1)+\frac{1}{4}}{2} \\
+			      &=\frac{(k+1)^2+(k+1)+\frac{1}{4}}{2} \\
+			      &=\frac{\left((k+1)+\left(\frac{1}{2}\right)\right)}{2}
+		\end{align*}
+		\tab Since $k$ is an arbitrary value its true for any case $k\in \mathbb{Z}^+$ this
+		passes the inductive part of the proof. 
+	\end{homeworkProblem} 
+	%\newpage
+	
+	%%%%%%%%%%%%%%%%%%%      
+	%	NEW SECTION   %
+	%%%%%%%%%%%%%%%%%%%
+	\section*{Chapter 4.2}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                          Section 4.2 Problem 1                                 %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 1]
+		\tab The integer sequence $a_1, a_2, a_3,...,$ defined explicitly by the formula $a_n=5n$ 
+		for $n\in \mathbb{Z}^+$, can also be defined
+		recursively by
+		\begin{enumerate}[label=\arabic*)]
+			\item $a_1=5$; and
+			\item $a_{n+1} = a_n + 5$ for $n\ge 1$.
+		\end{enumerate}
+	
+		\tab For an integer sequence $b_1,b_2,b_3,...,$ where $b=n(n+2)$ for all $n \in \mathbb{Z}^+$, we can also provide the recursive 
+		definition:
+		\begin{enumerate}[label=\arabic*)\textquotesingle]
+			\item $b_1=3$; and
+			\item $b_{n+1}=b_n+2n+3,$ for $n\ge{1}$.
+		\end{enumerate}
+		\tab Give a recursive definition for each of the following integer sequences $c_1,c_2,c_3,...,$ where $n\in{\mathbb{Z}^+}$ we have
+		\begin{enumerate}[label=(\alph*)]
+			\item $c_n=7n$
+			\item $c_n=7^n$
+			\item $c_n=3n+7$
+			\item $c_n=7$
+			\item $c_n=n^2$
+			\item $c_n=2-(-1)^n$
+		\end{enumerate}
+		
+		\textbf{Solution:}
+		
+		\begin{enumerate}[label=(\alph*)]
+			\item $\bm{c_1=7;}$ and $\bm{c_{n+1}=c_n+7}$, for $n\ge{1}$
+			\item $\bm{c_1=7;}$ and $\bm{c_{n+1}\cdot 7}$, for $n\ge{1}$
+			\item $\bm{c_1=10;}$ and $\bm{c_{n+1}\cdot 3 + 7}$, for $n\ge{1}$
+			\item $\bm{c_1=7;}$ and $\bm{c_{n+1}=c_n}$, for $n\ge{1}$
+			\item $\bm{c_1=1;}$ and $\bm{c_{n+1}=c_n+2n+1}$, for $n\ge{1}$
+			\item $\bm{c_1=3,c_2=1;}$  and $\bm{c_{n+2}=c_n}$, for $n\ge{1}$
+		\end{enumerate}
+	\end{homeworkProblem} 
+	%\newpage
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                          Section 4.2 Problem 11                                %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 11]
+		Define the integer sequence $a_0, a_1, a_2,a_3,...,$ recursively by
+		\begin{enumerate}[label=\arabic*)]
+			\item $a_0=1, a_1=1, a_2=1$; and
+			\item For $n\ge 3, a_n=a_{n-1}+a_{n-3}$
+		\end{enumerate}
+		Prove that $a_{n+2}\ge (\sqrt{2})^n$ for all $n\ge 0$ \\
+
+		
+		\textbf{Solution:}
+		
+		\tab The first step to induction is the basis case. let\textquotesingle s use 0, 1,
+		and 2 this case. 
+		\begin{align*}
+			&n=0:\quad 1\ge\sqrt{2}^0 \\
+			&n=1:\quad 2\ge\sqrt{2}^1 \\
+			&n=2:\quad 3\ge\sqrt{2}^2 
+		\end{align*}
+		\tab These are true so now we can move on. Now let\textquotesingle s make an
+		assumption, let\textquotesingle s assume:
+		\begin{align*}
+			S(k): a_{k+2}\ge (\sqrt{2})^k \text{ for all } k>2
+		\end{align*}
+		\tab From here lets do the inductive step and trying to prove this for 
+			$k+1$. We are trying to prove:
+		\begin{align*}
+			S(k+1): a_{k+3}\ge (\sqrt{2})^{k+1} 
+		\end{align*}
+		\tab So from our assumption:
+		\begin{align*}
+			S(k+1)&=a_{k+3} \\
+				  &= a_{k}+a_{k+2} \ge \sqrt{2}^{k-2} \sqrt{2}^{k} \\
+				  &= a_{k}+a_{k+2} \ge \left(\sqrt{2}^{2}+1 \right) \sqrt{2}^{k-2}  \\
+				  &= a_{k}+a_{k+2} \ge  \left(3\sqrt{2}^{-2}\right) \left(\sqrt{2}^{k}\right)  \\
+				  &= a_{k}+a_{k+2} \ge \frac{3\sqrt{2}^{k}}{2}  \\
+				  &= a_{k}+a_{k+2} \ge \frac{3\sqrt{2}^{k}}{2}  \\
+				  &= a_{k}+a_{k+2} \ge \frac{3}{2} \sqrt{2}^{k} \ge \sqrt{2} \sqrt{2}^{k}\\
+				  &= a_{k}+a_{k+2} \ge \frac{3}{2} \sqrt{2}^{k} \ge \sqrt{2}^{k+1}\\
+		\end{align*}
+		\tab Since $k$ is an arbitrary value its true for any case $k>{2}$ and the
+		first three basis cases, proving
+		\begin{align*}
+			a_{n+2}\ge (\sqrt{2})^n \text{ for all } n\ge 0
+		\end{align*}		
+			
+	\end{homeworkProblem} 
+	%\newpage
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                          Section 4.2 Problem 13                                %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 13]
+		Prove that for any positive integer $n$,
+		\begin{align*}
+			\sum_{i=1}^{n}\frac{F_{i-1}}{2^i}=1-\frac{F_{n+2}}{2^n}.
+		\end{align*}
+		
+		
+		\textbf{Solution:}
+
+		\tab The first step to induction is the basis case. let\textquotesingle s use 1 in
+		this case. 
+		\begin{align*}
+			\frac{F_{0}}{2^i}=1-\frac{F_{2}}{2^n}
+		\end{align*}
+		\tab This is true, so now we can move on. Now let\textquotesingle s make an
+		assumption, let\textquotesingle s assume:
+		\begin{align*}
+			S(k):& \sum_{i=1}^{k}\frac{F_{i-1}}{2^i}=1-\frac{F_{k+2}}{2^k}
+			\text{ for all } k\in{\mathbb{Z}^+}
+		\end{align*}
+		\tab From here lets do the inductive step and trying to prove this for 
+		$k+1$. We are trying to prove:
+		\begin{align*}
+			S(k+1):& \sum_{i=1}^{k+1}\frac{F_{i-1}}{2^i}=1-\frac{F_{k+3}}{2^{k+1}}. 
+		\end{align*}
+		\tab So from our assumption:
+		\begin{align*}
+			S(k+1)&= \sum_{i=1}^{k+1}\frac{F_{i-1}}{2^i} \\
+			      &= \sum_{i=1}^{k}\frac{F_{i-1}}{2^i} + \frac{F_k}{2^{k+1}} \\
+			      &= 1-\frac{F_{k+2}}{2^k}+\frac{F_k}{2^{k+1}} \\
+			      &= 1+\left(\frac{1}{2^{k+1}}\right)(F_k-2F_{k+2}) \\
+			      &= 1+\left(\frac{1}{2^{k+1}}\right)((F_k-F_{k+2})-F_{k+2}) \\
+			      &= 1+\left(\frac{1}{2^{k+1}}\right)(-F_{k+1}-F_{k+2}) \\
+			      &= 1+\left(\frac{1}{2^{k+1}}\right)(-F_{k+1}-F_{k+2}) \\
+			      &= 1-\left(\frac{1}{2^{k+1}}\right)(F_{k+1}+F_{k+2}) \\
+			      &= 1-\left(\frac{F_{k+3}}{2^{k+1}}\right) 
+		\end{align*}
+		\tab Since $k$ is an arbitrary value its true for any case $k\in \mathbb{Z}^+$,
+		proving
+		\begin{align*}
+			\sum_{i=1}^{n}\frac{F_{i-1}}{2^i}=1-\frac{F_{n+2}}{2^n}.
+		\end{align*}		
+	\end{homeworkProblem} 
+	%\newpage
+\end{document}

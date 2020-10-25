@@ -1,0 +1,642 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage[plain]{algorithm}
+%\usepackage{algpseudocode}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{relsize}
+\usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage{wasysym}
+%\usepackage{textcomp}
+%\usepackage{tabularx}
+\usepackage{xcolor,colortbl}
+
+%\usetikzlibrary{automata,positioning}
+%\usepgfplotslibrary{external} 
+%\tikzexternalize
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass\ (\hmwkClassInstructor\ \hmwkClassTime): \hmwkTitle}
+\rhead{\hmwkDueDate}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\newcommand{\minus}{\scalebox{0.5}[1.0]{$-$}}
+\newcommand\tab[1][0.5cm]{\hspace*{#1}}
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+\renewcommand{\theenumi}{\Alph{enumi}}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+	\nobreak\extramarks{}{{#1} continued on next page\ldots}\nobreak{}
+	\nobreak\extramarks{{#1} (continued)}{{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+	\nobreak\extramarks{{#1} (continued)}{{#1} continued on next page\ldots}\nobreak{}
+	\stepcounter{homeworkProblemCounter}
+	\nobreak\extramarks{{#1}}{}\nobreak{}
+}
+
+\newcounter{homeworkProblemCounter}
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+\newenvironment{homeworkProblem}[1][-1]{
+	\subsection*{{#1}:}
+	\enterProblemHeader{{#1}}
+	\exitProblemHeader{{#1}}
+}
+
+\newcommand{\hmwkTitle}{Homework 4}
+\newcommand{\hmwkDueDate}{October 30, 2019}
+\newcommand{\hmwkClass}{MTH 5051}
+\newcommand{\hmwkClassTime}{Section 01}
+\newcommand{\hmwkClassInstructor}{Dr. Jim Jones}
+\newcommand{\hmwkAuthorName}{\textbf{Eric Pereira}}
+
+%
+% Title Page
+%
+\pagenumbering{gobble}
+\title{
+	\vspace{2in}
+	\textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+	\normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ at 11:59pm}\\
+	\vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+	\vspace{3in}
+}
+
+\author{\hmwkAuthorName}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+\begin{document}
+	\maketitle
+	
+	\pagebreak
+	\pagenumbering{arabic}
+	
+	
+	%%%%%%%%%%%%%%%%%%%      
+	%	NEW SECTION   %
+	%%%%%%%%%%%%%%%%%%%
+	\section{Chapter 9.1}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                          Section 9.1 Problem 2                                 %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 5]
+		\tab Determine the generating function for the number of ways
+		to distribute 35 pennies (from an unlimited supply) among five
+		children if 
+		\begin{enumerate}[label=\alph*)]
+			\item There are no restrictions;
+			\item Each child gets at least 1\cent;
+			\item Each child gets at least 2\cent;
+			\item The oldest child gets at least 10\cent; and
+			\item The two youngest children must each get at least 10\cent.
+		\end{enumerate}
+		
+		
+		\textbf{\\Solution:}
+		\begin{enumerate}[label=\alph*)]
+			\item For this problem we have 5 children, and 35 pennies so the generating function would
+				be:
+				\begin{align*}
+					(1+x+x^2+x^3+..+x^{35})^5
+				\end{align*}
+			\item This would be very similar except it would not include the 1 in the addition of numbers
+				because there is no way that a single child could not have all the coins, so it looks like:
+				\begin{align*}
+					(x+x^2+X^3+...+x^{35})^5
+				\end{align*}
+			\item Here you don't include any case where someone has 1 penny, which gives you:
+				\begin{align*}
+					(x^2+x^3+x^4+...+x^{35})^5
+				\end{align*}
+			\item If one child gets at least 10\cent the equation would look a bit different. You 
+				would have one child that has 10\cent and at most the other children could have is 25\cent.
+				This would look.
+				\begin{align*}
+					(x^{10}+x^{11}+x^{12}+...+x^{35})(1+x+x^2+x^3+...+x^25)^4
+				\end{align*}
+			\item Now if the 2 youngest children are receiving 10\cent, it would look very similar to the last
+				program except:
+				\begin{align*}
+					(x^{10}+x^{11}+x^{12}+...+x^{25})^2(1+x+x^2+x^3+...+x^{15})^3
+				\end{align*}
+		\end{enumerate}
+		
+	\end{homeworkProblem} 
+
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                          Section 9.1 Problem 5                                 %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 5]
+		\tab Find the generating function for the number of integer solutions to the equation
+		$c_1+c_2+c_3+c_4=20$ where $-3\le{c_1}, -3\le{c_2}, -5\le{c_3\le{5}},$ and $ 0 \le{c_4}$.
+		
+		\textbf{\\Solution:}
+		
+		\tab The first thing that we should do is simplify the equation so that we can consider the worst case
+		scenario, so this equation would look like:
+		\begin{align*}
+			(c_1+3)+(c_2+3)+(c_3+5)+c_4=31
+		\end{align*}
+		
+		\tab This makes it much easier to turn into a generating function, no negative numbers to deal with.
+		Let's now correlate this to some other equation to make it easier to describe.
+		\begin{align*}
+			x_1+x_2+x_3+x_4=31
+		\end{align*}
+		
+		\tab In this case, when creating the generating function $x_1, x_2,$ and $x_4$ are all the same, they are
+		some value greater than or equal to 0, up to 31. The problem with $x_3$ is that it has to be less than
+		or equal to 10, as we added 5 in the original equation above $x_3$ can be no more than 10, and no less than
+		0 which. This would make the generating function look like:
+		\begin{align*}
+			(1+x_1+x_2+...+x_{31})^3(1+x_1+x_2+...+x_10)
+		\end{align*}
+	\end{homeworkProblem} 
+
+	%%%%%%%%%%%%%%%%%%%      
+	%	NEW SECTION   %
+	%%%%%%%%%%%%%%%%%%%
+	\section{Chapter 9.2}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                          Section 9.2 Problem 1                                 %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 1]
+		\tab Find generating functions for the following sequences. [For example, in the case
+		of the sequence 0,1,3,9,27,..., the answer required is $\dfrac{x}{1-3x}$, not $\sum_{i=0}^{\infty}3^ix^{i+1}$
+		or simply $0+x+3x^2+9x^3+...$.]
+		\begin{enumerate}[label=\alph*)]
+			\item $\binom{8}{0}, \binom{8}{1}, \binom{8}{2},...,\binom{8}{8}$
+			\item $\binom{8}{1}, 2\binom{8}{2},3\binom{8}{3},...,8\binom{8}{8}$
+			\item $1,-1,1,-1,1,-1,...$
+			\item $0,0,0,-6,6,-6,6,...$
+			\item $1,0,1,0,1,0,1,...$
+			\item $0,0,1,a^2,a^3,...,a\ne0$
+		\end{enumerate}
+		
+		
+		\textbf{\\Solution:}
+		\begin{enumerate}[label=\alph*)]
+			\item This would be:
+				\begin{align*}
+					(1+x)^8
+				\end{align*}
+			\item This would be:
+				\begin{align*}
+					8(1+x)^7
+				\end{align*}
+			\item This would be:
+				\begin{align*}
+					\dfrac{1}{(1+x)}
+				\end{align*}
+			\item This would be:
+				\begin{align*}
+					\frac{6x^3}{(1+x)}
+				\end{align*}
+			\item This would be:
+				\begin{align*}
+					\dfrac{1}{(1-x^2)}
+				\end{align*}
+			\item This would be:
+				\begin{align*}
+					\dfrac{x^2}{(1-ax)}
+				\end{align*}
+		\end{enumerate}
+		
+	\end{homeworkProblem} 
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                          Section 9.2 Problem 9                                 %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 9]
+		\tab Find the coefficient of $x^{15}$ in each of the following.
+		\begin{enumerate}[label=\alph*)]
+			\item $x^3(1-2x)^{10}$
+			\item $\dfrac{x^3-5x}{(1-x)^3}$
+			\item $\dfrac{(1+x)^4}{(1-x)^4}$
+		\end{enumerate}
+		
+		
+		\textbf{\\Solution:}
+		
+		\begin{enumerate}[label=\alph*)]
+			\item First is to expand on this problem. The expansion form would look like:
+				\begin{align*}
+					x^3\left(\sum_{i=0}^{10} (-1)^i\binom{10}{i}(2x)^i \right)
+				\end{align*}
+				\tab We find a small problem here. It seems that the largest possible $x$
+				value is $x^13$ and not $x^15$, therefore the answer is \textbf{0}.
+			\item For this problem we want to do what we did before and expand the equation.
+				The easiest way to expand this is:
+				\begin{align*}
+					x^3-5x\left(\sum_{i=0}^{\infty}\right)
+				\end{align*}
+			\item 
+		\end{enumerate}
+		
+		
+	\end{homeworkProblem} 
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                          Section 9.1 Problem 11                                %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 11]
+		\tab In how many ways can 3000 identical envelopes be divided, in packages of 25,
+		among four student groups so that each group gets at least 150, but not more than 1000,
+		of the envelopes?
+		
+		\textbf{\\Solution:}
+		
+		\tab We can start this problem by simplifying it a bit, if the envelopes have to be shipped in packages
+		of 25 then we can calculate the amount of packages and use that as our main value. The amount of packages in 
+		this case would be $\frac{3000}{25}=600$. Now, we have to calculate the minimum and maximum amount of envelopes
+		a student can have into how many packages that would be. The minimum amount of packages a student group
+		could have would be $\frac{150}{25}=6$, and the maximum packages a student group could have is 
+		$\frac{1000}{25}=40$. This means that the answer would look something like:
+		\begin{align*}
+			(x^6+x^7+x^8+...+x^{40})^4
+		\end{align*}
+		
+	\end{homeworkProblem}
+
+	%%%%%%%%%%%%%%%%%%%      
+	%	NEW SECTION   %
+	%%%%%%%%%%%%%%%%%%%
+	\section{Supplementary Exercises: Chapter 9} 
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                    	Supplementary Exercises Problem 6                        %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 6]
+		\tab How many 10-digit telephone numbers use only the digits 1,3,5, and 7, with each
+		digit appearing at least twice or not at all. 
+			
+		\textbf{\\Solution:\\}
+		
+		\tab So, Primarily in this problem is to recognize how many possible solutions exist for the 10 numbers
+		in general. 
+		
+	\end{homeworkProblem}
+
+	%%%%%%%%%%%%%%%%%%%      
+	%	NEW SECTION   %
+	%%%%%%%%%%%%%%%%%%%
+	\section{Chapter 10.1} 
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                          Section 10.1 Problem 1                                %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 1]
+		\tab Find a recurrence relation, with initial condition, that uniquely determines each 
+		of the following geometric progressions.
+		\begin{enumerate}[label=\alph*)]
+			\item 2, 10, 50, 250, ...
+			\item 6, -18, 54, -162, ...
+			\item 7, $\frac{14}{5}$, $\frac{28}{25}$, $\frac{56}{125}$, ...
+		\end{enumerate}
+		\textbf{\\Solution:}
+		
+		\begin{enumerate}[label=\alph*)]
+			\item It seems that this is just multiplying the previous number by 5, starting at 2. This
+				would look like:
+				\begin{align*}
+					5a_{n-1},\ n\ge{1},\ a_0=2 
+				\end{align*}
+			\item This seems to start at 6, and be multiplied by a -3 each time. This would look like:
+				\begin{align*}
+					-3a_{n-1},\ n\ge{1},\ a_0=6
+				\end{align*}
+			\item This starts at 7, and seems to be multiplied by $\frac{2}{5}$ each time. This would look like:
+				\begin{align*}
+					\frac{2a_{n-1}}{5},\ n\ge{1},\ a_0=7
+				\end{align*}
+		\end{enumerate}
+		
+		
+	\end{homeworkProblem}
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                          Section 10.1 Problem 3                                %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{homeworkProblem}[Problem 3]
+		\tab If $a_n$, $n\ge{0}$, is the unique solution of the recurrence relation 
+		$a_{n+1}-da_n=0$, and $a_3=\frac{153}{49}$, $a_5=\frac{1377}{2401}$, what is $d$?
+		
+		\textbf{\\Solution:\\}
+		
+		\tab I think the first step to this problem is to solve for the case $a_4$. This would could be done
+		by figuring out an equation for any generalized recurrence based on $a_0$. We could rearrange the
+		original equation given and make:
+		\begin{align*}
+			a_n=d^na_0
+		\end{align*}
+		\tab From here we can plug in both $a_5$ and $a_3$ to get $d^2$ and then get the square root
+		of that. This would look like:
+		\begin{align*}
+			& a_3=d^3a_0=\frac{153}{49} \\
+			& a_5=d^5a_0=\frac{1377}{2401} \\
+			& \frac{a_5}{a_3}=d^2=\frac{9}{49} \\
+			& d=\sqrt{\frac{9}{49}}=\bm{\pm{\frac{3}{7}}}
+		\end{align*}
+		
+	\end{homeworkProblem}
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                          Section 10.1 Problem 4                                %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	
+	\begin{homeworkProblem}[Problem 4]
+		\tab The number of bacteria in a culture is 1000, (approximately), and this number increases
+		by 250\% every two hours. Use a recurrence relation to determine the number of bacteria present
+		after one day.
+		
+		\textbf{\\Solution:\\}
+		
+		\tab Well, to start initially we have to figure out approximately how much the culture increases in one
+		day. This can be done by dividing 24 (the hours we have in a day) by the 2 (the time we know the bacteria
+		increases by), and put 2.5 (the amount it increases by) to the power of that number. We know that
+		$a_0=1000$ so the equation would look like:
+		\begin{align*}
+			a_{n}+2.5a_{n}, n/ge{1}, a_0=1000
+		\end{align*}
+		\tab Now to get more in depth we can solve this by:
+		\begin{align*}
+			&a_{n}=(3.5)a_0 \\
+			&n=10 \\ \\
+			&a_{12}=(3.5)^{12}\times{1000}=\bm{3,379,220,508.06}
+		\end{align*}
+		
+	\end{homeworkProblem}
+
+
+	%%%%%%%%%%%%%%%%%%%      
+	%	NEW SECTION   %
+	%%%%%%%%%%%%%%%%%%%
+	\section{Chapter 10.2} 
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                          Section 10.2 Problem 1                                %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{homeworkProblem}[Problem 1]
+		\tab Solve the following recurrence relations. (No final answer should involve
+		complex numbers)
+		
+		\begin{enumerate}[label=\alph*)]
+			\item $a_n=5a_{n-1}+6a_{n-2}, n\ge{2}, a_0=1, a_1=3$
+			\setcounter{enumi}{2}
+			\item $a_{n+2}+a_n=0, n\ge{0}, a_0=0, a_1=3$
+			\item $a_n-6a_{n-1}+9a_{n-2}=0, n\ge{2}, a_0=5, a_1=12$
+		\end{enumerate}
+		
+		\textbf{\\Solution:\\}
+		
+		\begin{enumerate}[label=\alph*)]
+			\item Let's start by saying $a_n=cr^n$. It is also important to mention that $c,r\neq{0}$
+			If this is the case then we can rewrite the recurrence
+				equation as:
+				\begin{align*}
+					r^2-5r-6=0
+				\end{align*}
+				\tab Now from here we want to find the roots of this in order to create a recurrence relation.
+				the roots are:
+				\begin{align*}
+					&r^2-5r-6 \\
+					&(r+1)(r-6)
+				\end{align*}
+				\tab and to continue on with solving for distinct real roots:
+				\begin{align*}
+					&a_n=(-1)^nA+(6)^nB \\
+					&a_0=1=A+B \\
+					&B=1-A \\
+					&a_1=3=-A+6B \\
+					&3=-A+6-6A  &A=\frac{3}{7} \\
+					&1=\frac{3}{7}+B &B=\frac{4}{7} \\
+					&\bm{a_n=\frac{3}{7}+\frac{24}{7}}
+				\end{align*}
+				
+			\setcounter{enumi}{2}
+			
+			\item We are doing something similar to (a), where we say $a_n=cr^n$ and $c,r\neq{0}$
+				\begin{align*}
+					r^2+1=0
+				\end{align*}
+				\tab From here we are going to split it up to its roots, however the process for finding
+				the answer works differently as we are going to have complex roots. This would look like:
+				\begin{align*}
+					&(r+\sqrt{-1})(r-\sqrt{-1}) &\pm{i} \\
+					&a_n=A(i)^n+B(-i)^n \\
+					&a_n=A\left(\cos \left(\frac{\pi}{2}\right)+i\sin{\left(\frac{\pi}{2}\right)}\right)^n
+					+B\left(\cos \left(\frac{\pi}{2}\right)+i\sin{\left(\frac{-\pi}{2}\right)}\right)^n \\
+					&\quad =C\cos{\left(\frac{n\pi}{2}\right)}+D\sin{\left(\frac{n\pi}{2}\right)} \\
+					& a_0=0=C\cos{\left(\frac{0\pi}{2}\right)}+D\sin{\left(\frac{0\pi}{2}\right)}=C \\
+					& a_1=3=C\cos{\left(\frac{3\pi}{2}\right)}+D\sin{\left(\frac{3\pi}{2}\right)}=D \\
+					& \bm{a_n=3\ } \textbf{sin} \bm{\left( \frac{n\pi}{2}\right) ,\ n\ge{0}}
+				\end{align*}				
+				
+			\item Similar to the previous questions, we will say $a_n=cr^n$ where $c,r\neq{0}$.
+				The process is a bit different because of repeated real roots, this would look like:
+				\begin{align*}
+					&r^2-6r+9=0 \\
+					&(r-3)(r-3) \\
+					&a_n=3^nA+3^nBn \\
+					&a_0=5=A &A=5 \\
+					&a_1=12=3A+3B \\
+					&12=15+3B & B=-1 \\
+					&\bm{a_n=(3^n\times{5})-n3^n}
+				\end{align*}
+		\end{enumerate}
+		
+	\end{homeworkProblem}
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                          Section 10.2 Problem 11                               %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{homeworkProblem}[Problem 11]
+		\begin{enumerate}[label=\alph*)]
+			\item For $n\ge{1}$, let $a_n$ count the number of binary strings of length $n$,
+				where there are no consecutive 1's. Find and solve a recurrence relation for $a_n$.
+			\item For $n\ge{1}$, let $b_n$ count the number of binary strings of length $n$, where
+				there are no consecutive 1's and the first and last bit of the string are not both 1.
+				Find and solve a recurrence relation for $b_n$.
+		\end{enumerate}
+		
+		\textbf{\\Solution:}
+		
+		\begin{enumerate}[label=\alph*)]
+			\item We find that there is a strange phenomenon with the case of 1 and 2 length strings. The one length 
+				strings have 2 items that have 3 items without consecutive ones. If you have a string of length 3, it
+				will have 5 items, and a string of 4 items will have a length of 8 without consecutive ones. A pattern 
+				emerges from this. This pattern being:
+				\begin{align*}
+					&a_n=a_{n-1}+a_{n-2}, \quad n\ge3 \\
+					&0=x^2-x+1
+				\end{align*}
+				\tab This is a lot like the Fibonacci sequence, similar to the diagram that is shown at 10.16 and 10.17 in the textbook, except we start the sequence at point $F_3$ because $F_3=a_1$ and
+				so forth. So we can use this to help answer our question. This could look like:
+				\begin{align*}
+					&a_n=F_{n+2}=\frac{A^{n+2}-B^{n+2}}{A-B} \\
+					&A=\frac{1+\sqrt{5}}{2}, \quad B=\frac{1-\sqrt{5}}{2}
+				\end{align*}
+				
+			\item For problem b) have to consider all the cases where the first and last bits can not be 1. In this case
+			$a_1=1$, $a_2=3$, $a_3=4$, $a_4=7$, $a_5=11$, which ends up looking exactly like the last problem:
+			\begin{align*}
+				a_n=a_{n-1}+a_{n-2}, \qquad n\ge 3
+			\end{align*}
+			\tab This problem however is that this does not correlate so easily with the Fibonacci sequence, however it still
+			does correlate to the sequence in some way. Let's use our previous expression in answer a) and claim our new 
+			equation as $b_n$
+			\begin{align*}
+				&b_n=a_{n-1}+a_{n-3}=F_{n+1}+F_{n-1}
+			\end{align*}
+			\tab From here we can note the A and B values from previous problem to find that 
+			\begin{align*}
+				b_n=A^n+B^n
+			\end{align*}
+		\end{enumerate}
+		
+	\end{homeworkProblem}
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%                                                                                %
+	%                          Section 10.2 Problem 12                               %
+	%                                                                                %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{homeworkProblem}[Problem 12]
+		\tab Suppose that poker chips come in four colors —
+		red, white, green, and blue. Find and solve a recurrence relation for the number 
+		of ways to stack $n$ of these poker chips so that there are no consecutive blue chips.
+		
+		\textbf{\\Solution:}
+		
+		\tab To break this down, let's say that $a_n$ is the way to arrange the chips without consecutive blues.
+		Now we have to create two separate variables for 2 separate case sceanrios, the first scenario being blue
+		where a substack will have a choice of 3 items below it and if it is non-blue it can have a choice of 4 items
+		on top of it. We can write these as $b_n$ and $c_n$ respectively and can figure out that the equation for this
+		is:
+		\begin{align*}
+			&a_{n}=b_n+c_n \\
+			&c_n=a_n-b_n, \qquad b_n = a_n-c_n \\
+			&a_{n+1}=3b_n+4c_n=3(b_n+c_n) + c_n\\
+			& \qquad \; =3a_n+3_{n-1}
+		\end{align*}
+		
+		\tab We can then rewrite this equation and find its roots, as such:
+		\begin{align*}
+			&a_{n+1}-3a_n-3a_{n-1} \\
+			&r^2-3r-3=0\\
+			&r=\frac{-3\pm\sqrt{21}}{2}
+		\end{align*}
+		
+		\tab Now we have to plug in these values into $A$ and $B$ to find a recurrence equation as so:
+		\begin{align*}
+			&a_n=A\left(\frac{-3+\sqrt{21}}{2}\right)^n+B\left(\frac{-3-\sqrt{21}}{2}\right)^n \\
+			&a_0=1=A\left(\frac{-3+\sqrt{21}}{2}\right)^0+B\left(\frac{-3-\sqrt{21}}{2}\right)^0 \\
+			&1=A+B, \qquad B=1-A \\
+			&a_1=4=A\left(\frac{-3+\sqrt{21}}{2}\right)+B\left(\frac{-3-\sqrt{21}}{2}\right) \\
+			&\quad=A\left(\frac{-3+\sqrt{21}}{2}\right)+(1-A)\left(\frac{-3-\sqrt{21}}{2}\right) \\
+			&A=\frac{5+\sqrt{21}}{2\sqrt{21}} \qquad B=\frac{\sqrt{21}-5}{2\sqrt{21}} \\
+			&\bm{a_n=\left(\frac{5+\sqrt{21}}{2\sqrt{21}}} \times \frac{-3+\sqrt{21}}{2}\right)+
+			\left(\frac{\sqrt{21}-5}{2\sqrt{21}} \times \frac{-3-\sqrt{21}}{2}\right)
+		\end{align*}
+		
+		
+	\end{homeworkProblem}
+	
+
+
+\end{document}
