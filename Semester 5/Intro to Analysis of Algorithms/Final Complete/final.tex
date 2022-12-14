@@ -1,0 +1,277 @@
+%% HEADER
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[letterpaper,oneside,10pt]{article}
+% Alternative Options:
+%	Paper Size: a4paper / a5paper / b5paper / letterpaper / legalpaper / executivepaper
+% Duplex: oneside / twoside
+% Base Font Size: 10pt / 11pt / 12pt
+
+
+%% Language %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[USenglish]{babel} %francais, polish, spanish, ...
+\usepackage[T1]{fontenc}
+\usepackage[ansinew]{inputenc}
+
+\usepackage{lmodern} %Type1-font for non-english texts and characters
+
+
+%% Packages for Graphics & Figures %%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx} %%For loading graphic files
+
+
+%% Math Packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[leqno]{amsmath}
+
+\usepackage{hyperref}
+\usepackage{color}
+\hypersetup{
+	colorlinks = true,
+	linkcolor=black,
+	urlcolor=red,
+	linktoc=all
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\pagestyle{empty} %No headings for the first pages.
+
+
+%% Title Page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% ==> Write your text here or include other files.
+
+%% The simple version:
+\title{Introduction to Analysis of Algorithms Final\\CSE4081}
+\author{Eric Pereira}
+\date{December 15, 2017} %%If commented, the current date is used.
+\maketitle
+\newpage
+
+%% The nice version:
+%\input{titlepage} %%You need a file 'titlepage.tex' for this.
+%% ==> TeXnicCenter supplies a possible titlepage file
+%% ==> with its templates (File | New from Template...).
+
+
+%% Inhaltsverzeichnis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tableofcontents %Table of contents
+\cleardoublepage %The first chapter should start on an odd page.
+
+\pagestyle{plain} %Now display headings: headings / fancy / ...
+
+
+%% Section I : Problem %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Problem 1}
+\label{sec:Problem 1}
+
+\begin{equation*}
+\sum_{i=0}^{n} \sum_{j=0}^{i} \sum_{k=0}^{j} 1 \\
+\end{equation*}
+\begin{equation*}
+\sum_{i=0}^{n} \sum_{j=0}^{i} j
+\end{equation*}
+\begin{equation*}
+\sum_{i=0}^{n} \frac{i(i+1)}{2}
+\end{equation*}
+\begin{equation*}
+\frac{1}{2} \sum_{i=0}^{n} i^{2}+i
+\end{equation*}
+\begin{equation*}
+\frac{1}{2} (\sum_{i=0}^{n} i^{2} + \sum_{i=0} i)
+\end{equation*}
+\begin{equation*}
+\frac{1}{2} (\frac{1}{6}n(n+1)(2n+1) + \frac{n(n+1)}{2})
+\end{equation*}
+\begin{equation*}
+\frac{n^{3} + 3n^{2} + 2n}{6}
+\end{equation*}
+
+\section{Problem 2}
+\label{sec:Problem 2}
+
+\qquad What is being stated here is that \(O(g(n))\) = \(f(n)\) so that there exists constants, lets say c and \(n_{0}\) so that 0 \(\leq\) \(f(n)\) \(\leq\) \(cg(n)\) for all \(n\) \(\geq\)\(n_{0}\) and vice versa with \(f(n) = O(g(n))\).  \(f(n) = O(g(n))\) means \(f(n) \leq O(g(n))\).
+
+\section{Problem 3}
+\label{sec:Problem 3}
+\qquad As stated in problem 2, we will test out what was proven but square all the numbers. \(O(g(n)^{2})\) = \(f(n)^{2}\) so that there exists constants, lets say c and \(n_{0}\) so that 0 \(\leq\) \(f(n)^{2}\) \(\leq\) \(cg(n)^2\) for all \(n\) \(\geq\)\(n_{0}\) and vice versa with \(f(n)^{2} = O(g(n)^{2})\). \(f(n)^{2} = O(g(n)^{2})\) means \(f(n)^{2} \leq O(g(n)^{2})\).
+
+\section{Problem 4}
+\paragraph{}
+	For both problems an example with n being double will show how difficult it is to keep track when both numbers are doubled. The factor that \(2^{n}\) increases when doubled is \(2^{n}\), compared to \(2^{3}\) when seen in the \(n^{3}\) example. This shows that it is not tractable. 
+\label{sec:Problem 4}
+\subsection{4a}
+\label{sec:4a}
+\begin{center}
+Doubling input increases output by a factor of 2^{3}
+\end{center}
+\begin{gather*}
+f(n) = n^3 \\
+f(2n) = (2n)^3 \\
+f(2n) = 2^3f(n) 
+\end{gather*}
+\begin{center}
+lets say n = 10
+\end{center}
+\begin{gather*}
+f(10) = 10^3 = 1,000 \\
+f(20) = 20^3 = 8,000
+\end{gather*}
+\subsection{4b}
+\label{sec:4b}
+\begin{center}
+Doubling input increases output by a factor of 2^{n}
+\end{center}
+\begin{gather*}
+f(n) = 2^n \\
+f(2n) = 2^{2n} \\
+f(2n) = 2^nf(n)
+\end{gather*}
+\begin{center}
+lets say n = 10
+\end{center}
+\begin{gather*}
+f(10) = 2^{10} = 1,024 \\
+f(20) = 2^{20} = 1,048,576
+\end{gather*}
+
+
+\section{Problem 5}
+\label{sec:Problem 5}
+\begin{equation*}
+
+\end{equation*}
+\begin{equation*}
+T(n)=3T(n/3)+n
+\end{equation*}
+\begin{equation*}
+T(n)\leq 3(c\frac{n}{3}\log_{3}\frac{n}{3}+n
+\end{equation*}
+\begin{equation*}
+T(n) = cn\log_{3}\frac{n}{3}+n
+\end{equation*}
+\begin{equation*}
+T(n) = cn\log_{3}n-cn\log{3}3+n
+\end{equation*}
+\begin{equation*}
+T(n) = cn\log_{3}n-cn+n
+\end{equation*}
+
+\section{Problem 6}
+\label{sec:Problem 6}
+
+\begin{equation*}
+T(n) = 3T(n/3) + n
+\end{equation*}
+\begin{equation*}
+T(n) = 3(3T(n/9)+n/3))+n
+\end{equation*}
+\begin{equation*}
+T(n) = 9(3T(n/27) + 3n
+\end{equation*}
+\begin{equation*}
+T(n) = 27T(n/27) + 3n
+\end{equation*}
+\begin{equation*}
+T(n) = 3^{i}T(n/3^{i})+i*n
+\end{equation*}
+\begin{gather*}
+\frac{n}{3^{i}} = 1 = i = \log_{3}n
+\end{gather*}
+\begin{equation*}
+T(n) = 3^{log_{3}n}T(1)+\log_{3}n
+\end{equation*}
+\begin{equation*}
+T(n) = n+\log_{3}n*n
+\end{equation*}
+\begin{equation*}
+T(n) = O(n\logn)
+\end{equation*}
+
+\section{Problem 7}
+\label{sec:Problem 7}
+
+\begin{equation*}
+G(z)=\sum_{n=0}^{\infty} t_{n}z^{n}
+\end{equation*}
+\begin{equation*}
+G(z)=\sum_{n=1}^{\infty}[t_{n-1}+2^{n-1}]z^n
+\end{equation*}
+\begin{equation*}
+G(z) = \sum_{n=1}^{\infty}t_{n-1}z^n + \sum_{n=1}^{\infty}2^{n-1}z^{n}
+\end{equation*}
+\begin{equation*}
+G(z) = z\sum_{n=0}^{\infty}t_{n}z^{n}+z\sum_{n=0}^{\infty}2^{z}z^{n}
+\end{equation*}
+\begin{equation*}
+G(z) = zG(z) + \frac{z}{1-2z}
+\end{equation*}
+\begin{equation*}
+G(z) - zG(z) = \frac{z}{1-2z}
+\end{equation*}
+\begin{equation*}
+G(z)[1-z]=\frac{z}{1-2z}
+\end{equation*}
+\begin{equation*}
+G(z) = \frac{z}{(1-z)(1-2z)}
+\end{equation*}
+\begin{equation*}
+G(z) = \frac{1}{1-2z} - \frac{1}{1-z}
+\end{equation*}
+\begin{equation*}
+G(z) = \sum_{n=0}^{\infty}2^{n}z^{n}-\sum_{n=0}^{\infty}z^{n}
+\end{equation*}
+\begin{equation*}
+G(z) = \sum_{n=0}^{\infty}(2^{n}-1)z^{n}
+\end{equation*}
+
+\section{Problem 8}
+\label{sec:Problem 8}
+\subsection{8a}
+\label{sec:8a}
+\begin{equation*}
+O(n + M)
+\end{equation*}
+\subsection{8b}
+\label{sec:8b}
+\begin{equation*}
+O(nM)
+\end{equation*}
+\subsection{8c}
+\label{sec:8c}
+\qquad I think there could be two greedy algorithms used for this problem.
+The first greedy algorithm could be to do the quickest jobs first, maximizing
+amount of chores done. The next greedy algorithm is to try and do chores that pay the 
+best. The time complexity for each would be O(n), and these are terrible was to do the
+problem, they will not always produce an optimal solution. 
+\section{Problem 9}
+\label{sec:Problem 9}
+\subsection{9a}
+\label{sec:9a}
+\begin{equation*}
+n \choose k
+\end{equation*}
+\subsection{9b}
+\label{sec:9b}
+\begin{equation*}
+k \choose 2
+\end{equation*}
+\subsection{9c}
+\label{sec:9c}
+\begin{equation*}
+O({n \choose k} {k \choose 2})
+\end{equation*}
+\subsection{9d}
+\label{sec:9d}
+\begin{equation*}
+n*n!
+\end{equation*}
+\subsection{9e}
+\label{sec:9e}
+\qquad It is possible to use a nested for loop in order to find the 
+independent amount of vertices. You could have one loop go through each k element subset and another loop go through sets within graph G. This would allow for a polynomial time algorithm, and still get the correct answer. 
+
+
+\end{document}
+
